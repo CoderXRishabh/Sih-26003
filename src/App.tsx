@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, createContext, useContext } from "react";
+import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from "react";
 import matchPairsThumbnail from "@/imports/ChatGPT_Image_Sep_4__2026__05_05_52_PM.png";
 import * as api from "./api";
 import { initSocketConnection, subscribeSync, disconnectSocket } from "./socket";
@@ -693,6 +693,7 @@ function GamesScreen({ onNavigate, onBack }: { onNavigate: (screen: Screen) => v
       <NavBar title={t("playRemember")} onBack={onBack} />
       
       <div className="flex-1 px-6 py-6 flex flex-col gap-4 max-w-2xl mx-auto w-full">
+        {/* Game 1: Match the Pairs */}
         <button
           onClick={() => onNavigate("game")}
           className="flex items-center gap-5 p-5 rounded-3xl border-2 text-left bg-white transition-all active:scale-[0.98]"
@@ -702,6 +703,24 @@ function GamesScreen({ onNavigate, onBack }: { onNavigate: (screen: Screen) => v
           <div className="flex-1">
             <h3 className="text-[22px] font-black text-[#2B2B2B]">{t("matchPairs")}</h3>
             <p className="text-[15px] font-semibold text-[#7A7060] mt-1">Exercise your memory with colorful image cards.</p>
+          </div>
+        </button>
+
+        {/* Game 2: Mindsnap Memory Arcade */}
+        <button
+          onClick={() => onNavigate("mindsnap")}
+          className="flex items-center gap-5 p-5 rounded-3xl border-2 text-left bg-white transition-all active:scale-[0.98]"
+          style={{ borderColor: "#7567f840", boxShadow: "0 4px 16px rgba(117,103,248,0.08)" }}
+        >
+          <div className="w-20 h-20 rounded-2xl bg-[#7567f8] text-white flex items-center justify-center text-3xl font-black shadow-md flex-shrink-0">
+            ✦
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h3 className="text-[22px] font-black text-[#2B2B2B]">Mindsnap Arcade</h3>
+              <span className="text-[10px] font-black uppercase tracking-wider bg-[#e7e5ff] text-[#7567f8] px-2.5 py-0.5 rounded-full">New</span>
+            </div>
+            <p className="text-[15px] font-semibold text-[#7A7060] mt-1">Memorize glowing pattern tiles and rebuild them before focus slips!</p>
           </div>
         </button>
       </div>
@@ -802,6 +821,458 @@ function MemoryGameScreen({ onBack }: { onBack: () => void }) {
           })}
         </div>
       </div>
+      <BambooStrip />
+    </div>
+  );
+}
+
+// ── Screen 4B: Mindsnap Arcade Game ───────────────────────────────────────
+
+type MindsnapModeId = "casual" | "focused" | "expert";
+
+interface MindsnapMode {
+  name: string;
+  tag: string;
+  icon: string;
+  grid: number;
+  targets: number;
+  rounds: number;
+  seconds: number;
+  color: string;
+  copy: string;
+}
+
+const MINDSNAP_THEME = {
+  ink: "#171329",
+  violet: "#7567f8",
+  cyan: "#56d8d0",
+  pink: "#ff6fae",
+  yellow: "#ffd166",
+  bg: "#f6f7fc",
+  card: "#ffffff",
+  muted: "#77748a",
+  line: "#e7e5f0",
+  good: "#3bc58a",
+  bad: "#ff6b6b",
+};
+
+const MINDSNAP_MODES: Record<MindsnapModeId, MindsnapMode> = {
+  casual: { name: "Casual", tag: "WARM UP", icon: "☄", grid: 3, targets: 3, rounds: 3, seconds: 4, color: MINDSNAP_THEME.cyan, copy: "A calm start to sharpen your focus." },
+  focused: { name: "Focused", tag: "MOST PLAYED", icon: "✦", grid: 4, targets: 5, rounds: 4, seconds: 3, color: MINDSNAP_THEME.violet, copy: "Build a pattern. Keep it in your head." },
+  expert: { name: "Expert", tag: "NO MERCY", icon: "⚡", grid: 5, targets: 7, rounds: 5, seconds: 2, color: MINDSNAP_THEME.pink, copy: "For players who want a serious brain workout." },
+};
+
+interface MindsnapStats {
+  games: number;
+  best: number;
+  hits: number;
+  attempts: number;
+  streak: number;
+  lastPlayed: string | null;
+}
+
+const DEFAULT_MINDSNAP_STATS: MindsnapStats = { games: 0, best: 0, hits: 0, attempts: 0, streak: 0, lastPlayed: null };
+
+const loadMindsnapStats = (): MindsnapStats => {
+  try {
+    return { ...DEFAULT_MINDSNAP_STATS, ...JSON.parse(localStorage.getItem("mindsnap-stats") || "{}") };
+  } catch {
+    return DEFAULT_MINDSNAP_STATS;
+  }
+};
+
+const persistMindsnapStats = (value: MindsnapStats) => {
+  try {
+    localStorage.setItem("mindsnap-stats", JSON.stringify(value));
+  } catch {}
+};
+
+function SpeechButton({ text }: { text: string }) {
+  const [available] = useState(() => typeof window !== "undefined" && "speechSynthesis" in window);
+  const speak = () => {
+    if (!available) return;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+  };
+  return available ? (
+    <button className="sound border-0 bg-transparent text-[#77748a] text-[12px] font-semibold cursor-pointer hover:text-[#7567f8] transition-colors flex items-center gap-1.5" onClick={speak}>
+      <span>🔊</span> Hear how to play
+    </button>
+  ) : null;
+}
+
+function MindsnapScreen({ onBack }: { onBack: () => void }) {
+  const [screen, setScreen] = useState<"home" | "game" | "results">("home");
+  const [mode, setMode] = useState<MindsnapModeId>("focused");
+  const [round, setRound] = useState(1);
+  const [targets, setTargets] = useState<number[]>([]);
+  const [picked, setPicked] = useState<number[]>([]);
+  const [revealed, setRevealed] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const [score, setScore] = useState(0);
+  const [misses, setMisses] = useState(0);
+  const [roundHits, setRoundHits] = useState(0);
+  const [result, setResult] = useState<{ score: number; hits: number; misses: number } | null>(null);
+  const [stats, setStats] = useState<MindsnapStats>(loadMindsnapStats);
+
+  const config = MINDSNAP_MODES[mode];
+
+  const shuffle = (items: number[]) => [...items].sort(() => Math.random() - 0.5);
+  const percent = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
+
+  const createPattern = useCallback((id: MindsnapModeId, number: number) => {
+    const chosen = MINDSNAP_MODES[id];
+    const cells = shuffle(Array.from({ length: chosen.grid * chosen.grid }, (_, i) => i)).slice(0, chosen.targets);
+    setMode(id);
+    setRound(number);
+    setTargets(cells);
+    setPicked([]);
+    setRevealed(true);
+    setSeconds(chosen.seconds);
+    setScreen("game");
+  }, []);
+
+  useEffect(() => {
+    if (!revealed || screen !== "game") return;
+    if (seconds <= 0) {
+      setRevealed(false);
+      return;
+    }
+    const timer = setTimeout(() => setSeconds((s) => s - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [revealed, screen, seconds]);
+
+  useEffect(() => {
+    if (screen !== "game" || revealed || picked.length !== config.targets) return;
+    const delay = setTimeout(() => {
+      const roundScore = Math.max(0, config.targets * 100 - misses * 30);
+      const newScore = score + roundScore;
+      const newHits = roundHits + config.targets;
+      if (round < config.rounds) {
+        setScore(newScore);
+        setRoundHits(newHits);
+        createPattern(mode, round + 1);
+      } else {
+        const final = { score: newScore, hits: newHits, misses };
+        const today = new Date().toISOString().slice(0, 10);
+        const yesterday = stats.lastPlayed && Date.parse(today) - Date.parse(stats.lastPlayed) === 86400000;
+        const fresh = {
+          ...stats,
+          games: stats.games + 1,
+          best: Math.max(stats.best, newScore),
+          hits: stats.hits + newHits,
+          attempts: stats.attempts + newHits + misses,
+          streak: stats.lastPlayed === today ? stats.streak : yesterday ? stats.streak + 1 : 1,
+          lastPlayed: today,
+        };
+        setResult(final);
+        setStats(fresh);
+        persistMindsnapStats(fresh);
+        setScreen("results");
+
+        // Log game activity to backend API
+        const accuracy = percent(newHits, newHits + misses);
+        api.logActivity("game", { game: "Mindsnap", score: newScore, accuracy, mode: config.name }).catch(() => {});
+      }
+    }, 550);
+    return () => clearTimeout(delay);
+  }, [picked, revealed, screen]);
+
+  const start = (id: MindsnapModeId) => {
+    setScore(0);
+    setMisses(0);
+    setRoundHits(0);
+    setResult(null);
+    createPattern(id, 1);
+  };
+
+  const pick = (cell: number) => {
+    if (targets.includes(cell)) {
+      setPicked((p) => [...p, cell]);
+      setScore((s) => s + 10);
+    } else {
+      setMisses((m) => m + 1);
+    }
+  };
+
+  const home = () => {
+    setScreen("home");
+    setResult(null);
+  };
+
+  const accuracy = percent(stats.hits, stats.attempts);
+
+  return (
+    <div className="flex flex-col min-h-full bg-[#f6f7fc] text-[#171329]">
+      <BambooStrip />
+      <NavBar title="Mindsnap Memory Arcade" onBack={onBack} />
+
+      <div className="flex-1 overflow-y-auto max-w-4xl mx-auto w-full px-4 sm:px-6 py-6">
+        {screen === "home" && (
+          <div className="flex flex-col gap-8 animate-fadeIn">
+            {/* Hero Section */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e7e5f0] shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-[11px] font-black tracking-widest text-[#77748a] uppercase mb-2">
+                  <span>VISUAL MEMORY ARCADE</span>
+                  <span className="text-[#7567f8] bg-[#f1f0fb] px-2 py-0.5 rounded-full font-bold">v1.0</span>
+                </div>
+                <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-[#171329] leading-none">
+                  See it.<br />
+                  <span className="text-[#7567f8]">Snap it.</span>
+                </h1>
+                <p className="text-sm sm:text-base font-semibold text-[#77748a] mt-4 max-w-md leading-relaxed">
+                  Remember the glowing pattern, then rebuild it before your focus slips.
+                </p>
+
+                <div className="flex flex-wrap items-center gap-4 mt-6">
+                  <button
+                    onClick={() => start("focused")}
+                    className="px-6 py-3.5 rounded-2xl bg-[#171329] text-white font-black text-sm tracking-wider shadow-lg hover:bg-[#2a2448] transition-all flex items-center gap-2 active:scale-95"
+                  >
+                    PLAY NOW <span className="text-[#56d8d0]">↗</span>
+                  </button>
+                  <SpeechButton text="Watch the glowing tiles. When they disappear, tap every tile that was glowing. Clear three rounds to finish your game." />
+                </div>
+              </div>
+
+              {/* Animated Mini Grid Preview */}
+              <div className="relative w-56 h-56 flex items-center justify-center flex-shrink-0">
+                <div className="w-48 h-48 bg-[#e4e2ff] rounded-[36px] rotate-6 absolute inset-0 m-auto" />
+                <div className="relative z-10 w-44 h-44 bg-white rounded-2xl p-2.5 shadow-xl grid grid-cols-3 gap-2 -rotate-3 border border-white">
+                  {Array.from({ length: 9 }, (_, i) => {
+                    const lit = [1, 3, 7].includes(i);
+                    return (
+                      <span
+                        key={i}
+                        className={`rounded-xl flex items-center justify-center text-lg font-bold transition-all ${
+                          lit ? "bg-[#7567f8] text-white shadow-md shadow-[#7567f855]" : "bg-[#f1f0fb] text-transparent"
+                        }`}
+                      >
+                        {lit ? "✦" : ""}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-2xl font-black text-[#56d8d0]">{stats.games}</b>
+                <span className="text-xs font-bold text-[#77748a]">Games played</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-2xl font-black text-[#7567f8]">{accuracy}%</b>
+                <span className="text-xs font-bold text-[#77748a]">Recall accuracy</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-2xl font-black text-[#ffd166]">{stats.best}</b>
+                <span className="text-xs font-bold text-[#77748a]">Best score</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-2xl font-black text-[#ff6fae]">{stats.streak} day{stats.streak === 1 ? "" : "s"}</b>
+                <span className="text-xs font-bold text-[#77748a]">Play streak</span>
+              </div>
+            </div>
+
+            {/* Difficulty Modes Picker */}
+            <div>
+              <div className="mb-4">
+                <span className="text-[11px] font-black tracking-widest text-[#77748a] uppercase">CHOOSE YOUR RUN</span>
+                <h2 className="text-2xl font-black text-[#171329]">Pick a difficulty</h2>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {(Object.entries(MINDSNAP_MODES) as [MindsnapModeId, MindsnapMode][]).map(([id, modeConfig]) => (
+                  <button
+                    key={id}
+                    onClick={() => start(id)}
+                    className="bg-white rounded-2xl p-5 border border-[#e7e5f0] border-t-4 text-left transition-all hover:-translate-y-1 hover:shadow-md group flex flex-col justify-between"
+                    style={{ borderTopColor: modeConfig.color }}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl">{modeConfig.icon}</span>
+                        <span className="text-[10px] font-black tracking-wider" style={{ color: modeConfig.color }}>
+                          {modeConfig.tag}
+                        </span>
+                        <span className="text-lg font-bold ml-auto" style={{ color: modeConfig.color }}>↗</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-[#171329] mt-3">{modeConfig.name}</h3>
+                      <p className="text-xs font-medium text-[#77748a] mt-1 leading-normal min-h-[36px]">{modeConfig.copy}</p>
+                    </div>
+
+                    <div className="flex justify-between border-t border-[#e7e5f0] pt-3 mt-4 text-[11px] font-bold text-[#77748a]">
+                      <span>{modeConfig.grid}×{modeConfig.grid} board</span>
+                      <span>{modeConfig.rounds} rounds</span>
+                      <span>{modeConfig.seconds}s view</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {screen === "game" && (
+          <div className="max-w-xl mx-auto flex flex-col gap-6 animate-fadeIn">
+            {/* Top Status Bar */}
+            <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+              <button onClick={home} className="text-xs font-bold text-[#77748a] hover:text-[#171329] transition-colors">
+                ← Menu
+              </button>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-white px-2.5 py-1 rounded-full" style={{ backgroundColor: config.color }}>
+                  {config.name}
+                </span>
+                <b className="text-xs font-black text-[#77748a]">ROUND {round} / {config.rounds}</b>
+              </div>
+              <div className="text-right">
+                <span className="block text-[9px] font-bold text-[#77748a] uppercase">SCORE</span>
+                <b className="text-xl font-black text-[#7567f8]">{score}</b>
+              </div>
+            </div>
+
+            {/* Round Instructions & Timer */}
+            <div className="bg-white p-5 rounded-2xl border border-[#e7e5f0] shadow-xs flex items-center justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-black tracking-widest text-[#77748a] uppercase">
+                  {revealed ? "MEMORIZE THE PATTERN" : "REBUILD THE PATTERN"}
+                </p>
+                <h2 className="text-2xl font-black text-[#171329] mt-0.5">
+                  {revealed ? "Lock it in." : "Your turn."}
+                </h2>
+                <p className="text-xs font-medium text-[#77748a] mt-1">
+                  {revealed ? `Remember all ${config.targets} glowing tiles.` : "Tap every tile that was glowing."}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-4 flex-shrink-0">
+                <div className="text-right">
+                  <b className="block text-3xl font-black" style={{ color: revealed ? config.color : "#7567f8" }}>
+                    {revealed ? seconds : picked.length}
+                  </b>
+                  <span className="text-[10px] font-bold text-[#77748a]">
+                    {revealed ? "seconds" : `/${config.targets} found`}
+                  </span>
+                </div>
+
+                {misses > 0 && (
+                  <div className="text-right border-l border-[#e7e5f0] pl-4">
+                    <b className="block text-3xl font-black text-[#ff6b6b]">{misses}</b>
+                    <span className="text-[10px] font-bold text-[#77748a]">misses</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Pattern Grid Board */}
+            <div className="w-full max-w-[420px] aspect-square mx-auto p-3 bg-[#ebeaf3] rounded-3xl shadow-inner border border-[#d8d5e5]">
+              <div
+                className="grid gap-2.5 w-full h-full"
+                style={{
+                  gridTemplateColumns: `repeat(${config.grid}, 1fr)`,
+                }}
+              >
+                {Array.from({ length: config.grid * config.grid }, (_, i) => {
+                  const active = revealed && targets.includes(i);
+                  const selected = picked.includes(i);
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => pick(i)}
+                      disabled={revealed || selected}
+                      className={`rounded-2xl transition-all flex items-center justify-center text-2xl font-black border ${
+                        active
+                          ? "bg-[#7567f8] text-white shadow-lg shadow-[#7567f866] border-[#7567f8]"
+                          : selected
+                          ? "bg-[#3bc58a] text-white shadow-md shadow-[#3bc58a55] border-[#3bc58a]"
+                          : "bg-white hover:bg-[#f7f6ff] text-transparent border-[#e0deed] shadow-xs active:scale-95"
+                      }`}
+                    >
+                      {active || selected ? "✦" : ""}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <p className="text-center text-xs font-semibold text-[#77748a]">
+              {revealed ? "The pattern will disappear when the timer ends." : "Find all glowing tiles to complete the round."}
+            </p>
+          </div>
+        )}
+
+        {screen === "results" && result && (
+          <div className="max-w-md mx-auto text-center flex flex-col gap-6 animate-fadeIn py-4">
+            <div className="w-16 h-16 rounded-2xl bg-[#e7e5ff] text-[#7567f8] text-3xl flex items-center justify-center mx-auto shadow-sm">
+              {percent(result.hits, result.hits + result.misses) >= 80 ? "✦" : "◌"}
+            </div>
+
+            <div>
+              <p className="text-[11px] font-black tracking-widest text-[#77748a] uppercase">
+                RUN COMPLETE · {config.name.toUpperCase()}
+              </p>
+              <h1 className="text-3xl font-black text-[#171329] mt-1">
+                {percent(result.hits, result.hits + result.misses) >= 80
+                  ? "Pattern locked."
+                  : percent(result.hits, result.hits + result.misses) >= 50
+                  ? "You held your own."
+                  : "The brain is warming up."}
+              </h1>
+              <p className="text-xs font-medium text-[#77748a] mt-1">
+                A real result from your taps, misses, and completed rounds.
+              </p>
+            </div>
+
+            {/* Score Banner */}
+            <div className="bg-[#171329] text-white rounded-2xl p-6 shadow-xl">
+              <span className="text-[10px] font-black tracking-widest text-[#aaa7c4] uppercase">FINAL SCORE</span>
+              <b className="block text-5xl font-black text-[#56d8d0] my-1">{result.score}</b>
+              <span className="text-xs font-bold text-[#aaa7c4]">points</span>
+            </div>
+
+            {/* Stats Breakdown */}
+            <div className="grid grid-cols-2 gap-3 text-left">
+              <div className="bg-white p-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-xl font-black text-[#56d8d0]">{percent(result.hits, result.hits + result.misses)}%</b>
+                <span className="text-xs font-bold text-[#77748a]">Recall accuracy</span>
+              </div>
+              <div className="bg-white p-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-xl font-black text-[#7567f8]">{result.hits}/{result.hits + result.misses}</b>
+                <span className="text-xs font-bold text-[#77748a]">Tiles recalled</span>
+              </div>
+              <div className="bg-white p-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-xl font-black text-[#ff6fae]">{result.misses}</b>
+                <span className="text-xs font-bold text-[#77748a]">Misses</span>
+              </div>
+              <div className="bg-white p-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-xl font-black text-[#ffd166]">#{stats.games}</b>
+                <span className="text-xs font-bold text-[#77748a]">Game number</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col gap-3 mt-2">
+              <button
+                onClick={() => start(mode)}
+                className="w-full py-3.5 rounded-2xl bg-[#171329] text-white font-black text-sm tracking-wider shadow-lg hover:bg-[#2a2448] transition-all flex items-center justify-center gap-2 active:scale-95"
+              >
+                RUN IT BACK <span className="text-[#56d8d0]">↗</span>
+              </button>
+              <button
+                onClick={home}
+                className="w-full py-3 rounded-2xl bg-white border border-[#e7e5f0] text-[#171329] font-bold text-xs hover:bg-[#f1f0fb] transition-all"
+              >
+                Back to menu
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <BambooStrip />
     </div>
   );
@@ -3215,7 +3686,7 @@ function CaregiverDashboard({ onLogout }: { onLogout: () => void }) {
 
 // ── App Shell ──────────────────────────────────────────────────────────────
 
-type Screen = "auth" | "onboarding" | "home" | "games" | "game" | "reminders" | "smriti" | "chitchat" | "profile" | "caregiver-dashboard";
+type Screen = "auth" | "onboarding" | "home" | "games" | "game" | "mindsnap" | "reminders" | "smriti" | "chitchat" | "profile" | "caregiver-dashboard";
 
 const PATIENT_NAV: { screen: Screen; label: string; icon: (active: boolean) => React.ReactNode }[] = [
   {
@@ -3354,6 +3825,7 @@ export default function App() {
               {screen === "home" && <HomeScreen onNavigate={setScreen} onSettings={() => {}} />}
               {screen === "games" && <GamesScreen onNavigate={setScreen} onBack={() => setScreen("home")} />}
               {screen === "game" && <MemoryGameScreen onBack={() => setScreen("games")} />}
+              {screen === "mindsnap" && <MindsnapScreen onBack={() => setScreen("games")} />}
               {screen === "reminders" && <RemindersScreen onBack={() => setScreen("home")} />}
               {screen === "smriti" && <SmritiScreen onBack={() => setScreen("home")} />}
               {screen === "chitchat" && <ChitChatScreen onBack={() => setScreen("home")} />}
