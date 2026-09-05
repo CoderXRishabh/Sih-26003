@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from "react";
 import matchPairsThumbnail from "@/imports/ChatGPT_Image_Sep_4__2026__05_05_52_PM.png";
+import mindsnapThumbnail from "@/imports/mindsnap_thumbnail.png";
+import smrititaalThumbnail from "@/imports/smrititaal_thumbnail.png";
+import sangaThumbnail from "@/imports/sanga_thumbnail.png";
+import mindsnapCasualImg from "@/imports/mindsnap_casual.png";
+import mindsnapFocusedImg from "@/imports/mindsnap_focused.png";
+import mindsnapExpertImg from "@/imports/mindsnap_expert.png";
 import * as api from "./api";
 import { initSocketConnection, subscribeSync, disconnectSocket } from "./socket";
 
@@ -81,6 +87,104 @@ const TRANSLATIONS: Record<string, Record<Lang, string>> = {
   password:          { en: "Password",              as: "পাছৱৰ্ড",             mn: "পাছৱর্ড" },
   login:             { en: "Login",                 as: "প্ৰৱেশ কৰক",          mn: "লগইন তৌবিয়ু" },
   loginOtp:          { en: "Login with OTP instead", as: "OTP ৰে প্ৰৱেশ কৰক", mn: "OTP দ্বারা লগইন তৌবিয়ু" },
+  // Games Screen Multilingual Titles & Descriptions
+  matchPairsDesc:        { en: "Exercise your memory with colorful image cards.", as: "ৰঙীন ছবিৰ কাৰ্ডৰ সৈতে স্মৃতিৰ অভ্যাস কৰক।", mn: "মচু অমসুং ছবি কাৰ্ডশিংগা লোয়ননা লৌশিং লৈহাউ তৌবিয়ু।" },
+  mindsnapTitle:         { en: "Mindsnap Arcade", as: "মাইণ্ডস্নেপ আৰ্কেড", mn: "মাইন্ডস্নেপ আর্কেড" },
+  mindsnapDesc:          { en: "Memorize glowing pattern tiles and rebuild them before focus slips!", as: "জিলিকি থকা টাইলৰ পেটাৰ্ন মনত ৰাখক আৰু সঠিকভাৱে সজাওক!", mn: "ঙাল্লিবা পেটার্ন তাইলসিং মনদা থম্বিয়ু অমসুং হন্না শেমগৎবিয়ু!" },
+  smritiTaalTitle:       { en: "Smriti Taal", as: "স্মৃতি তাল", mn: "স্মৃতি তাল" },
+  smritiTaalDesc:        { en: "Rhythm & sound sequence memory game with regional instrument beats!", as: "দেশীয় বাদ্যযন্ত্ৰৰ শব্দ আৰু তাল মনত ৰখা সৰস স্মৃতি খেল!", mn: "থাইনগী যোং অমসুং শেক থিংবগী শব্দ অমসুং তাল লৈহাউ!" },
+  sangaTitle:            { en: "Sanga Memory", as: "শাংগা স্মৃতি", mn: "শা-ঙা লৈহাউ" },
+  sangaDesc:             { en: "Calm memory & recall practice with objects, categories, missing items & patterns!", as: "বস্তু, শ্ৰেণী, নোহোৱা বস্তু আৰু পেটাৰ্নৰ শান্ত স্মৃতি অভ্যাস!", mn: "পোত-চৈ, ক্যাটেগরি অমসুং পেটার্ন মনদা থম্বগী শান্ত লৈহাউ!" },
+  popularTag:            { en: "Popular", as: "জনপ্ৰিয়", mn: "মিয়ামগী" },
+  newTag:                { en: "New", as: "নতুন", mn: "অনৌবা" },
+  allTimeProgressReport: { en: "All-Time Progress Report", as: "সকলো সময়ৰ প্ৰগতিৰ প্ৰতিবেদন", mn: "মতম পুম্বগী সোংথিং চুকদুনা" },
+  trackAccuracyScore:    { en: "Track your accuracy and cognitive memory scores", as: "আপোনাৰ সঠিকতা আৰু স্মৃতিশক্তিৰ ফলাফল অনুসৰণ কৰক", mn: "নংগী চপ চাব অমসুং লৈহাউ স্কোর য়েংবিয়ু" },
+  viewReportBtn:         { en: "View Report →", as: "প্ৰতিবেদন চাওক →", mn: "চুকদুনা চাবিয়ু →" },
+
+  // Mindsnap Arcade In-Game Strings
+  pickDifficulty:        { en: "Pick a difficulty to start", as: "আৰম্ভ কৰিবলৈ এটা কাঠিন্যৰ স্তৰ বাছক", mn: "শুরু তৌনবগীদমক লৈহাউ অমা চয়নবিয়ু" },
+  casualMode:            { en: "Casual", as: "সহজ", mn: "সহজ" },
+  focusedMode:           { en: "Focused", as: "মধ্যম", mn: "মধ্যম" },
+  expertMode:            { en: "Expert", as: "কঠিন", mn: "কঠিন" },
+  gamesPlayed:           { en: "Games played", as: "খেল খেলা হ'ল", mn: "লৈহাউ সানখিবা" },
+  recallAccuracy:        { en: "Recall accuracy", as: "স্মৃতিৰ সঠিকতা", mn: "মনদা থম্বগী চপ চাবা" },
+  bestScore:             { en: "Best score", as: "শ্ৰেষ্ঠ নম্বৰ", mn: "খ্বাইদগী ফবা স্কোর" },
+  playStreak:            { en: "Play streak", as: "ধাৰাবাহিক খেল", mn: "মখা তানা লৈহাউ" },
+  daySingular:           { en: "day", as: "দিন", mn: "নুমিৎ" },
+  dayPlural:             { en: "days", as: "দিন", mn: "নুমিৎ" },
+  memorizePattern:       { en: "MEMORIZE THE PATTERN", as: "পেটাৰ্নটো মনত ৰাখক", mn: "পেটার্ন মনদা থম্বিয়ু" },
+  rebuildPattern:        { en: "REBUILD THE PATTERN", as: "পেটাৰ্নটো আকৌ সজাওক", mn: "পেটার্ন অমুক শেমগৎবিয়ু" },
+  lockItIn:              { en: "Lock it in.", as: "মনত ৰাখি থওক।", mn: "মনদা চেৎনা থম্বিয়ু।" },
+  yourTurn:              { en: "Your turn.", as: "আপোনাৰ পাল।", mn: "নংগী পালা।" },
+  rememberGlowing:       { en: "Remember all glowing tiles.", as: "জিলিকি থকা সকলো টাইল মনত ৰাখক।", mn: "ঙাল্লিবা পেটার্ন তাইলসিং মনদা থম্বিয়ু।" },
+  tapGlowing:            { en: "Tap every tile that was glowing.", as: "জিলিকি থকা টাইলবোৰত টেপ কৰক।", mn: "ঙাল্লিবা পেটার্ন তাইলসিংদা টেপ তৌবিয়ু।" },
+  secondsText:           { en: "seconds", as: "ছেকেণ্ড", mn: "সেকেন্ড" },
+  scoreText:             { en: "SCORE", as: "নম্বৰ", mn: "স্কোর" },
+  roundText:             { en: "ROUND", as: "ৰাউণ্ড", mn: "রাউন্ড" },
+  menuBack:              { en: "← Menu", as: "← মেনু", mn: "← মেনু" },
+  mindsnapNavTitle:      { en: "Mindsnap Memory Arcade", as: "মাইণ্ডস্নেপ স্মৃতি আৰ্কেড", mn: "মাইন্ডস্নেপ লৈহাউ আৰ্কেড" },
+  runComplete:           { en: "RUN COMPLETE", as: "খেল সম্পূৰ্ণ হ'ল", mn: "লৈহাউ লোইরে" },
+  patternLocked:         { en: "Pattern locked.", as: "পেটাৰ্ন সঠিক হ'ল।", mn: "পেটার্ন চপ চারে।" },
+  youHeldOwn:            { en: "You held your own.", as: "আপুনি ভাল চেষ্টা কৰিলে।", mn: "নং ফনা হোৎনখি।" },
+  brainWarmingUp:        { en: "The brain is warming up.", as: "মগজু প্ৰস্তুত হৈছে।", mn: "লৌশিং শেমগৎলি।" },
+  finalScore:            { en: "Final Score", as: "চূড়ান্ত নম্বৰ", mn: "অৰোইবা স্কোর" },
+  hitsText:              { en: "Hits", as: "সঠিক", mn: "চপ চাব" },
+  missesText:            { en: "Misses", as: "ভুল", mn: "অরানবা" },
+  accuracyText:          { en: "Accuracy", as: "সঠিকতা", mn: "চপ চাব %" },
+  nextRoundBtn:          { en: "NEXT ROUND ➔", as: "পৰৱৰ্তী ৰাউণ্ড ➔", mn: "মখা ৰাউণ্ড ➔" },
+  changeModeBtn:         { en: "Change Mode", as: "স্তৰ সলনি কৰক", mn: "স্তৰ হোংদোকবিয়ু" },
+
+  // Smriti Taal Arcade In-Game Strings
+  smritiNavTitle:        { en: "Smriti Taal — Rhythm Arcade", as: "স্মৃতি তাল — ৰিদম আৰ্কেড", mn: "স্মৃতি তাল — ৰিদম আৰ্কেড" },
+  levelLabel:            { en: "Level", as: "স্তৰ", mn: "স্তৰ" },
+  rhythmMemoryTitle:     { en: "Rhythm & Memory", as: "তাল আৰু স্মৃতি", mn: "তাল অমসুং লৈহাউ" },
+  rhythmMemorySub:       { en: "Listen to the instrument rhythm sequence, repeat it back, and name the first beat!", as: "বাদ্যযন্ত্ৰৰ শব্দ আৰু তাল মনত ৰাখক, আকৌ বজায়ক আৰু প্ৰথম শব্দটো বাছক!", mn: "শব্দ অমসুং তাল মনদা থম্বিয়ু, হন্না বাজাইবিয়ু অমসুং অহৌবা শব্দ চয়নবিয়ু!" },
+  bestStreakLabel:       { en: "Best streak", as: "শ্ৰেষ্ঠ ধাৰাবাহিকতা", mn: "খ্বাইদগী ফবা মখা" },
+  currentLevelLabel:     { en: "Current Level", as: "বৰ্তমান স্তৰ", mn: "হউজিক স্তৰ" },
+  roundsSessionLabel:    { en: "Rounds/session", as: "ৰাউণ্ড/ছেচন", mn: "রাউন্ড/সেসন" },
+  startPlayingBtn:       { en: "Start Playing ➔", as: "খেলা আৰম্ভ কৰক ➔", mn: "লৈহাউ শুরু তৌবিয়ু ➔" },
+  homeBack:              { en: "← Home", as: "← ঘৰ", mn: "← ইমুং" },
+  listenCarefully:       { en: "Listen carefully to the rhythm...", as: "মন দি তাল শুনক...", mn: "তাল চপ চানা তাবিয়ু..." },
+  nowRepeatSeq:          { en: "Now repeat the sequence!", as: "এতিয়া ক্ৰমটো আকৌ বজায়ক!", mn: "হউজিক ক্রমান্বয়ে হন্না বাজাইবিয়ু!" },
+  hearAgainBtn:          { en: "🔊 Hear sequence again", as: "🔊 ক্ৰমটো আকৌ শুনক", mn: "🔊 হন্না তাবিয়ু" },
+  whichPlayedFirst:      { en: "Which instrument played FIRST?", as: "কোনটো বাদ্য প্ৰথমে বাজিছিল?", mn: "কদোইবা শব্দ অহৌবাদা বাজখিবা?" },
+  tapCorrectInst:        { en: "Tap the correct instrument below to complete the round.", as: "ৰাউণ্ড সম্পূৰ্ণ কৰিবলৈ শুদ্ধ বাদ্যযন্ত্ৰত টেপ কৰক।", mn: "রাউন্ড লোইনবগীদমক চপ চাবা শব্দদা টেপ তৌবিয়ু।" },
+  sessionComplete:       { en: "SESSION COMPLETE", as: "ছেচন সম্পূৰ্ণ হ'ল", mn: "সেসন লোইরে" },
+  wonderfulRhythm:       { en: "Wonderful rhythm performance!", as: "বৰ সুন্দৰ তাল আৰু স্মৃতি!", mn: "ফজরবা তাল অমসুং লৈহাউ!" },
+  goodPractice:          { en: "Good practice today!", as: "আজি বহুত ভাল অভ্যাস হ'ল!", mn: "ফজথা ফবা লৈহাউ অইরে!" },
+  totalAccuracy:         { en: "TOTAL ACCURACY", as: "মুঠ সঠিকতা", mn: "পুম্বা চপ চাব" },
+  roundsPassed:          { en: "Rounds passed", as: "উত্তীৰ্ণ ৰাউণ্ড", mn: "মায় পাকপা রাউন্ড" },
+  roundTimeline:         { en: "Round Timeline", as: "ৰাউণ্ডৰ সময়ৰেখা", mn: "রাউন্ড টাইমলাইন" },
+  playAgainBtn:          { en: "PLAY AGAIN ➔", as: "আকৌ খেলক ➔", mn: "হন্না লৈহাউ ➔" },
+  backToMenuBtn:         { en: "Back to menu", as: "মেনুলৈ ঘূৰি যাওক", mn: "মেনুদা হনবিয়ু" },
+
+  // Sanga Memory & Recall In-Game Strings
+  sangaNavTitle:         { en: "Sanga Memory & Recall", as: "শাংগা স্মৃতি আৰু পুনৰুদ্ধাৰ", mn: "শা-ঙা লৈহাউ অমসুং সোংথিং" },
+  sangaHeroSub:          { en: "Train your memory with calm object cards, missing items, position grids, and pattern recall!", as: "বস্তু, নোহোৱা বস্তু, স্থান আৰু পেটাৰ্নৰ সৈতে স্মৃতিৰ অভ্যাস কৰক!", mn: "পোত-চৈ, ক্যাটেগরি অমসুং পেটার্ন মনদা থম্বগী শান্ত লৈহাউ!" },
+  difficultyAutoText:    { en: "Difficulty advances automatically as your accuracy sharpens!", as: "আপোনাৰ সঠিকতা বাঢ়িলে কাঠিন্য স্বয়ংক্ৰিয়ভাৱে বাঢ়িব!", mn: "নংগী চপ চাব মখা তানবগা লোয়ননা স্তৰ মরোমদোম শেমগৎকনি!" },
+  questionsPerRound:     { en: "Questions / Round", as: "প্ৰশ্ন / ৰাউণ্ড", mn: "ৱাহং / রাউন্ড" },
+  startPracticeBtn:      { en: "Start Practice ➔", as: "অভ্যাস আৰম্ভ কৰক ➔", mn: "অভ্যাস শুরু তৌবিয়ু ➔" },
+  resetLevelBtn:         { en: "🔄 Reset Level & Streaks to Level 1", as: "🔄 স্তৰ ১ লৈ পুনৰ ছেট কৰক", mn: "🔄 স্তৰ ১ দা অমুক শেমগৎবিয়ু" },
+  exitBtn:               { en: "← Exit", as: "← ওলাই যাওক", mn: "← থাদোকবিয়ু" },
+  streakBadge:           { en: "Streak!", as: "ধাৰাবাহিকতা!", mn: "মখা!" },
+  lookCarefully:         { en: "Look carefully at the pictures!", as: "ছবিত মন দি চাওক!", mn: "ছবিদা চপ চানা য়েংবিয়ু!" },
+  readAloudBtn:          { en: "🔊 Read aloud", as: "🔊 শব্দ কৰি পঢ়ক", mn: "🔊 পাবিয়ু" },
+  excellentRemembered:   { en: "🌿 Excellent! You remembered correctly!", as: "🌿 সুন্দৰ! আপুনি সঠিকভাৱে মনত ৰাখিলে!", mn: "🌿 ফজরবা! নং চপ চানা মনদা থমখি!" },
+  notQuiteTryNext:       { en: "🙂 Not quite! Let's try the next one.", as: "🙂 প্ৰায় হ'ল! আহক পৰৱৰ্তীটো চেষ্টা কৰোঁ।", mn: "🙂 চপ চাদে! মখা লৈহাউদা হোৎনবিয়ু।" },
+  practiceComplete:      { en: "PRACTICE COMPLETE", as: "অভ্যাস সম্পূৰ্ণ হ'ল", mn: "অভ্যাস লোইরে" },
+  greatMemoryPerf:       { en: "Great memory performance!", as: "বৰ সুন্দৰ স্মৃতি প্ৰদৰ্শন!", mn: "ফজরবা লৈহাউ উৎখিবা!" },
+  wellPracticedToday:    { en: "Well practiced today!", as: "আজি ভাল অভ্যাস হ'ল!", mn: "ফজথা ফবা লৈহাউ অইরে!" },
+  levelUpReached:        { en: "⭐ Level Up! Reached Level", as: "⭐ স্তৰ বৃদ্ধি! আপুনি পাইছে স্তৰ", mn: "⭐ স্তৰ শেমগৎলে! নংগী স্তৰ" },
+  finalAccuracy:         { en: "FINAL ACCURACY", as: "চূড়ান্ত সঠিকতা", mn: "অৰোইবা চপ চাব" },
+  questionsCorrect:      { en: "questions correct", as: "প্ৰশ্ন শুদ্ধ হ'ল", mn: "ৱাহং চপ চারে" },
+
+  // Match Pairs & General In-Game Strings
+  movesLabel:            { en: "Moves", as: "চাল", mn: "খোংথাং" },
+  restartBtn:            { en: "Restart", as: "আকৌ আৰম্ভ কৰক", mn: "হন্না শুরু তৌবিয়ু" },
+  matchedAllPairs:       { en: "🎉 Wonderful Job! You matched all pairs!", as: "🎉 বহুত সুন্দৰ! আপুনি সকলো যোৰ মিলালে!", mn: "🎉 ফজরবা থবক! নং পুম্বা পেয়ার মিলহল্লে!" },
+  totalScore:            { en: "Total Score", as: "মুঠ নম্বৰ", mn: "পুম্বা স্কোর" },
+  scoreLabel:            { en: "Score", as: "নম্বৰ", mn: "স্কোর" },
+  confirmResetLevel:     { en: "Do you want to reset your level back to Level 1 and clear your best streak?", as: "আপুনি আপোনাৰ স্তৰ ১ লৈ পুনৰ ছেট কৰিব বিচাৰেনে?", mn: "নং স্তৰ ১ দা অমুক শেমগৎবা পাম্বরা?" },
 };
 
 const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({ lang: "en", setLang: () => {} });
@@ -686,13 +790,29 @@ function HomeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void; onSe
 
 function GamesScreen({ onNavigate, onBack }: { onNavigate: (screen: Screen) => void; onBack: () => void }) {
   const t = useT();
+  const [showProgressModal, setShowProgressModal] = useState(false);
 
   return (
     <div className="flex flex-col min-h-full bg-[#FAF6EF]">
       <BambooStrip />
       <NavBar title={t("playRemember")} onBack={onBack} />
+      {showProgressModal && <PatientProgressReportModal onClose={() => setShowProgressModal(false)} />}
       
       <div className="flex-1 px-6 py-6 flex flex-col gap-4 max-w-2xl mx-auto w-full">
+        {/* Progress Report Banner */}
+        <div className="bg-gradient-to-r from-[#2E6F6E] to-[#1E4D4C] text-white p-5 rounded-3xl shadow-sm flex items-center justify-between gap-3">
+          <div>
+            <h4 className="text-lg font-black">{t("allTimeProgressReport")}</h4>
+            <p className="text-xs font-semibold text-emerald-100 mt-0.5">{t("trackAccuracyScore")}</p>
+          </div>
+          <button
+            onClick={() => setShowProgressModal(true)}
+            className="px-4 py-2.5 rounded-2xl bg-white text-[#2E6F6E] font-black text-xs shadow-sm hover:bg-emerald-50 transition-all cursor-pointer flex-shrink-0"
+          >
+            {t("viewReportBtn")}
+          </button>
+        </div>
+
         {/* Game 1: Match the Pairs */}
         <button
           onClick={() => onNavigate("game")}
@@ -702,7 +822,7 @@ function GamesScreen({ onNavigate, onBack }: { onNavigate: (screen: Screen) => v
           <img src={matchPairsThumbnail} alt="Match pairs" className="w-20 h-20 rounded-2xl object-cover flex-shrink-0" />
           <div className="flex-1">
             <h3 className="text-[22px] font-black text-[#2B2B2B]">{t("matchPairs")}</h3>
-            <p className="text-[15px] font-semibold text-[#7A7060] mt-1">Exercise your memory with colorful image cards.</p>
+            <p className="text-[15px] font-semibold text-[#7A7060] mt-1">{t("matchPairsDesc")}</p>
           </div>
         </button>
 
@@ -712,15 +832,45 @@ function GamesScreen({ onNavigate, onBack }: { onNavigate: (screen: Screen) => v
           className="flex items-center gap-5 p-5 rounded-3xl border-2 text-left bg-white transition-all active:scale-[0.98]"
           style={{ borderColor: "#7567f840", boxShadow: "0 4px 16px rgba(117,103,248,0.08)" }}
         >
-          <div className="w-20 h-20 rounded-2xl bg-[#7567f8] text-white flex items-center justify-center text-3xl font-black shadow-md flex-shrink-0">
-            ✦
-          </div>
+          <img src={mindsnapThumbnail} alt="Mindsnap Arcade" className="w-20 h-20 rounded-2xl object-cover flex-shrink-0 border border-[#7567f820] shadow-sm" />
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-[22px] font-black text-[#2B2B2B]">Mindsnap Arcade</h3>
-              <span className="text-[10px] font-black uppercase tracking-wider bg-[#e7e5ff] text-[#7567f8] px-2.5 py-0.5 rounded-full">New</span>
+              <h3 className="text-[22px] font-black text-[#2B2B2B]">{t("mindsnapTitle")}</h3>
+              <span className="text-[10px] font-black uppercase tracking-wider bg-[#e7e5ff] text-[#7567f8] px-2.5 py-0.5 rounded-full">{t("popularTag")}</span>
             </div>
-            <p className="text-[15px] font-semibold text-[#7A7060] mt-1">Memorize glowing pattern tiles and rebuild them before focus slips!</p>
+            <p className="text-[15px] font-semibold text-[#7A7060] mt-1">{t("mindsnapDesc")}</p>
+          </div>
+        </button>
+
+        {/* Game 3: Smriti Taal Rhythm & Memory */}
+        <button
+          onClick={() => onNavigate("smrititaal")}
+          className="flex items-center gap-5 p-5 rounded-3xl border-2 text-left bg-white transition-all active:scale-[0.98]"
+          style={{ borderColor: "#2F6B6240", boxShadow: "0 4px 16px rgba(47,107,98,0.08)" }}
+        >
+          <img src={smrititaalThumbnail} alt="Smriti Taal" className="w-20 h-20 rounded-2xl object-cover flex-shrink-0 border border-[#2F6B6220] shadow-sm" />
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h3 className="text-[22px] font-black text-[#2B2B2B]">{t("smritiTaalTitle")}</h3>
+              <span className="text-[10px] font-black uppercase tracking-wider bg-[#E2EFEB] text-[#2F6B62] px-2.5 py-0.5 rounded-full">{t("newTag")}</span>
+            </div>
+            <p className="text-[15px] font-semibold text-[#7A7060] mt-1">{t("smritiTaalDesc")}</p>
+          </div>
+        </button>
+
+        {/* Game 4: Sanga Memory & Recall */}
+        <button
+          onClick={() => onNavigate("sanga")}
+          className="flex items-center gap-5 p-5 rounded-3xl border-2 text-left bg-white transition-all active:scale-[0.98]"
+          style={{ borderColor: "#2F6B4F40", boxShadow: "0 4px 16px rgba(47,107,79,0.08)" }}
+        >
+          <img src={sangaThumbnail} alt="Sanga Memory" className="w-20 h-20 rounded-2xl object-cover flex-shrink-0 border border-[#2F6B4F20] shadow-sm" />
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h3 className="text-[22px] font-black text-[#2B2B2B]">{t("sangaTitle")}</h3>
+              <span className="text-[10px] font-black uppercase tracking-wider bg-[#EAEEE1] text-[#2F6B4F] px-2.5 py-0.5 rounded-full">{t("newTag")}</span>
+            </div>
+            <p className="text-[15px] font-semibold text-[#7A7060] mt-1">{t("sangaDesc")}</p>
           </div>
         </button>
       </div>
@@ -790,15 +940,15 @@ function MemoryGameScreen({ onBack }: { onBack: () => void }) {
       <NavBar title={t("matchPairs")} onBack={onBack} />
       <div className="flex-1 px-6 py-6 flex flex-col items-center gap-6 max-w-md mx-auto w-full">
         <div className="flex items-center justify-between w-full">
-          <span className="text-[18px] font-bold text-[#2B2B2B]">Moves: {moves}</span>
+          <span className="text-[18px] font-bold text-[#2B2B2B]">{t("movesLabel")}: {moves}</span>
           <button onClick={resetGame} className="px-4 py-2 bg-[#EEF4EE] border border-[#7A9B7640] text-[#2E6F6E] rounded-xl font-bold">
-            Restart
+            {t("restartBtn")}
           </button>
         </div>
 
         {won && (
           <div className="w-full text-center p-4 bg-[#EEF4EE] border border-[#7A9B76] rounded-2xl text-[#2E6F6E] font-extrabold text-[20px]">
-            🎉 Wonderful Job! You matched all pairs!
+            {t("matchedAllPairs")}
           </div>
         )}
 
@@ -857,9 +1007,9 @@ const MINDSNAP_THEME = {
 };
 
 const MINDSNAP_MODES: Record<MindsnapModeId, MindsnapMode> = {
-  casual: { name: "Casual", tag: "WARM UP", icon: "☄", grid: 3, targets: 3, rounds: 3, seconds: 4, color: MINDSNAP_THEME.cyan, copy: "A calm start to sharpen your focus." },
-  focused: { name: "Focused", tag: "MOST PLAYED", icon: "✦", grid: 4, targets: 5, rounds: 4, seconds: 3, color: MINDSNAP_THEME.violet, copy: "Build a pattern. Keep it in your head." },
-  expert: { name: "Expert", tag: "NO MERCY", icon: "⚡", grid: 5, targets: 7, rounds: 5, seconds: 2, color: MINDSNAP_THEME.pink, copy: "For players who want a serious brain workout." },
+  casual: { name: "Casual", tag: "WARM UP", icon: "🌱", grid: 3, targets: 3, rounds: 3, seconds: 4, color: MINDSNAP_THEME.cyan, copy: "" },
+  focused: { name: "Focused", tag: "MOST PLAYED", icon: "⭐", grid: 4, targets: 5, rounds: 4, seconds: 3, color: MINDSNAP_THEME.violet, copy: "" },
+  expert: { name: "Expert", tag: "NO MERCY", icon: "🏆", grid: 5, targets: 7, rounds: 5, seconds: 2, color: MINDSNAP_THEME.pink, copy: "" },
 };
 
 interface MindsnapStats {
@@ -887,21 +1037,8 @@ const persistMindsnapStats = (value: MindsnapStats) => {
   } catch {}
 };
 
-function SpeechButton({ text }: { text: string }) {
-  const [available] = useState(() => typeof window !== "undefined" && "speechSynthesis" in window);
-  const speak = () => {
-    if (!available) return;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-  };
-  return available ? (
-    <button className="sound border-0 bg-transparent text-[#77748a] text-[12px] font-semibold cursor-pointer hover:text-[#7567f8] transition-colors flex items-center gap-1.5" onClick={speak}>
-      <span>🔊</span> Hear how to play
-    </button>
-  ) : null;
-}
-
 function MindsnapScreen({ onBack }: { onBack: () => void }) {
+  const t = useT();
   const [screen, setScreen] = useState<"home" | "game" | "results">("home");
   const [mode, setMode] = useState<MindsnapModeId>("focused");
   const [round, setRound] = useState(1);
@@ -1002,271 +1139,235 @@ function MindsnapScreen({ onBack }: { onBack: () => void }) {
 
   const accuracy = percent(stats.hits, stats.attempts);
 
+  const getModeLabel = (mId: MindsnapModeId) => {
+    if (mId === "casual") return t("casualMode");
+    if (mId === "focused") return t("focusedMode");
+    return t("expertMode");
+  };
+
   return (
     <div className="flex flex-col min-h-full bg-[#f6f7fc] text-[#171329]">
       <BambooStrip />
-      <NavBar title="Mindsnap Memory Arcade" onBack={onBack} />
+      <NavBar title={t("mindsnapNavTitle")} onBack={onBack} />
 
       <div className="flex-1 overflow-y-auto max-w-4xl mx-auto w-full px-4 sm:px-6 py-6">
         {screen === "home" && (
-          <div className="flex flex-col gap-8 animate-fadeIn">
-            {/* Hero Section */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e7e5f0] shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 text-[11px] font-black tracking-widest text-[#77748a] uppercase mb-2">
-                  <span>VISUAL MEMORY ARCADE</span>
-                  <span className="text-[#7567f8] bg-[#f1f0fb] px-2 py-0.5 rounded-full font-bold">v1.0</span>
-                </div>
-                <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-[#171329] leading-none">
-                  See it.<br />
-                  <span className="text-[#7567f8]">Snap it.</span>
-                </h1>
-                <p className="text-sm sm:text-base font-semibold text-[#77748a] mt-4 max-w-md leading-relaxed">
-                  Remember the glowing pattern, then rebuild it before your focus slips.
-                </p>
-
-                <div className="flex flex-wrap items-center gap-4 mt-6">
-                  <button
-                    onClick={() => start("focused")}
-                    className="px-6 py-3.5 rounded-2xl bg-[#171329] text-white font-black text-sm tracking-wider shadow-lg hover:bg-[#2a2448] transition-all flex items-center gap-2 active:scale-95"
-                  >
-                    PLAY NOW <span className="text-[#56d8d0]">↗</span>
-                  </button>
-                  <SpeechButton text="Watch the glowing tiles. When they disappear, tap every tile that was glowing. Clear three rounds to finish your game." />
-                </div>
-              </div>
-
-              {/* Animated Mini Grid Preview */}
-              <div className="relative w-56 h-56 flex items-center justify-center flex-shrink-0">
-                <div className="w-48 h-48 bg-[#e4e2ff] rounded-[36px] rotate-6 absolute inset-0 m-auto" />
-                <div className="relative z-10 w-44 h-44 bg-white rounded-2xl p-2.5 shadow-xl grid grid-cols-3 gap-2 -rotate-3 border border-white">
-                  {Array.from({ length: 9 }, (_, i) => {
-                    const lit = [1, 3, 7].includes(i);
-                    return (
-                      <span
-                        key={i}
-                        className={`rounded-xl flex items-center justify-center text-lg font-bold transition-all ${
-                          lit ? "bg-[#7567f8] text-white shadow-md shadow-[#7567f855]" : "bg-[#f1f0fb] text-transparent"
-                        }`}
-                      >
-                        {lit ? "✦" : ""}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Stats Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
-                <b className="block text-2xl font-black text-[#56d8d0]">{stats.games}</b>
-                <span className="text-xs font-bold text-[#77748a]">Games played</span>
-              </div>
-              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
-                <b className="block text-2xl font-black text-[#7567f8]">{accuracy}%</b>
-                <span className="text-xs font-bold text-[#77748a]">Recall accuracy</span>
-              </div>
-              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
-                <b className="block text-2xl font-black text-[#ffd166]">{stats.best}</b>
-                <span className="text-xs font-bold text-[#77748a]">Best score</span>
-              </div>
-              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
-                <b className="block text-2xl font-black text-[#ff6fae]">{stats.streak} day{stats.streak === 1 ? "" : "s"}</b>
-                <span className="text-xs font-bold text-[#77748a]">Play streak</span>
-              </div>
-            </div>
-
-            {/* Difficulty Modes Picker */}
+          <div className="flex flex-col gap-6 animate-fadeIn">
+            {/* Header Title */}
             <div>
-              <div className="mb-4">
-                <span className="text-[11px] font-black tracking-widest text-[#77748a] uppercase">CHOOSE YOUR RUN</span>
-                <h2 className="text-2xl font-black text-[#171329]">Pick a difficulty</h2>
-              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#171329]">{t("pickDifficulty")}</h2>
+            </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {(Object.entries(MINDSNAP_MODES) as [MindsnapModeId, MindsnapMode][]).map(([id, modeConfig]) => (
+            {/* Senior-Friendly Difficulty Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {(Object.entries(MINDSNAP_MODES) as [MindsnapModeId, MindsnapMode][]).map(([id, modeConfig]) => {
+                const themeMap = {
+                  casual: {
+                    borderColor: "border-[#9ed5cd]",
+                    cardBg: "bg-[#f2f9f8]",
+                    titleColor: "text-[#1d524c]",
+                    arrowColor: "text-[#236b63]",
+                    arrowBorder: "border-[#b6e4de]",
+                    badgeBg: "bg-[#059669]",
+                    image: mindsnapCasualImg,
+                  },
+                  focused: {
+                    borderColor: "border-[#b5bef0]",
+                    cardBg: "bg-[#f3f5fc]",
+                    titleColor: "text-[#273059]",
+                    arrowColor: "text-[#394680]",
+                    arrowBorder: "border-[#cad2f5]",
+                    badgeBg: "bg-[#4f46e5]",
+                    image: mindsnapFocusedImg,
+                  },
+                  expert: {
+                    borderColor: "border-[#f2c4cb]",
+                    cardBg: "bg-[#fcf4f5]",
+                    titleColor: "text-[#5e2731]",
+                    arrowColor: "text-[#7a2f3d]",
+                    arrowBorder: "border-[#f8d7dc]",
+                    badgeBg: "bg-[#e11d48]",
+                    image: mindsnapExpertImg,
+                  },
+                }[id];
+
+                return (
                   <button
                     key={id}
                     onClick={() => start(id)}
-                    className="bg-white rounded-2xl p-5 border border-[#e7e5f0] border-t-4 text-left transition-all hover:-translate-y-1 hover:shadow-md group flex flex-col justify-between"
-                    style={{ borderTopColor: modeConfig.color }}
+                    className={`rounded-3xl border-2 ${themeMap.borderColor} ${themeMap.cardBg} p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-200 hover:-translate-y-1 group flex flex-col justify-between cursor-pointer w-full text-left min-h-[140px] sm:min-h-[155px]`}
                   >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl">{modeConfig.icon}</span>
-                        <span className="text-[10px] font-black tracking-wider" style={{ color: modeConfig.color }}>
-                          {modeConfig.tag}
-                        </span>
-                        <span className="text-lg font-bold ml-auto" style={{ color: modeConfig.color }}>↗</span>
+                    {/* Top Row: Icon Image Badge (Left) & Circle Arrow (Right) */}
+                    <div className="flex items-center justify-between w-full">
+                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl ${themeMap.badgeBg} p-2 shadow-sm border border-white/50 flex items-center justify-center overflow-hidden flex-shrink-0`}>
+                        <img
+                          src={themeMap.image}
+                          alt={getModeLabel(id)}
+                          className="w-full h-full object-cover rounded-xl"
+                        />
                       </div>
-                      <h3 className="text-xl font-bold text-[#171329] mt-3">{modeConfig.name}</h3>
-                      <p className="text-xs font-medium text-[#77748a] mt-1 leading-normal min-h-[36px]">{modeConfig.copy}</p>
+                      <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-xs border-2 ${themeMap.arrowBorder} shadow-xs flex items-center justify-center ${themeMap.arrowColor} text-base sm:text-lg font-black group-hover:scale-110 transition-transform`}>
+                        ➔
+                      </div>
                     </div>
 
-                    <div className="flex justify-between border-t border-[#e7e5f0] pt-3 mt-4 text-[11px] font-bold text-[#77748a]">
-                      <span>{modeConfig.grid}×{modeConfig.grid} board</span>
-                      <span>{modeConfig.rounds} rounds</span>
-                      <span>{modeConfig.seconds}s view</span>
+                    {/* Bottom Row: Big Bold Difficulty Title */}
+                    <div className="mt-5 sm:mt-6">
+                      <h3 className={`text-2xl sm:text-3xl font-black ${themeMap.titleColor} tracking-tight`}>
+                        {getModeLabel(id)}
+                      </h3>
                     </div>
                   </button>
-                ))}
+                );
+              })}
+            </div>
+
+            {/* Stats Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
+              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-2xl font-black text-[#56d8d0]">{stats.games}</b>
+                <span className="text-xs font-bold text-[#77748a]">{t("gamesPlayed")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-2xl font-black text-[#7567f8]">{accuracy}%</b>
+                <span className="text-xs font-bold text-[#77748a]">{t("recallAccuracy")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-2xl font-black text-[#ffd166]">{stats.best}</b>
+                <span className="text-xs font-bold text-[#77748a]">{t("bestScore")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
+                <b className="block text-2xl font-black text-[#ff6fae]">{stats.streak} {stats.streak === 1 ? t("daySingular") : t("dayPlural")}</b>
+                <span className="text-xs font-bold text-[#77748a]">{t("playStreak")}</span>
               </div>
             </div>
           </div>
         )}
 
         {screen === "game" && (
-          <div className="max-w-xl mx-auto flex flex-col gap-6 animate-fadeIn">
+          <div className="max-w-md mx-auto flex flex-col gap-3.5 sm:gap-4 animate-fadeIn">
             {/* Top Status Bar */}
-            <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-[#e7e5f0] shadow-xs">
-              <button onClick={home} className="text-xs font-bold text-[#77748a] hover:text-[#171329] transition-colors">
-                ← Menu
+            <div className="flex items-center justify-between bg-white px-4 py-3 sm:py-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
+              <button onClick={home} className="text-xs font-bold text-[#77748a] hover:text-[#171329] transition-colors cursor-pointer">
+                {t("menuBack")}
               </button>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-white px-2.5 py-1 rounded-full" style={{ backgroundColor: config.color }}>
-                  {config.name}
+                <span className="text-xs font-bold text-white px-2.5 py-0.5 rounded-full" style={{ backgroundColor: config.color }}>
+                  {getModeLabel(mode)}
                 </span>
-                <b className="text-xs font-black text-[#77748a]">ROUND {round} / {config.rounds}</b>
+                <b className="text-xs font-black text-[#77748a]">{t("roundText")} {round} / {config.rounds}</b>
               </div>
               <div className="text-right">
-                <span className="block text-[9px] font-bold text-[#77748a] uppercase">SCORE</span>
-                <b className="text-xl font-black text-[#7567f8]">{score}</b>
+                <span className="block text-[9px] font-bold text-[#77748a] uppercase">{t("scoreText")}</span>
+                <b className="text-lg sm:text-xl font-black text-[#7567f8]">{score}</b>
               </div>
             </div>
 
             {/* Round Instructions & Timer */}
-            <div className="bg-white p-5 rounded-2xl border border-[#e7e5f0] shadow-xs flex items-center justify-between gap-4">
+            <div className="bg-white p-4 sm:p-4.5 rounded-2xl border border-[#e7e5f0] shadow-xs flex items-center justify-between gap-3">
               <div>
-                <p className="text-[11px] font-black tracking-widest text-[#77748a] uppercase">
-                  {revealed ? "MEMORIZE THE PATTERN" : "REBUILD THE PATTERN"}
+                <p className="text-[10px] sm:text-[11px] font-black tracking-widest text-[#77748a] uppercase">
+                  {revealed ? t("memorizePattern") : t("rebuildPattern")}
                 </p>
-                <h2 className="text-2xl font-black text-[#171329] mt-0.5">
-                  {revealed ? "Lock it in." : "Your turn."}
+                <h2 className="text-xl sm:text-2xl font-black text-[#171329] mt-0.5">
+                  {revealed ? t("lockItIn") : t("yourTurn")}
                 </h2>
-                <p className="text-xs font-medium text-[#77748a] mt-1">
-                  {revealed ? `Remember all ${config.targets} glowing tiles.` : "Tap every tile that was glowing."}
+                <p className="text-xs font-medium text-[#77748a] mt-0.5">
+                  {revealed ? t("rememberGlowing") : t("tapGlowing")}
                 </p>
               </div>
 
-              <div className="flex items-center gap-4 flex-shrink-0">
+              <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
                 <div className="text-right">
-                  <b className="block text-3xl font-black" style={{ color: revealed ? config.color : "#7567f8" }}>
-                    {revealed ? seconds : picked.length}
+                  <b className="block text-2xl sm:text-3xl font-black" style={{ color: revealed ? config.color : "#7567f8" }}>
+                    {seconds}
                   </b>
-                  <span className="text-[10px] font-bold text-[#77748a]">
-                    {revealed ? "seconds" : `/${config.targets} found`}
-                  </span>
+                  <span className="block text-[9px] font-bold text-[#77748a] uppercase">{t("secondsText")}</span>
                 </div>
-
-                {misses > 0 && (
-                  <div className="text-right border-l border-[#e7e5f0] pl-4">
-                    <b className="block text-3xl font-black text-[#ff6b6b]">{misses}</b>
-                    <span className="text-[10px] font-bold text-[#77748a]">misses</span>
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* Pattern Grid Board */}
-            <div className="w-full max-w-[420px] aspect-square mx-auto p-3 bg-[#ebeaf3] rounded-3xl shadow-inner border border-[#d8d5e5]">
-              <div
-                className="grid gap-2.5 w-full h-full"
-                style={{
-                  gridTemplateColumns: `repeat(${config.grid}, 1fr)`,
-                }}
-              >
-                {Array.from({ length: config.grid * config.grid }, (_, i) => {
-                  const active = revealed && targets.includes(i);
-                  const selected = picked.includes(i);
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => pick(i)}
-                      disabled={revealed || selected}
-                      className={`rounded-2xl transition-all flex items-center justify-center text-2xl font-black border ${
-                        active
-                          ? "bg-[#7567f8] text-white shadow-lg shadow-[#7567f866] border-[#7567f8]"
-                          : selected
-                          ? "bg-[#3bc58a] text-white shadow-md shadow-[#3bc58a55] border-[#3bc58a]"
-                          : "bg-white hover:bg-[#f7f6ff] text-transparent border-[#e0deed] shadow-xs active:scale-95"
-                      }`}
-                    >
-                      {active || selected ? "✦" : ""}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            {/* Pattern Grid */}
+            <div
+              className="grid gap-2.5 p-3 sm:p-4 bg-white rounded-3xl border border-[#e7e5f0] shadow-sm transition-all duration-300"
+              style={{ gridTemplateColumns: `repeat(${config.grid}, minmax(0, 1fr))` }}
+            >
+              {Array.from({ length: config.grid * config.grid }, (_, idx) => {
+                const isTarget = targets.includes(idx);
+                const isPicked = picked.includes(idx);
+                const isLit = revealed && isTarget;
 
-            <p className="text-center text-xs font-semibold text-[#77748a]">
-              {revealed ? "The pattern will disappear when the timer ends." : "Find all glowing tiles to complete the round."}
-            </p>
+                return (
+                  <button
+                    key={idx}
+                    disabled={revealed || isPicked}
+                    onClick={() => pick(idx)}
+                    className={`aspect-square rounded-2xl transition-all duration-200 flex items-center justify-center text-2xl font-bold cursor-pointer ${
+                      isLit
+                        ? "shadow-md scale-95 border-2 border-white/50"
+                        : isPicked
+                        ? "bg-[#7567f8] text-white shadow-sm border-2 border-[#7567f8]"
+                        : "bg-[#f2f4fa] hover:bg-[#e7eaf7] border border-[#d8dceb] active:scale-95"
+                    }`}
+                    style={{ backgroundColor: isLit ? config.color : undefined }}
+                  >
+                    {isLit && "✦"}
+                    {isPicked && "✓"}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
         {screen === "results" && result && (
-          <div className="max-w-md mx-auto text-center flex flex-col gap-6 animate-fadeIn py-4">
-            <div className="w-16 h-16 rounded-2xl bg-[#e7e5ff] text-[#7567f8] text-3xl flex items-center justify-center mx-auto shadow-sm">
-              {percent(result.hits, result.hits + result.misses) >= 80 ? "✦" : "◌"}
+          <div className="max-w-md mx-auto flex flex-col gap-5 text-center animate-fadeIn py-4">
+            <div className="w-16 h-16 rounded-2xl bg-[#f0efff] text-[#7567f8] text-3xl flex items-center justify-center mx-auto shadow-xs">
+              🏆
             </div>
-
             <div>
-              <p className="text-[11px] font-black tracking-widest text-[#77748a] uppercase">
-                RUN COMPLETE · {config.name.toUpperCase()}
-              </p>
-              <h1 className="text-3xl font-black text-[#171329] mt-1">
+              <p className="text-[11px] font-black tracking-widest text-[#77748a] uppercase">{t("runComplete")}</p>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#171329] mt-0.5">
                 {percent(result.hits, result.hits + result.misses) >= 80
-                  ? "Pattern locked."
+                  ? t("patternLocked")
                   : percent(result.hits, result.hits + result.misses) >= 50
-                  ? "You held your own."
-                  : "The brain is warming up."}
-              </h1>
-              <p className="text-xs font-medium text-[#77748a] mt-1">
-                A real result from your taps, misses, and completed rounds.
-              </p>
+                  ? t("youHeldOwn")
+                  : t("brainWarmingUp")}
+              </h2>
             </div>
 
-            {/* Score Banner */}
-            <div className="bg-[#171329] text-white rounded-2xl p-6 shadow-xl">
-              <span className="text-[10px] font-black tracking-widest text-[#aaa7c4] uppercase">FINAL SCORE</span>
-              <b className="block text-5xl font-black text-[#56d8d0] my-1">{result.score}</b>
-              <span className="text-xs font-bold text-[#aaa7c4]">points</span>
+            <div className="bg-[#171329] text-white p-6 rounded-3xl shadow-md">
+              <span className="text-[10px] font-black tracking-widest text-[#a8a3c7] uppercase">{t("finalScore")}</span>
+              <b className="block text-5xl font-black text-[#ffd166] my-1">{result.score}</b>
             </div>
 
-            {/* Stats Breakdown */}
-            <div className="grid grid-cols-2 gap-3 text-left">
+            <div className="grid grid-cols-3 gap-3">
               <div className="bg-white p-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
-                <b className="block text-xl font-black text-[#56d8d0]">{percent(result.hits, result.hits + result.misses)}%</b>
-                <span className="text-xs font-bold text-[#77748a]">Recall accuracy</span>
+                <b className="block text-xl font-black text-[#3bc58a]">{result.hits}</b>
+                <span className="text-[10px] font-bold text-[#77748a]">{t("hitsText")}</span>
               </div>
               <div className="bg-white p-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
-                <b className="block text-xl font-black text-[#7567f8]">{result.hits}/{result.hits + result.misses}</b>
-                <span className="text-xs font-bold text-[#77748a]">Tiles recalled</span>
+                <b className="block text-xl font-black text-[#ff6b6b]">{result.misses}</b>
+                <span className="text-[10px] font-bold text-[#77748a]">{t("missesText")}</span>
               </div>
               <div className="bg-white p-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
-                <b className="block text-xl font-black text-[#ff6fae]">{result.misses}</b>
-                <span className="text-xs font-bold text-[#77748a]">Misses</span>
-              </div>
-              <div className="bg-white p-3.5 rounded-2xl border border-[#e7e5f0] shadow-xs">
-                <b className="block text-xl font-black text-[#ffd166]">#{stats.games}</b>
-                <span className="text-xs font-bold text-[#77748a]">Game number</span>
+                <b className="block text-xl font-black text-[#7567f8]">{percent(result.hits, result.hits + result.misses)}%</b>
+                <span className="text-[10px] font-bold text-[#77748a]">{t("accuracyText")}</span>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-3 mt-2">
+            <div className="flex flex-col sm:flex-row gap-3 mt-2">
               <button
                 onClick={() => start(mode)}
-                className="w-full py-3.5 rounded-2xl bg-[#171329] text-white font-black text-sm tracking-wider shadow-lg hover:bg-[#2a2448] transition-all flex items-center justify-center gap-2 active:scale-95"
+                className="flex-1 py-4 rounded-2xl bg-[#7567f8] hover:bg-[#6253e6] text-white font-black text-base tracking-wide shadow-md transition-all cursor-pointer"
               >
-                RUN IT BACK <span className="text-[#56d8d0]">↗</span>
+                {t("nextRoundBtn")}
               </button>
               <button
                 onClick={home}
-                className="w-full py-3 rounded-2xl bg-white border border-[#e7e5f0] text-[#171329] font-bold text-xs hover:bg-[#f1f0fb] transition-all"
+                className="flex-1 py-4 rounded-2xl bg-white border border-[#d8dceb] text-[#171329] font-black text-base hover:bg-[#f6f7fc] transition-all cursor-pointer"
               >
-                Back to menu
+                {t("changeModeBtn")}
               </button>
             </div>
           </div>
@@ -1277,6 +1378,1153 @@ function MindsnapScreen({ onBack }: { onBack: () => void }) {
     </div>
   );
 }
+
+interface SmritiItem {
+  id: string;
+  symbol: string;
+  name: string;
+  sound: number;
+}
+
+const SMRITI_INSTRUMENTS: SmritiItem[] = [
+  { id: "dhol", symbol: "🥁", name: "Dhol", sound: 220 },
+  { id: "taal", symbol: "🪘", name: "Taal", sound: 330 },
+  { id: "pepa", symbol: "🎺", name: "Pepa", sound: 440 },
+  { id: "gogona", symbol: "🪕", name: "Gogona", sound: 550 },
+  { id: "bahi", symbol: "🪈", name: "Flute", sound: 660 },
+  { id: "bhortaal", symbol: "🔔", name: "Bhortaal", sound: 770 },
+];
+
+function playSmritiSound(freq: number, padIdx?: number) {
+  try {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = (padIdx ?? 0) % 2 === 0 ? "triangle" : "sine";
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+  } catch (e) {}
+}
+
+function playSmritiChime(success: boolean) {
+  try {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const freqs = success ? [523.25, 659.25, 783.99] : [300, 250];
+    freqs.forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.setValueAtTime(f, ctx.currentTime + i * 0.12);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.12);
+      osc.stop(ctx.currentTime + i * 0.12 + 0.3);
+    });
+  } catch (e) {}
+}
+
+function SmritiTaalScreen({ onBack }: { onBack: () => void }) {
+  const t = useT();
+  const { lang } = useLang();
+  const [screen, setScreen] = useState<"home" | "game" | "recall" | "results">("home");
+  const [level, setLevel] = useState(1);
+  const [round, setRound] = useState(1);
+  const totalRounds = 6;
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+  const [sequence, setSequence] = useState<number[]>([]);
+  const [userInputs, setUserInputs] = useState<number[]>([]);
+  const [activePad, setActivePad] = useState<number | null>(null);
+  const [phase, setPhase] = useState<"demo" | "input" | "recall">("demo");
+  const [recallOptions, setRecallOptions] = useState<number[]>([]);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [results, setResults] = useState<{ attnOk: boolean; recOk: boolean }[]>([]);
+
+  const getInstName = (inst: SmritiItem) => {
+    const map: Record<string, Record<Lang, string>> = {
+      dhol: { en: "Dhol", as: "ঢোল", mn: "ঢোল" },
+      taal: { en: "Taal", as: "তাল", mn: "তাল" },
+      pepa: { en: "Pepa", as: "পেঁপা", mn: "পেঁপা" },
+      gogona: { en: "Gogona", as: "গগনা", mn: "গগনা" },
+      bahi: { en: "Flute", as: "বাঁহী", mn: "বাঁহী" },
+      bhortaal: { en: "Bhortaal", as: "ভোৰতাল", mn: "ভোৰতাল" },
+      xinga: { en: "Xinga", as: "শিঙা", mn: "শিঙা" },
+    };
+    return map[inst.id]?.[lang] || inst.name;
+  };
+
+  const startSession = () => {
+    setRound(1);
+    setStreak(0);
+    setBestStreak(0);
+    setCorrectCount(0);
+    setResults([]);
+    startRound(1, 0, 0, 0, []);
+  };
+
+  const startRound = (rNum: number, currStreak: number, bStreak: number, cCount: number, resList: { attnOk: boolean; recOk: boolean }[]) => {
+    setRound(rNum);
+    setStreak(currStreak);
+    setBestStreak(bStreak);
+    setCorrectCount(cCount);
+    setResults(resList);
+    setUserInputs([]);
+
+    const seqLen = Math.min(2 + Math.floor(rNum / 2), 6);
+    const newSeq = Array.from({ length: seqLen }, () => Math.floor(Math.random() * SMRITI_INSTRUMENTS.length));
+    setSequence(newSeq);
+    setScreen("game");
+    setPhase("demo");
+
+    playSequence(newSeq);
+  };
+
+  const playSequence = async (seq: number[]) => {
+    setPhase("demo");
+    setActivePad(null);
+    await new Promise((r) => setTimeout(r, 600));
+
+    for (let i = 0; i < seq.length; i++) {
+      const padIdx = seq[i];
+      setActivePad(padIdx);
+      playSmritiSound(SMRITI_INSTRUMENTS[padIdx].sound, padIdx);
+      await new Promise((r) => setTimeout(r, 550));
+      setActivePad(null);
+      await new Promise((r) => setTimeout(r, 250));
+    }
+
+    setPhase("input");
+    setUserInputs([]);
+  };
+
+  const handlePadTap = (idx: number) => {
+    if (phase !== "input") return;
+
+    setActivePad(idx);
+    playSmritiSound(SMRITI_INSTRUMENTS[idx].sound, idx);
+    setTimeout(() => setActivePad(null), 180);
+
+    const nextInputs = [...userInputs, idx];
+    setUserInputs(nextInputs);
+
+    const matchIdx = nextInputs.length - 1;
+    if (nextInputs[matchIdx] !== sequence[matchIdx]) {
+      // Sequence failed
+      playSmritiChime(false);
+      const nextStreak = 0;
+      const nextResults = [...results, { attnOk: false, recOk: false }];
+      setTimeout(() => advanceRound(nextStreak, bestStreak, correctCount, nextResults), 800);
+      return;
+    }
+
+    if (nextInputs.length === sequence.length) {
+      // Sequence passed! Move to bonus recall question: "Which instrument played first?"
+      playSmritiChime(true);
+      const nextStreak = streak + 1;
+      const newBest = Math.max(bestStreak, nextStreak);
+
+      const firstInstrument = sequence[0];
+      const otherIndices = SMRITI_INSTRUMENTS.map((_, i) => i).filter((i) => i !== firstInstrument);
+      const shuffledOthers = [...otherIndices].sort(() => Math.random() - 0.5).slice(0, 3);
+      const options = [...shuffledOthers, firstInstrument].sort(() => Math.random() - 0.5);
+
+      setRecallOptions(options);
+      setStreak(nextStreak);
+      setBestStreak(newBest);
+      setPhase("recall");
+      setScreen("recall");
+    }
+  };
+
+  const handleRecallAnswer = (chosenIdx: number) => {
+    const recOk = chosenIdx === sequence[0];
+    playSmritiChime(recOk);
+
+    const nextCorrect = correctCount + 1;
+    const nextResults = [...results, { attnOk: true, recOk }];
+
+    setTimeout(() => {
+      advanceRound(streak, bestStreak, nextCorrect, nextResults);
+    }, 750);
+  };
+
+  const advanceRound = (currStreak: number, bStreak: number, cCount: number, resList: { attnOk: boolean; recOk: boolean }[]) => {
+    if (round >= totalRounds) {
+      finishSession(cCount, bStreak, resList);
+    } else {
+      startRound(round + 1, currStreak, bStreak, cCount, resList);
+    }
+  };
+
+  const finishSession = (cCount: number, bStreak: number, resList: { attnOk: boolean; recOk: boolean }[]) => {
+    setCorrectCount(cCount);
+    setBestStreak(bStreak);
+    setResults(resList);
+    setScreen("results");
+
+    const acc = Math.round((cCount / totalRounds) * 100);
+    const score = cCount * 150 + bStreak * 50;
+
+    api.logActivity("game", { game: "Smriti Taal", score, accuracy: acc, level }).catch(() => {});
+  };
+
+  return (
+    <div className="flex flex-col min-h-full bg-[#FAF5EC] text-[#20302C]">
+      <BambooStrip />
+      <NavBar title={t("smritiNavTitle")} onBack={onBack} />
+
+      <div className="flex-1 overflow-y-auto max-w-2xl mx-auto w-full px-4 sm:px-6 py-6">
+        {screen === "home" && (
+          <div className="flex flex-col gap-6 animate-fadeIn">
+            {/* Hero Card */}
+            <div className="bg-gradient-to-br from-[#2F6B62] to-[#20514A] text-white p-6 sm:p-7 rounded-3xl shadow-lg relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[11px] font-extrabold tracking-widest uppercase opacity-80">{t("levelLabel")} {level}</span>
+                  <h2 className="text-2xl sm:text-3xl font-black mt-0.5">{t("rhythmMemoryTitle")}</h2>
+                </div>
+                <span className="text-4xl">🥁</span>
+              </div>
+              <p className="text-xs sm:text-sm font-medium text-emerald-100 mt-2">
+                {t("rhythmMemorySub")}
+              </p>
+            </div>
+
+            {/* Stats Row */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-white p-4 rounded-2xl border border-[#E7DFD0] text-center shadow-xs">
+                <b className="block text-2xl font-black text-[#DB7B25]">🔥 {bestStreak}</b>
+                <span className="text-[11px] font-extrabold text-[#6B7A75] uppercase">{t("bestStreakLabel")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#E7DFD0] text-center shadow-xs">
+                <b className="block text-2xl font-black text-[#2F6B62]">{t("levelLabel")} {level}</b>
+                <span className="text-[11px] font-extrabold text-[#6B7A75] uppercase">{t("currentLevelLabel")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#E7DFD0] text-center shadow-xs">
+                <b className="block text-2xl font-black text-[#3B8B6B]">{totalRounds}</b>
+                <span className="text-[11px] font-extrabold text-[#6B7A75] uppercase">{t("roundsSessionLabel")}</span>
+              </div>
+            </div>
+
+            {/* Start Button */}
+            <button
+              onClick={startSession}
+              className="w-full py-4 rounded-2xl bg-[#2F6B62] hover:bg-[#20514A] text-white font-black text-lg tracking-wide shadow-md transition-all cursor-pointer active:scale-98"
+            >
+              {t("startPlayingBtn")}
+            </button>
+          </div>
+        )}
+
+        {screen === "game" && (
+          <div className="flex flex-col gap-5 animate-fadeIn">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between bg-white px-4 py-3 rounded-2xl border border-[#E7DFD0] shadow-xs">
+              <button onClick={() => setScreen("home")} className="text-xs font-bold text-[#6B7A75] hover:text-[#20302C] transition-colors cursor-pointer">
+                {t("homeBack")}
+              </button>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black text-[#2F6B62] bg-[#E2EFEB] px-3 py-1 rounded-full">
+                  {t("roundText")} {round} / {totalRounds}
+                </span>
+                {streak >= 2 && (
+                  <span className="text-xs font-black text-[#DB7B25] bg-[#FBEBE0] px-2.5 py-1 rounded-full animate-bounce">
+                    🔥 {streak}x {t("streakBadge")}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Prompt Box */}
+            <div className="bg-[#E6F2ED] p-5 rounded-2xl border border-[#2F6B6230] text-center flex items-center justify-center gap-3">
+              <span className="text-2xl">🔊</span>
+              <p className="text-lg font-bold text-[#2F6B62]">
+                {phase === "demo" ? t("listenCarefully") : t("nowRepeatSeq")}
+              </p>
+            </div>
+
+            {/* Instruments Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 mt-2">
+              {SMRITI_INSTRUMENTS.map((inst, idx) => {
+                const isLit = activePad === idx;
+                return (
+                  <button
+                    key={inst.id}
+                    disabled={phase !== "input"}
+                    onClick={() => handlePadTap(idx)}
+                    className={`p-5 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${
+                      isLit
+                        ? "bg-[#2F6B62] text-white border-[#20514A] scale-105 shadow-lg"
+                        : "bg-white border-[#E7DFD0] text-[#20302C] hover:border-[#2F6B6240] shadow-xs active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed"
+                    }`}
+                  >
+                    <span className="text-3xl">{inst.symbol}</span>
+                    <span className="text-sm font-extrabold">{getInstName(inst)}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {phase === "input" && (
+              <button
+                onClick={() => playSequence(sequence)}
+                className="mx-auto text-xs font-extrabold text-[#2F6B62] bg-[#E2EFEB] px-4 py-2 rounded-xl cursor-pointer hover:bg-[#2F6B62] hover:text-white transition-all"
+              >
+                {t("hearAgainBtn")}
+              </button>
+            )}
+          </div>
+        )}
+
+        {screen === "recall" && (
+          <div className="flex flex-col gap-6 animate-fadeIn">
+            {/* Top Bar */}
+            <div className="bg-[#FBEBE0] p-5 rounded-2xl border border-[#F3D2B8] text-center">
+              <span className="text-3xl">❓</span>
+              <h3 className="text-xl font-black text-[#20302C] mt-2">{t("whichPlayedFirst")}</h3>
+              <p className="text-xs font-semibold text-[#6B7A75] mt-1">{t("tapCorrectInst")}</p>
+            </div>
+
+            {/* Recall Options */}
+            <div className="grid grid-cols-2 gap-4">
+              {recallOptions.map((optIdx) => {
+                const inst = SMRITI_INSTRUMENTS[optIdx];
+                return (
+                  <button
+                    key={optIdx}
+                    onClick={() => handleRecallAnswer(optIdx)}
+                    className="bg-white p-6 rounded-2xl border-2 border-[#E7DFD0] hover:border-[#2F6B62] flex flex-col items-center justify-center gap-2 transition-all shadow-sm cursor-pointer active:scale-95"
+                  >
+                    <span className="text-4xl">{inst.symbol}</span>
+                    <span className="text-base font-black text-[#20302C]">{getInstName(inst)}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {screen === "results" && (
+          <div className="flex flex-col gap-6 text-center animate-fadeIn py-2 max-w-md mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-[#E2EFEB] text-[#2F6B62] text-3xl flex items-center justify-center mx-auto shadow-sm">
+              {Math.round((correctCount / totalRounds) * 100) >= 80 ? "🎉" : "😊"}
+            </div>
+
+            <div>
+              <p className="text-[11px] font-black tracking-widest text-[#6B7A75] uppercase">{t("sessionComplete")}</p>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#20302C] mt-0.5">
+                {Math.round((correctCount / totalRounds) * 100) >= 80 ? t("wonderfulRhythm") : t("goodPractice")}
+              </h2>
+            </div>
+
+            {/* Score Banner */}
+            <div className="bg-[#2F6B62] text-white p-6 rounded-2xl shadow-lg">
+              <span className="text-[10px] font-black tracking-widest text-emerald-200 uppercase">{t("totalAccuracy")}</span>
+              <b className="block text-5xl font-black text-[#C99A2E] my-1">
+                {Math.round((correctCount / totalRounds) * 100)}%
+              </b>
+            </div>
+
+            {/* Stats Breakdown */}
+            <div className="grid grid-cols-2 gap-3 text-left">
+              <div className="bg-white p-4 rounded-2xl border border-[#E7DFD0] shadow-xs">
+                <b className="block text-2xl font-black text-[#2F6B62]">{correctCount}/{totalRounds}</b>
+                <span className="text-xs font-bold text-[#6B7A75]">{t("roundsPassed")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#E7DFD0] shadow-xs">
+                <b className="block text-2xl font-black text-[#DB7B25]">🔥 {bestStreak}</b>
+                <span className="text-xs font-bold text-[#6B7A75]">{t("bestStreakLabel")}</span>
+              </div>
+            </div>
+
+            {/* Timeline Dots */}
+            <div className="bg-white p-4 rounded-2xl border border-[#E7DFD0]">
+              <h4 className="text-xs font-black uppercase text-[#6B7A75] tracking-wider mb-2.5">{t("roundTimeline")}</h4>
+              <div className="flex justify-center gap-2">
+                {results.map((r, i) => (
+                  <span
+                    key={i}
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white ${
+                      r.attnOk && r.recOk ? "bg-[#3B8B6B]" : r.attnOk ? "bg-[#A8813C]" : "bg-[#BF5B34]"
+                    }`}
+                  >
+                    {i + 1}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={startSession}
+                className="w-full py-3.5 rounded-2xl bg-[#2F6B62] hover:bg-[#20514A] text-white font-black text-sm tracking-wide shadow-md transition-all cursor-pointer active:scale-98"
+              >
+                {t("playAgainBtn")}
+              </button>
+              <button
+                onClick={() => setScreen("home")}
+                className="w-full py-3 rounded-2xl bg-white border border-[#E7DFD0] text-[#20302C] font-bold text-xs hover:bg-[#FAF5EC] transition-all cursor-pointer"
+              >
+                {t("backToMenuBtn")}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <BambooStrip />
+    </div>
+  );
+}
+
+// ── Game 4: Sanga Memory & Recall Component ───────────────────────────────
+
+interface SangaItem {
+  id: string;
+  emoji: string;
+  en: string;
+  as: string;
+  hi: string;
+  mn: string;
+  category: string;
+}
+
+const SANGA_CATALOG: SangaItem[] = [
+  // Animals
+  { id: "dog", emoji: "🐕", en: "Dog", as: "কুকুৰ", hi: "कुत्ता", mn: "হুই", category: "animal" },
+  { id: "cat", emoji: "🐱", en: "Cat", as: "মেকুৰী", hi: "बिल्ली", mn: "হৌদোক", category: "animal" },
+  { id: "cow", emoji: "🐄", en: "Cow", as: "গৰু", hi: "गाय", mn: "শনম", category: "animal" },
+  { id: "elephant", emoji: "🐘", en: "Elephant", as: "হাতী", hi: "हाथी", mn: "শামু", category: "animal" },
+  { id: "monkey", emoji: "🐒", en: "Monkey", as: "বানৰ", hi: "बंदर", mn: "য়োং", category: "animal" },
+  { id: "bird", emoji: "🐦", en: "Bird", as: "চৰাই", hi: "पक्षी", mn: "উচেক", category: "animal" },
+  { id: "fish", emoji: "🐟", en: "Fish", as: "মাছ", hi: "मछली", mn: "ঙা", category: "animal" },
+  // Fruits
+  { id: "apple", emoji: "🍎", en: "Apple", as: "আপেল", hi: "सेब", mn: "सेब", category: "fruit" },
+  { id: "banana", emoji: "🍌", en: "Banana", as: "কল", hi: "केला", mn: "লাফোই", category: "fruit" },
+  { id: "mango", emoji: "🥭", en: "Mango", as: "আম", hi: "आम", mn: "হেইনৌ", category: "fruit" },
+  { id: "orange", emoji: "🍊", en: "Orange", as: "কমলা", hi: "संतरा", mn: "কমলা", category: "fruit" },
+  { id: "watermelon", emoji: "🍉", en: "Watermelon", as: "তৰমুজ", hi: "तरबूज", mn: "তৰমুজ", category: "fruit" },
+  // Daily items
+  { id: "cup", emoji: "☕", en: "Cup", as: "কাপ", hi: "कप", mn: "কাপ", category: "daily" },
+  { id: "spoon", emoji: "🥄", en: "Spoon", as: "চামুচ", hi: "चम्मच", mn: "চামুচ", category: "daily" },
+  { id: "key", emoji: "🔑", en: "Key", as: "চাবি", hi: "चाबी", mn: "চাবি", category: "daily" },
+  { id: "book", emoji: "📖", en: "Book", as: "কিতাপ", hi: "किताब", mn: "লাইৰিক", category: "daily" },
+  { id: "glasses", emoji: "👓", en: "Glasses", as: "চশমা", hi: "चश्मा", mn: "চশমা", category: "daily" },
+  { id: "bag", emoji: "👜", en: "Bag", as: "বেগ", hi: "बैग", mn: "বেগ", category: "daily" },
+  { id: "clock", emoji: "🕐", en: "Clock", as: "ঘড়ী", hi: "घड़ी", mn: "পুং", category: "daily" },
+  // Household
+  { id: "chair", emoji: "🪑", en: "Chair", as: "চকী", hi: "कुर्सी", mn: "চকী", category: "household" },
+  { id: "bed", emoji: "🛏️", en: "Bed", as: "বিচনা", hi: "बिस्तर", mn: "বিচনা", category: "household" },
+  { id: "lamp", emoji: "💡", en: "Lamp", as: "চাকি/লেম্প", hi: "लैंप", mn: "থাইবা", category: "household" },
+  { id: "tv", emoji: "📺", en: "Television", as: "টিভি", hi: "टेलीविज़न", mn: "টিভি", category: "household" },
+  { id: "phone", emoji: "📞", en: "Phone", as: "ফুন", hi: "फ़ोन", mn: "ফোন", category: "household" },
+  // Nature
+  { id: "flower", emoji: "🌸", en: "Flower", as: "ফুল", hi: "फूल", mn: "লৈরাঙ", category: "nature" },
+  { id: "tree", emoji: "🌳", en: "Tree", as: "গছ", hi: "पेड़", mn: "উমং", category: "nature" },
+  { id: "sun", emoji: "☀️", en: "Sun", as: "সূৰ্য", hi: "सूरज", mn: "নুমিৎ", category: "nature" },
+  { id: "moon", emoji: "🌙", en: "Moon", as: "জোন", hi: "चाँद", mn: "থা", category: "nature" },
+  // Culture & Regional
+  { id: "bamboo", emoji: "🎍", en: "Bamboo Craft", as: "বাঁহৰ শিল্প", hi: "बांस शिल्प", mn: "ৱা", category: "culture" },
+  { id: "basket", emoji: "🧺", en: "Basket", as: "পাচি/টোকাৰী", hi: "टोकरी", mn: "পাংকোক", category: "culture" },
+  { id: "tealeaf", emoji: "🍃", en: "Tea Leaf", as: "চাহ পাত", hi: "चाय पत्ती", mn: "চাহ পন", category: "culture" },
+  { id: "drum", emoji: "🥁", en: "Drum", as: "ঢোল", hi: "ढोल", mn: "পুং", category: "culture" },
+];
+
+const SANGA_LEVEL_NAMES = [
+  { level: 1, title: { en: "Easy Recall", as: "সহজ স্মৰণ", mn: "লাইবা লৌশিং" } },
+  { level: 2, title: { en: "More Objects", as: "অধিক বস্তু", mn: "য়াম্বা পোত" } },
+  { level: 3, title: { en: "Category Recall", as: "শ্ৰেণী স্মৰণ", mn: "কাংলুপ লৌশিং" } },
+  { level: 4, title: { en: "Timed Memory", as: "সময়বদ্ধ স্মৃতি", mn: "মতং সোংথিং" } },
+  { level: 5, title: { en: "Mixed Practice", as: "মিশ্ৰিত অনুশীলন", mn: "য়াংশিনবা লৈহাউ" } },
+  { level: 6, title: { en: "Advanced Recall", as: "উন্নত স্মৰণ", mn: "খ্বাইদগী নিংথৌ" } },
+];
+
+function SangaGameScreen({ onBack }: { onBack: () => void }) {
+  const t = useT();
+  const { lang } = useLang();
+  const [screen, setScreen] = useState<"home" | "memorize" | "question" | "feedback" | "results">("home");
+  const [level, setLevel] = useState<number>(() => {
+    const saved = localStorage.getItem("sanga_level");
+    const parsed = saved ? parseInt(saved, 10) : 1;
+    return isNaN(parsed) || parsed < 1 ? 1 : Math.min(parsed, 6);
+  });
+  const [qIndex, setQIndex] = useState(0);
+  const totalQuestions = 6;
+  const [score, setScore] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState<number>(() => {
+    const saved = localStorage.getItem("sanga_best_streak");
+    const parsed = saved ? parseInt(saved, 10) : 0;
+    return isNaN(parsed) || parsed < 0 ? 0 : parsed;
+  });
+  const [countdown, setCountdown] = useState(8);
+  const [qTimer, setQTimer] = useState(0);
+  const [currentQ, setCurrentQ] = useState<any>(null);
+  const [chosenAnswer, setChosenAnswer] = useState<any>(null);
+  const [lastCorrect, setLastCorrect] = useState<boolean | null>(null);
+
+  const timerRef = useRef<any>(null);
+  const qTimerRef = useRef<any>(null);
+
+  const handleResetLevel = () => {
+    if (window.confirm(t("confirmResetLevel"))) {
+      setLevel(1);
+      setBestStreak(0);
+      setStreak(0);
+      localStorage.removeItem("sanga_level");
+      localStorage.removeItem("sanga_best_streak");
+    }
+  };
+
+  const getItemLabel = (item: SangaItem) => {
+    return (item as any)[lang] || item.as || item.en;
+  };
+
+  const getCategoryLabel = (cat: string) => {
+    const map: Record<string, Record<string, string>> = {
+      animal: { en: "animals", as: "জীৱ-জন্তু", mn: "শা-ঙা" },
+      fruit: { en: "fruits", as: "ফল-মূল", mn: "হৈ-নোই" },
+      daily: { en: "daily items", as: "দৈনিক ব্যৱহৃত বস্তু", mn: "নুমিৎ চাকখৈ" },
+      household: { en: "household items", as: "ঘৰুৱা সামগ্ৰী", mn: "ইমুং পোত" },
+      nature: { en: "nature items", as: "প্ৰাকৃতিক বস্তু", mn: "প্রকৃতি" },
+      culture: { en: "cultural items", as: "সাংস্কৃতিক বস্তু", mn: "সংস্কৃতি" },
+    };
+    return map[cat]?.[lang] || map[cat]?.as || map[cat]?.en || cat;
+  };
+
+  const speakText = (text: string) => {
+    if (!("speechSynthesis" in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 0.9;
+      window.speechSynthesis.speak(utter);
+    } catch (e) {}
+  };
+
+  const generateQuestion = (lvl: number) => {
+    const choicesCount = 4;
+    const modePool = ["recognize", "count"];
+    if (lvl >= 2) modePool.push("missing");
+    if (lvl >= 3) modePool.push("category");
+    if (lvl >= 4) modePool.push("sequence");
+    if (lvl >= 5) modePool.push("position");
+    if (lvl >= 6) modePool.push("oddOneOut");
+
+    const mode = modePool[Math.floor(Math.random() * modePool.length)];
+    const numObjects = Math.min(2 + Math.floor(lvl / 2), 6);
+    const shuffledCatalog = [...SANGA_CATALOG].sort(() => Math.random() - 0.5);
+
+    if (mode === "count") {
+      const targetItem = shuffledCatalog[0];
+      const count = Math.floor(Math.random() * 3) + 2; // 2 to 4
+      const otherItems = shuffledCatalog.slice(1, numObjects);
+      const displayItems: SangaItem[] = [];
+      for (let i = 0; i < count; i++) displayItems.push(targetItem);
+      otherItems.forEach((it) => displayItems.push(it));
+
+      const shuffledDisplay = displayItems.sort(() => Math.random() - 0.5);
+      const options = [count, count + 1, Math.max(1, count - 1), count + 2].sort(() => Math.random() - 0.5);
+
+      const qText = lang === "as"
+        ? `আপুনি কেইটা ${getItemLabel(targetItem)} দেখিছিল?`
+        : lang === "mn"
+        ? `নংগী কায়াম্বা ${getItemLabel(targetItem)} উবা?`
+        : `How many ${getItemLabel(targetItem).toLowerCase()} did you see?`;
+
+      return {
+        mode,
+        items: shuffledDisplay,
+        question: qText,
+        options: options.map(String),
+        correctAnswer: String(count),
+        viewSeconds: Math.max(5, 9 - Math.floor(lvl * 0.5)),
+      };
+    }
+
+    if (mode === "recognize") {
+      const shown = shuffledCatalog.slice(0, numObjects);
+      const target = shown[Math.floor(Math.random() * shown.length)];
+      const distractors = shuffledCatalog.filter((o) => !shown.some((s) => s.id === o.id)).slice(0, choicesCount - 1);
+      const options = [...distractors, target].sort(() => Math.random() - 0.5);
+
+      const qText = lang === "as"
+        ? "আপুনি ইয়াৰ ভিতৰত কোনটো বস্তু দেখিছিল?"
+        : lang === "mn"
+        ? "নংগী কদোইবা পোত উবা?"
+        : "Which of these objects did you see?";
+
+      return {
+        mode,
+        items: shown,
+        question: qText,
+        options: options.map((o) => ({ id: o.id, label: getItemLabel(o), emoji: o.emoji })),
+        correctAnswer: target.id,
+        viewSeconds: Math.max(5, 9 - Math.floor(lvl * 0.5)),
+      };
+    }
+
+    if (mode === "missing") {
+      const shown = shuffledCatalog.slice(0, Math.max(4, numObjects));
+      const missingObj = shown[Math.floor(Math.random() * shown.length)];
+      const secondItems = shown.filter((s) => s.id !== missingObj.id);
+      const distractors = shuffledCatalog.filter((o) => !shown.some((s) => s.id === o.id)).slice(0, choicesCount - 1);
+      const options = [...distractors, missingObj].sort(() => Math.random() - 0.5);
+
+      const qText = lang === "as"
+        ? "কোনটো বস্তু নোহোৱা হৈছে?"
+        : lang === "mn"
+        ? "কদোইবা পোত মাকখিবা?"
+        : "Which object is missing?";
+
+      return {
+        mode,
+        items: shown,
+        secondItems,
+        question: qText,
+        options: options.map((o) => ({ id: o.id, label: getItemLabel(o), emoji: o.emoji })),
+        correctAnswer: missingObj.id,
+        viewSeconds: Math.max(5, 9 - Math.floor(lvl * 0.5)),
+      };
+    }
+
+    if (mode === "sequence") {
+      const seq = shuffledCatalog.slice(0, Math.min(numObjects, 4));
+      const askIdx = Math.floor(Math.random() * (seq.length - 1));
+      const target = seq[askIdx];
+      const correctNext = seq[askIdx + 1];
+      const distractors = shuffledCatalog.filter((o) => !seq.some((s) => s.id === o.id)).slice(0, choicesCount - 1);
+      const options = [...distractors, correctNext].sort(() => Math.random() - 0.5);
+
+      const qText = lang === "as"
+        ? `${getItemLabel(target)}ৰ পিছত কি আহিছিল?`
+        : lang === "mn"
+        ? `${getItemLabel(target)}গী মতুংদ কদোইবা লাকখিবা?`
+        : `What came after the ${getItemLabel(target).toLowerCase()}?`;
+
+      return {
+        mode,
+        items: seq,
+        question: qText,
+        options: options.map((o) => ({ id: o.id, label: getItemLabel(o), emoji: o.emoji })),
+        correctAnswer: correctNext.id,
+        viewSeconds: Math.max(5, 9 - Math.floor(lvl * 0.5)),
+      };
+    }
+
+    if (mode === "position") {
+      const chosen = shuffledCatalog.slice(0, Math.min(numObjects, 5));
+      const positions = [0, 1, 2, 3, 4, 5, 6, 7, 8].sort(() => Math.random() - 0.5).slice(0, chosen.length);
+      const grid = new Array(9).fill(null);
+      chosen.forEach((obj, i) => { grid[positions[i]] = obj; });
+      const targetIdx = Math.floor(Math.random() * chosen.length);
+      const target = chosen[targetIdx];
+      const correctPos = positions[targetIdx];
+
+      const qText = lang === "as"
+        ? `${getItemLabel(target)} ক'ত আছিল? (১-৯ নম্বৰ স্থান)`
+        : lang === "mn"
+        ? `${getItemLabel(target)} কদোইদা লৈবা?`
+        : `Where was the ${getItemLabel(target).toLowerCase()}?`;
+
+      return {
+        mode,
+        grid,
+        targetEmoji: target.emoji,
+        targetLabel: getItemLabel(target),
+        question: qText,
+        options: [0, 1, 2, 3, 4, 5, 6, 7, 8].map(String),
+        correctAnswer: String(correctPos),
+        viewSeconds: Math.max(6, 10 - Math.floor(lvl * 0.5)),
+      };
+    }
+
+    // Default recognize fallback
+    const shown = shuffledCatalog.slice(0, numObjects);
+    const target = shown[0];
+    const distractors = shuffledCatalog.filter((o) => !shown.some((s) => s.id === o.id)).slice(0, choicesCount - 1);
+    const options = [...distractors, target].sort(() => Math.random() - 0.5);
+
+    return {
+      mode: "recognize",
+      items: shown,
+      question: "Which object did you see?",
+      options: options.map((o) => ({ id: o.id, label: getItemLabel(o), emoji: o.emoji })),
+      correctAnswer: target.id,
+      viewSeconds: 6,
+    };
+  };
+
+  const startSession = () => {
+    setQIndex(0);
+    setScore(0);
+    setCorrectCount(0);
+    setStreak(0);
+    startQuestion(0, 0, 0, 0);
+  };
+
+  const startQuestion = (idx: number, currScore: number, currCorrect: number, currStreak: number) => {
+    if (idx >= totalQuestions) {
+      finishSession(currScore, currCorrect, currStreak);
+      return;
+    }
+
+    setQIndex(idx);
+    setScore(currScore);
+    setCorrectCount(currCorrect);
+    setStreak(currStreak);
+    setChosenAnswer(null);
+    setLastCorrect(null);
+
+    const q = generateQuestion(level);
+    setCurrentQ(q);
+    setCountdown(q.viewSeconds);
+    setScreen("memorize");
+
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (qTimerRef.current) clearInterval(qTimerRef.current);
+
+    let secLeft = q.viewSeconds;
+    timerRef.current = setInterval(() => {
+      secLeft -= 1;
+      setCountdown(secLeft);
+      if (secLeft <= 0) {
+        clearInterval(timerRef.current);
+        openQuestionPhase();
+      }
+    }, 1000);
+  };
+
+  const openQuestionPhase = () => {
+    setScreen("question");
+    setQTimer(0);
+
+    let elapsed = 0;
+    qTimerRef.current = setInterval(() => {
+      elapsed += 1;
+      setQTimer(elapsed);
+    }, 1000);
+  };
+
+  const handleAnswerSubmit = (ansId: string) => {
+    if (screen !== "question") return;
+    if (qTimerRef.current) clearInterval(qTimerRef.current);
+
+    const isCorrect = String(ansId) === String(currentQ.correctAnswer);
+    setChosenAnswer(ansId);
+    setLastCorrect(isCorrect);
+
+    const nextStreak = isCorrect ? streak + 1 : 0;
+    const newBest = Math.max(bestStreak, nextStreak);
+    setStreak(nextStreak);
+    if (newBest > bestStreak) {
+      setBestStreak(newBest);
+      localStorage.setItem("sanga_best_streak", String(newBest));
+    }
+
+    const bonus = nextStreak >= 3 ? 10 : 0;
+    const nextScore = isCorrect ? score + 15 + bonus : score;
+    const nextCorrect = isCorrect ? correctCount + 1 : correctCount;
+
+    setScreen("feedback");
+
+    setTimeout(() => {
+      startQuestion(qIndex + 1, nextScore, nextCorrect, nextStreak);
+    }, 1600);
+  };
+
+  const finishSession = (finalScore: number, finalCorrect: number, finalStreak: number) => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (qTimerRef.current) clearInterval(qTimerRef.current);
+
+    setScore(finalScore);
+    setCorrectCount(finalCorrect);
+    setScreen("results");
+
+    const acc = Math.round((finalCorrect / totalQuestions) * 100);
+
+    // Auto level up if accuracy >= 70%
+    if (acc >= 70 && level < 6) {
+      setLevel((prev) => {
+        const next = Math.min(prev + 1, 6);
+        localStorage.setItem("sanga_level", String(next));
+        return next;
+      });
+    }
+
+    api.logActivity("game", { game: "Sanga Memory", score: finalScore, accuracy: acc, level }).catch(() => {});
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (qTimerRef.current) clearInterval(qTimerRef.current);
+    };
+  }, []);
+
+  const currentLevelTitle = SANGA_LEVEL_NAMES[Math.min(level - 1, 5)]?.title[lang as keyof typeof SANGA_LEVEL_NAMES[0]["title"]] || `${t("levelLabel")} ${level}`;
+
+  return (
+    <div className="flex flex-col min-h-full bg-[#F3F4EC] text-[#223326]">
+      <BambooStrip />
+      <NavBar title={t("sangaNavTitle")} onBack={onBack} />
+
+      <div className="flex-1 overflow-y-auto max-w-2xl mx-auto w-full px-4 sm:px-6 py-6">
+        {screen === "home" && (
+          <div className="flex flex-col gap-6 animate-fadeIn">
+            {/* Hero Card */}
+            <div className="bg-gradient-to-br from-[#2F6B4F] to-[#234F3B] text-white p-6 sm:p-7 rounded-3xl shadow-lg relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[11px] font-extrabold tracking-widest uppercase opacity-80">{t("levelLabel")} {level} • {currentLevelTitle}</span>
+                  <h2 className="text-2xl sm:text-3xl font-black mt-0.5">{t("sangaNavTitle")}</h2>
+                </div>
+                <span className="text-4xl">🧠</span>
+              </div>
+              <p className="text-xs sm:text-sm font-medium text-emerald-100 mt-2">
+                {t("sangaHeroSub")}
+              </p>
+            </div>
+
+            {/* Level Info Banner (Automatic Progression) */}
+            <div className="bg-white p-5 rounded-3xl border border-[#D8DECB] shadow-xs flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#EAEEE1] text-[#2F6B4F] flex items-center justify-center text-2xl font-black flex-shrink-0">
+                ⭐
+              </div>
+              <div>
+                <b className="text-base font-black text-[#234F3B]">{t("levelLabel")} {level}: {currentLevelTitle}</b>
+                <p className="text-xs font-semibold text-[#4B5C4E] mt-0.5">
+                  {t("difficultyAutoText")}
+                </p>
+              </div>
+            </div>
+
+            {/* Stats Overview */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-white p-4 rounded-2xl border border-[#D8DECB] text-center shadow-xs">
+                <b className="block text-2xl font-black text-[#2F6B4F]">{t("levelLabel")} {level}</b>
+                <span className="text-[11px] font-extrabold text-[#4B5C4E] uppercase">{t("currentLevelLabel")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#D8DECB] text-center shadow-xs">
+                <b className="block text-2xl font-black text-[#C98F2A]">🔥 {bestStreak}</b>
+                <span className="text-[11px] font-extrabold text-[#4B5C4E] uppercase">{t("bestStreakLabel")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#D8DECB] text-center shadow-xs">
+                <b className="block text-2xl font-black text-[#3B8B6B]">{totalQuestions}</b>
+                <span className="text-[11px] font-extrabold text-[#4B5C4E] uppercase">{t("questionsPerRound")}</span>
+              </div>
+            </div>
+
+            {/* Start Button & Reset Button */}
+            <div className="flex flex-col gap-2.5">
+              <button
+                onClick={startSession}
+                className="w-full py-4 rounded-2xl bg-[#2F6B4F] hover:bg-[#234F3B] text-white font-black text-lg tracking-wide shadow-md transition-all cursor-pointer active:scale-98"
+              >
+                {t("startPracticeBtn")}
+              </button>
+
+              <button
+                onClick={handleResetLevel}
+                className="w-full py-3 rounded-2xl bg-white border border-[#D8DECB] hover:bg-[#FFF0EB] text-[#C1613D] font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-98"
+              >
+                {t("resetLevelBtn")}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {screen === "memorize" && currentQ && (
+          <div className="flex flex-col gap-5 animate-fadeIn">
+            {/* Top Bar with Progress Bar & Streak */}
+            <div className="flex flex-col gap-2 bg-white px-4 py-3 rounded-2xl border border-[#D8DECB] shadow-xs">
+              <div className="flex items-center justify-between">
+                <button onClick={() => setScreen("home")} className="text-xs font-bold text-[#4B5C4E] hover:text-[#234F3B] transition-colors cursor-pointer">
+                  {t("exitBtn")}
+                </button>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-[#2F6B4F] bg-[#EAEEE1] px-3 py-1 rounded-full">
+                    {t("questionOf")} {qIndex + 1} {t("of")} {totalQuestions}
+                  </span>
+                  {streak >= 2 && (
+                    <span className="text-xs font-black text-[#C1613D] bg-[#FFF0EB] px-2.5 py-1 rounded-full animate-bounce border border-[#C1613D30]">
+                      🔥 {streak}x {t("streakBadge")}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Visual Progress Bar */}
+              <div className="w-full bg-[#E5DEC9] h-2.5 rounded-full overflow-hidden">
+                <div
+                  className="bg-[#2F6B4F] h-full rounded-full transition-all duration-300"
+                  style={{ width: `${Math.round(((qIndex + 1) / totalQuestions) * 100)}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Prompt */}
+            <div className="bg-[#EAEEE1] p-4 rounded-2xl text-center border border-[#2F6B4F30]">
+              <p className="text-base sm:text-lg font-black text-[#234F3B]">
+                {t("lookCarefully")}
+              </p>
+            </div>
+
+            {/* Countdown Ring */}
+            <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#C98F2A] to-[#F1DBA9] p-1.5 mx-auto shadow-md flex items-center justify-center">
+              <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-3xl font-black text-[#234F3B]">
+                {countdown}
+              </div>
+            </div>
+
+            {/* Items Display Stage */}
+            {currentQ.mode === "position" ? (
+              <div className="grid grid-cols-3 gap-3 p-4 bg-white rounded-3xl border border-[#D8DECB] shadow-xs max-w-xs mx-auto w-full">
+                {currentQ.grid.map((cell: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className={`h-20 rounded-2xl border-2 flex items-center justify-center text-3xl ${
+                      cell ? "bg-[#EAEEE1] border-[#2F6B4F30]" : "bg-[#F3F4EC] border-dashed border-[#D8DECB]"
+                    }`}
+                  >
+                    {cell ? cell.emoji : ""}
+                  </div>
+                ))}
+              </div>
+            ) : currentQ.mode === "sequence" ? (
+              <div className="flex items-center justify-center gap-2 flex-wrap p-5 bg-white rounded-3xl border border-[#D8DECB] shadow-xs">
+                {currentQ.items.map((it: SangaItem, idx: number) => (
+                  <React.Fragment key={it.id}>
+                    <div className="bg-[#EAEEE1] p-4 rounded-2xl border border-[#D8DECB] flex flex-col items-center gap-1">
+                      <span className="text-4xl">{it.emoji}</span>
+                      <span className="text-xs font-black text-[#223326]">{getItemLabel(it)}</span>
+                    </div>
+                    {idx < currentQ.items.length - 1 && <span className="text-xl font-black text-[#4B5C4E]">➔</span>}
+                  </React.Fragment>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-3 flex-wrap p-6 bg-white rounded-3xl border border-[#D8DECB] shadow-xs">
+                {currentQ.items.map((it: SangaItem) => (
+                  <div key={it.id} className="bg-[#EAEEE1] p-4 sm:p-5 rounded-2xl border border-[#D8DECB] flex flex-col items-center gap-1.5 shadow-xs transition-transform hover:scale-105">
+                    <span className="text-4xl sm:text-5xl">{it.emoji}</span>
+                    <span className="text-xs font-black text-[#223326]">{getItemLabel(it)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {(screen === "question" || screen === "feedback") && currentQ && (
+          <div className="flex flex-col gap-5 animate-fadeIn">
+            {/* Top Bar with Progress & Streak */}
+            <div className="flex flex-col gap-2 bg-white px-4 py-3 rounded-2xl border border-[#D8DECB] shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-[#4B5C4E]">{t("scoreLabel")}: {score}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-[#2F6B4F] bg-[#EAEEE1] px-3 py-1 rounded-full">
+                    {qIndex + 1} / {totalQuestions}
+                  </span>
+                  {streak >= 2 && (
+                    <span className="text-xs font-black text-[#C1613D] bg-[#FFF0EB] px-2.5 py-1 rounded-full animate-bounce border border-[#C1613D30]">
+                      🔥 {streak}x {t("streakBadge")}
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs font-bold text-[#4B5C4E]">⏱ {qTimer}s</span>
+              </div>
+
+              {/* Visual Progress Bar */}
+              <div className="w-full bg-[#E5DEC9] h-2.5 rounded-full overflow-hidden">
+                <div
+                  className="bg-[#2F6B4F] h-full rounded-full transition-all duration-300"
+                  style={{ width: `${Math.round(((qIndex + 1) / totalQuestions) * 100)}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Question Text */}
+            <div className="bg-white p-5 rounded-3xl border border-[#D8DECB] text-center shadow-xs flex flex-col items-center gap-3">
+              <h3 className="text-lg sm:text-xl font-black text-[#234F3B]">{currentQ.question}</h3>
+              <button
+                onClick={() => speakText(currentQ.question)}
+                className="text-xs font-bold text-[#2F6B4F] bg-[#EAEEE1] px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-[#2F6B4F] hover:text-white transition-all cursor-pointer"
+              >
+                {t("readAloudBtn")}
+              </button>
+            </div>
+
+            {/* Options Area */}
+            {currentQ.mode === "position" ? (
+              <div className="bg-white p-5 rounded-3xl border border-[#D8DECB] flex flex-col items-center gap-4 shadow-xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">{currentQ.targetEmoji}</span>
+                  <b className="text-base font-black text-[#234F3B]">{currentQ.targetLabel}</b>
+                </div>
+                <div className="grid grid-cols-3 gap-3 max-w-xs w-full">
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((posIdx) => {
+                    const isChosen = String(chosenAnswer) === String(posIdx);
+                    const isCorrectPos = String(currentQ.correctAnswer) === String(posIdx);
+                    let btnStyle = "bg-[#F3F4EC] border-[#D8DECB] text-[#234F3B] hover:border-[#2F6B4F]";
+                    if (screen === "feedback") {
+                      if (isCorrectPos) btnStyle = "bg-[#E4F1E6] border-[#2F6B4F] text-[#2F6B4F] font-black";
+                      else if (isChosen) btnStyle = "bg-[#F7E7E1] border-[#B5573A] text-[#B5573A]";
+                    }
+                    return (
+                      <button
+                        key={posIdx}
+                        disabled={screen === "feedback"}
+                        onClick={() => handleAnswerSubmit(String(posIdx))}
+                        className={`h-16 rounded-2xl border-2 font-black text-xl flex items-center justify-center transition-all cursor-pointer ${btnStyle}`}
+                      >
+                        {posIdx + 1}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : currentQ.mode === "count" ? (
+              <div className="grid grid-cols-2 gap-3.5">
+                {currentQ.options.map((numOpt: string) => {
+                  const isChosen = String(chosenAnswer) === String(numOpt);
+                  const isCorrect = String(currentQ.correctAnswer) === String(numOpt);
+                  let btnStyle = "bg-white border-[#D8DECB] text-[#223326] hover:border-[#2F6B4F]";
+                  if (screen === "feedback") {
+                    if (isCorrect) btnStyle = "bg-[#E4F1E6] border-[#2F6B4F] text-[#2F6B4F] font-black";
+                    else if (isChosen) btnStyle = "bg-[#F7E7E1] border-[#B5573A] text-[#B5573A]";
+                  }
+                  return (
+                    <button
+                      key={numOpt}
+                      disabled={screen === "feedback"}
+                      onClick={() => handleAnswerSubmit(numOpt)}
+                      className={`p-6 rounded-2xl border-2 text-2xl font-black flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95 ${btnStyle}`}
+                    >
+                      {numOpt}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3.5">
+                {currentQ.options.map((opt: any) => {
+                  const isChosen = String(chosenAnswer) === String(opt.id);
+                  const isCorrect = String(currentQ.correctAnswer) === String(opt.id);
+                  let btnStyle = "bg-white border-[#D8DECB] text-[#223326] hover:border-[#2F6B4F]";
+                  if (screen === "feedback") {
+                    if (isCorrect) btnStyle = "bg-[#E4F1E6] border-[#2F6B4F] text-[#2F6B4F] font-black";
+                    else if (isChosen) btnStyle = "bg-[#F7E7E1] border-[#B5573A] text-[#B5573A]";
+                  }
+                  return (
+                    <button
+                      key={opt.id}
+                      disabled={screen === "feedback"}
+                      onClick={() => handleAnswerSubmit(opt.id)}
+                      className={`p-5 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95 ${btnStyle}`}
+                    >
+                      <span className="text-3xl">{opt.emoji}</span>
+                      <span className="text-sm font-black text-center">{opt.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Feedback Banner */}
+            {screen === "feedback" && (
+              <div
+                className={`p-4 rounded-2xl text-center font-black text-base shadow-sm animate-fadeIn ${
+                  lastCorrect ? "bg-[#E4F1E6] text-[#234F3B]" : "bg-[#F7E7E1] text-[#B5573A]"
+                }`}
+              >
+                {lastCorrect ? t("excellentRemembered") : t("notQuiteTryNext")}
+              </div>
+            )}
+          </div>
+        )}
+
+        {screen === "results" && (
+          <div className="flex flex-col gap-6 text-center animate-fadeIn py-2 max-w-md mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-[#EAEEE1] text-[#2F6B4F] text-3xl flex items-center justify-center mx-auto shadow-sm">
+              {Math.round((correctCount / totalQuestions) * 100) >= 80 ? "🎉" : "🌟"}
+            </div>
+
+            <div>
+              <p className="text-[11px] font-black tracking-widest text-[#4B5C4E] uppercase">{t("practiceComplete")}</p>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#234F3B] mt-0.5">
+                {Math.round((correctCount / totalQuestions) * 100) >= 80 ? t("greatMemoryPerf") : t("wellPracticedToday")}
+              </h2>
+              {Math.round((correctCount / totalQuestions) * 100) >= 70 && level > 1 && (
+                <span className="inline-block mt-2 text-xs font-black text-[#2F6B4F] bg-[#EAEEE1] px-3.5 py-1 rounded-full border border-[#2F6B4F20]">
+                  {t("levelUpReached")} {level}
+                </span>
+              )}
+            </div>
+
+            {/* Score Banner */}
+            <div className="bg-[#2F6B4F] text-white p-6 rounded-2xl shadow-lg">
+              <span className="text-[10px] font-black tracking-widest text-emerald-200 uppercase">{t("finalAccuracy")}</span>
+              <b className="block text-5xl font-black text-[#F1DBA9] my-1">
+                {Math.round((correctCount / totalQuestions) * 100)}%
+              </b>
+              <span className="text-xs font-bold text-emerald-100">{correctCount} {t("of")} {totalQuestions} {t("questionsCorrect")}</span>
+            </div>
+
+            {/* Stats Breakdown */}
+            <div className="grid grid-cols-2 gap-3 text-left">
+              <div className="bg-white p-4 rounded-2xl border border-[#D8DECB] shadow-xs">
+                <b className="block text-2xl font-black text-[#2F6B4F]">{score} pts</b>
+                <span className="text-xs font-bold text-[#4B5C4E]">{t("totalScore")}</span>
+              </div>
+              <div className="bg-white p-4 rounded-2xl border border-[#D8DECB] shadow-xs">
+                <b className="block text-2xl font-black text-[#C98F2A]">🔥 {bestStreak}</b>
+                <span className="text-xs font-bold text-[#4B5C4E]">{t("bestStreakLabel")}</span>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col gap-2.5">
+              <button
+                onClick={startSession}
+                className="w-full py-3.5 rounded-2xl bg-[#2F6B4F] hover:bg-[#234F3B] text-white font-black text-sm tracking-wide shadow-md transition-all cursor-pointer active:scale-98"
+              >
+                {t("nextRoundBtn")}
+              </button>
+              <button
+                onClick={() => setScreen("home")}
+                className="w-full py-3 rounded-2xl bg-white border border-[#D8DECB] text-[#234F3B] font-bold text-xs hover:bg-[#F3F4EC] transition-all cursor-pointer"
+              >
+                {t("backToMenuBtn")}
+              </button>
+              <button
+                onClick={handleResetLevel}
+                className="w-full py-2.5 rounded-2xl bg-[#C1613D10] text-[#C1613D] font-bold text-xs hover:bg-[#FFF0EB] transition-all cursor-pointer"
+              >
+                {t("resetLevelBtn")}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <BambooStrip />
+    </div>
+  );
+}
+
 
 function ReminderFrequencyTag({ frequency, days }: { frequency?: string; days?: string[] }) {
   if (frequency === "today") {
@@ -2201,12 +3449,173 @@ function EditPatientProfileModal({
   );
 }
 
+// ── Patient Progress Report Modal ──────────────────────────────────────────
+
+function PatientProgressReportModal({ onClose }: { onClose: () => void }) {
+  const [activities, setActivities] = useState<api.ActivityLog[]>([]);
+
+  useEffect(() => {
+    api.fetchMyActivities()
+      .then((data: api.ActivityLog[]) => {
+        setActivities(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const gameActivities = activities.filter((a) => a.type === "game");
+  const mindsnapLogs = gameActivities.filter((a) => ((a.payload as any)?.game || "").toLowerCase().includes("mindsnap"));
+  const smritiTaalLogs = gameActivities.filter((a) => ((a.payload as any)?.game || "").toLowerCase().includes("smriti"));
+  const sangaLogs = gameActivities.filter((a) => ((a.payload as any)?.game || "").toLowerCase().includes("sanga"));
+  const matchPairsLogs = gameActivities.filter((a) => !((a.payload as any)?.game || "").toLowerCase().includes("mindsnap") && !((a.payload as any)?.game || "").toLowerCase().includes("smriti") && !((a.payload as any)?.game || "").toLowerCase().includes("sanga"));
+
+  const allAccuracies = gameActivities
+    .map((a) => Number((a.payload as any)?.accuracy))
+    .filter((acc) => !isNaN(acc) && acc > 0);
+  const overallAcc = allAccuracies.length > 0
+    ? Math.round(allAccuracies.reduce((a, b) => a + b, 0) / allAccuracies.length)
+    : 85;
+
+  const totalGames = gameActivities.length;
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn overflow-y-auto">
+      <div className="bg-[#FAF6EF] w-full max-w-lg rounded-3xl border-2 border-[#D6C9B4] shadow-2xl p-6 flex flex-col gap-6 max-h-[90vh] overflow-y-auto my-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#D6C9B430] pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EBF4F4] text-[#2E6F6E] text-2xl flex items-center justify-center font-black">
+              📊
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-[#2B2B2B]">Patient Progress Report</h3>
+              <p className="text-xs font-semibold text-[#7A7060]">All-time cognitive & game performance</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-full bg-[#FAF6EF] hover:bg-[#EBF4F4] text-[#7A7060] font-black text-lg flex items-center justify-center transition-all cursor-pointer border border-[#D6C9B4]"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Overall Accuracy Ring & Stats */}
+        <div className="bg-white p-6 rounded-3xl border border-[#D6C9B4] text-center shadow-xs flex flex-col items-center gap-3">
+          <span className="text-[11px] font-black uppercase text-[#7A7060] tracking-widest">OVERALL ACCURACY</span>
+          <div className="relative w-32 h-32 flex items-center justify-center">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" stroke="#EBF4F4" strokeWidth="10" fill="transparent" />
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                stroke="#2E6F6E"
+                strokeWidth="10"
+                strokeDasharray={264}
+                strokeDashoffset={264 - (264 * overallAcc) / 100}
+                strokeLinecap="round"
+                fill="transparent"
+                className="transition-all duration-1000"
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+              <span className="text-3xl font-black text-[#2E6F6E]">{overallAcc}%</span>
+              <span className="text-[10px] font-bold text-[#7A7060]">Accuracy</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 w-full mt-2">
+            <div className="bg-[#FAF8F5] p-3 rounded-2xl border border-[#E5DEC9] text-center">
+              <b className="block text-xl font-black text-[#2E6F6E]">{totalGames}</b>
+              <span className="text-[11px] font-bold text-[#7A7060]">Games Played</span>
+            </div>
+            <div className="bg-[#FAF8F5] p-3 rounded-2xl border border-[#E5DEC9] text-center">
+              <b className="block text-xl font-black text-[#7567f8]">4 Games</b>
+              <span className="text-[11px] font-bold text-[#7A7060]">Active Arcades</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Breakdown Per Game */}
+        <div className="flex flex-col gap-3">
+          <h4 className="text-[12px] font-black uppercase tracking-wider text-[#7A7060]">Game Wise Performance</h4>
+
+          {/* Game 1: Mindsnap Arcade */}
+          <div className="bg-white p-4 rounded-2xl border border-[#D6C9B4] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">⚡</span>
+              <div>
+                <b className="text-sm font-black text-[#2B2B2B]">Mindsnap Memory Arcade</b>
+                <p className="text-[11px] font-bold text-[#7A7060]">{mindsnapLogs.length} Sessions</p>
+              </div>
+            </div>
+            <span className="text-xs font-black text-[#7567f8] bg-[#F3E8FF] px-3 py-1 rounded-full border border-[#7567f820]">
+              Visual Memory
+            </span>
+          </div>
+
+          {/* Game 2: Match the Pairs */}
+          <div className="bg-white p-4 rounded-2xl border border-[#D6C9B4] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🧩</span>
+              <div>
+                <b className="text-sm font-black text-[#2B2B2B]">Match the Pairs</b>
+                <p className="text-[11px] font-bold text-[#7A7060]">{matchPairsLogs.length} Sessions</p>
+              </div>
+            </div>
+            <span className="text-xs font-black text-[#059669] bg-[#ECFDF5] px-3 py-1 rounded-full border border-[#05966920]">
+              Card Pairing
+            </span>
+          </div>
+
+          {/* Game 3: Smriti Taal */}
+          <div className="bg-white p-4 rounded-2xl border border-[#D6C9B4] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🥁</span>
+              <div>
+                <b className="text-sm font-black text-[#2B2B2B]">Smriti Taal — Rhythm</b>
+                <p className="text-[11px] font-bold text-[#7A7060]">{smritiTaalLogs.length} Sessions</p>
+              </div>
+            </div>
+            <span className="text-xs font-black text-[#2F6B62] bg-[#E2EFEB] px-3 py-1 rounded-full border border-[#2F6B6220]">
+              Audio Sequence
+            </span>
+          </div>
+
+          {/* Game 4: Sanga Memory */}
+          <div className="bg-white p-4 rounded-2xl border border-[#D6C9B4] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🧠</span>
+              <div>
+                <b className="text-sm font-black text-[#2B2B2B]">Sanga Memory & Recall</b>
+                <p className="text-[11px] font-bold text-[#7A7060]">{sangaLogs.length} Sessions</p>
+              </div>
+            </div>
+            <span className="text-xs font-black text-[#2F6B4F] bg-[#EAEEE1] px-3 py-1 rounded-full border border-[#2F6B4F20]">
+              Cognitive Practice
+            </span>
+          </div>
+        </div>
+
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="w-full py-3.5 rounded-2xl bg-[#2E6F6E] text-white font-black text-sm tracking-wide shadow-md transition-all cursor-pointer active:scale-98 mt-2"
+        >
+          Close Report
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ProfileScreen({ onBack, onLogout }: { onBack: () => void; onLogout: () => void }) {
   const { user, setUser } = useUser();
   const [careCode, setCareCode] = useState<string>(user.careCode || "");
   const [qrCode, setQrCode] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showProgressModal, setShowProgressModal] = useState(false);
 
   useEffect(() => {
     api.fetchCareCode()
@@ -2258,8 +3667,19 @@ function ProfileScreen({ onBack, onLogout }: { onBack: () => void; onLogout: () 
           onSave={(updated) => setUser(updated)}
         />
       )}
+      {showProgressModal && (
+        <PatientProgressReportModal onClose={() => setShowProgressModal(false)} />
+      )}
 
       <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-6 max-w-md mx-auto w-full">
+        {/* Progress Report Button */}
+        <button
+          onClick={() => setShowProgressModal(true)}
+          className="w-full py-4 rounded-3xl bg-gradient-to-r from-[#2E6F6E] to-[#20514A] text-white font-black text-[16px] shadow-md transition-all active:scale-98 flex items-center justify-center gap-3"
+        >
+          <span>📊 View All-Time Progress Report</span>
+        </button>
+
         {/* Header Card with Avatar & Primary Info */}
         <div className="bg-white rounded-3xl p-6 border border-[#D6C9B4] shadow-sm flex flex-col items-center gap-4 text-center relative">
           <div className="relative">
@@ -3011,6 +4431,53 @@ function CaregiverDashboard({ onLogout }: { onLogout: () => void }) {
   // Filter game logs for Game Results card
   const gameActivities = activities.filter((a) => a.type === "game");
 
+  const mindsnapLogs = gameActivities.filter((act) => {
+    const g = (act.payload as any)?.game || (act.payload as any)?.title || "";
+    return g.toLowerCase().includes("mindsnap");
+  });
+
+  const smritiTaalLogs = gameActivities.filter((act) => {
+    const g = (act.payload as any)?.game || (act.payload as any)?.title || "";
+    return g.toLowerCase().includes("smriti");
+  });
+
+  const sangaLogs = gameActivities.filter((act) => {
+    const g = (act.payload as any)?.game || (act.payload as any)?.title || "";
+    return g.toLowerCase().includes("sanga");
+  });
+
+  const matchPairsLogs = gameActivities.filter((act) => {
+    const g = (act.payload as any)?.game || (act.payload as any)?.title || "";
+    return !g.toLowerCase().includes("mindsnap") && !g.toLowerCase().includes("smriti") && !g.toLowerCase().includes("sanga");
+  });
+
+  const mindsnapStats = loadMindsnapStats();
+  const mindsnapBestScore = mindsnapLogs.length > 0
+    ? Math.max(...mindsnapLogs.map((a) => Number((a.payload as any)?.score || 0)), mindsnapStats.best)
+    : mindsnapStats.best;
+
+  const mindsnapAccuracy = mindsnapStats.attempts > 0
+    ? Math.round((mindsnapStats.hits / mindsnapStats.attempts) * 100)
+    : mindsnapLogs.length > 0
+    ? Math.round(mindsnapLogs.reduce((acc, a) => acc + Number((a.payload as any)?.accuracy || 80), 0) / mindsnapLogs.length)
+    : 0;
+
+  const smritiTaalScores = smritiTaalLogs.map((a) => Number((a.payload as any)?.score || 0));
+  const smritiTaalBestScore = smritiTaalScores.length > 0 ? Math.max(...smritiTaalScores) : 0;
+  const smritiTaalAvgAcc = smritiTaalLogs.length > 0
+    ? Math.round(smritiTaalLogs.reduce((acc, a) => acc + Number((a.payload as any)?.accuracy || 0), 0) / smritiTaalLogs.length)
+    : 0;
+
+  const sangaScores = sangaLogs.map((a) => Number((a.payload as any)?.score || 0));
+  const sangaBestScore = sangaScores.length > 0 ? Math.max(...sangaScores) : 0;
+  const sangaAvgAcc = sangaLogs.length > 0
+    ? Math.round(sangaLogs.reduce((acc, a) => acc + Number((a.payload as any)?.accuracy || 0), 0) / sangaLogs.length)
+    : 0;
+
+  const matchPairsScores = matchPairsLogs.map((a) => Number((a.payload as any)?.score || 0));
+  const matchPairsBestScore = matchPairsScores.length > 0 ? Math.max(...matchPairsScores) : 0;
+  const matchPairsAvgScore = matchPairsScores.length > 0 ? Math.round(matchPairsScores.reduce((a, b) => a + b, 0) / matchPairsScores.length) : 0;
+
   return (
     <div className="flex flex-col min-h-full bg-[#F7F4EE]">
       {showProfileModal && (
@@ -3359,9 +4826,9 @@ function CaregiverDashboard({ onLogout }: { onLogout: () => void }) {
                         </p>
                       </>
                     ) : (
-                      <div className="w-full flex flex-col gap-2.5 text-left">
-                        {activities.map((act) => (
-                          <div key={act.id} className="flex items-start gap-3 p-3 rounded-xl bg-white border border-[#EBE4D8]">
+                      <div className="w-full flex flex-col gap-2.5 text-left max-h-[440px] overflow-y-auto pr-1">
+                        {activities.slice(0, 10).map((act) => (
+                          <div key={act.id} className="flex items-start gap-3 p-3 rounded-xl bg-white border border-[#EBE4D8] shadow-xs">
                             <span className="text-xl flex-shrink-0">
                               {act.type === "game" ? "🎮" : act.type === "mood_checkin" ? "😊" : "💊"}
                             </span>
@@ -3385,51 +4852,311 @@ function CaregiverDashboard({ onLogout }: { onLogout: () => void }) {
               </>
             )}
 
-            {/* DEDICATED SCREEN 1: GAME RESULTS */}
+            {/* DEDICATED SCREEN 1: GAME RESULTS DETAILED VIEW */}
             {activeSection === "games" && (
-              <div className="bg-white p-4 sm:p-6 rounded-3xl border border-[#D6C9B4] flex flex-col gap-4 sm:gap-5 shadow-sm">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#D6C9B430] pb-3.5 sm:pb-4 gap-2">
-                  <div className="flex items-center gap-2.5 sm:gap-3">
-                    <span className="text-[24px] sm:text-[28px]">🎮</span>
-                    <div>
-                      <h3 className="text-[18px] sm:text-[22px] font-black text-[#2B2B2B]">Game Results History</h3>
-                      <p className="text-[12px] sm:text-[13px] font-bold text-[#7A7060]">Full cognitive game sessions & score performance</p>
+              <div className="flex flex-col gap-6">
+                {/* SECTION 1: MINDSNAP MEMORY ARCADE */}
+                <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#D6C9B4] flex flex-col gap-5 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#D6C9B430] pb-3.5 gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 text-[#7567f8] text-xl flex items-center justify-center font-black flex-shrink-0">
+                        ⚡
+                      </div>
+                      <div>
+                        <h4 className="text-lg sm:text-xl font-black text-[#2B2B2B]">Mindsnap Memory Arcade</h4>
+                        <p className="text-xs font-semibold text-[#7A7060]">Visual pattern recall performance</p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-black text-[#7567f8] bg-[#F3E8FF] px-3.5 py-1 rounded-full self-start sm:self-auto border border-[#7567f820]">
+                      {mindsnapLogs.length} Sessions Played
+                    </span>
+                  </div>
+
+                  {/* Top Stats Cards for Mindsnap */}
+                  <div>
+                    <h5 className="text-[11px] font-black uppercase text-[#7A7060] tracking-wider mb-2.5">Overall Mindsnap Performance</h5>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#56d8d0]">{mindsnapStats.games || mindsnapLogs.length}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Games played</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#7567f8]">{mindsnapAccuracy}%</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Recall accuracy</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#ffd166]">{mindsnapBestScore}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Best score</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#ff6fae]">{mindsnapStats.streak || (mindsnapLogs.length > 0 ? 1 : 0)} day{mindsnapStats.streak === 1 ? "" : "s"}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Play streak</span>
+                      </div>
                     </div>
                   </div>
-                  <span className="text-[12px] sm:text-[14px] font-black text-[#2E6F6E] bg-[#EBF4F4] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full self-start sm:self-auto">
-                    {gameActivities.length} Games Completed
-                  </span>
+
+                  {/* Bottom Latest 2 Logs for Mindsnap */}
+                  <div>
+                    <h5 className="text-[11px] font-black uppercase text-[#7A7060] tracking-wider mb-2.5">Latest 2 Session Logs</h5>
+                    {mindsnapLogs.length === 0 ? (
+                      <div className="p-6 text-center bg-[#FAF8F5] rounded-2xl border border-dashed border-[#E5DEC9]">
+                        <p className="text-xs font-semibold text-[#7A7060]">No Mindsnap game logs recorded yet.</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2.5">
+                        {mindsnapLogs.slice(0, 2).map((act) => (
+                          <div key={act.id} className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF6EF] border border-[#D6C9B430] flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-2.5 shadow-xs">
+                            <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#F3E8FF] text-[#7567f8] flex items-center justify-center text-lg font-black flex-shrink-0">
+                                ⚡
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-[14px] sm:text-[15px] font-black text-[#2B2B2B] truncate">
+                                  Mindsnap
+                                </p>
+                                <p className="text-[12px] sm:text-[13px] font-semibold text-[#7A7060]">
+                                  Played on {new Date(act.createdAt || Date.now()).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                                </p>
+                              </div>
+                            </div>
+                            <span className="text-[13px] sm:text-[14px] font-black text-[#7A9B76] bg-[#EEF4EE] px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border border-[#7A9B7630] self-start min-[480px]:self-auto">
+                              Score: {(act.payload as any)?.score ?? 0}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {gameActivities.length === 0 ? (
-                  <div className="py-12 text-center">
-                    <span className="text-[40px]">🎮</span>
-                    <p className="text-[15px] text-[#7A7060] font-bold mt-2">No game scores recorded yet.</p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2.5 sm:gap-3">
-                    {gameActivities.map((act) => (
-                      <div key={act.id} className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF6EF] border border-[#D6C9B430] flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-2.5 shadow-xs">
-                        <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[#EBF4F4] text-[#2E6F6E] flex items-center justify-center text-[18px] sm:text-[22px] font-bold flex-shrink-0">
-                            🧩
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-[14px] sm:text-[16px] font-black text-[#2B2B2B] capitalize truncate">
-                              {(act.payload as any)?.game || (act.payload as any)?.title || "Match the Pairs Memory Game"}
-                            </p>
-                            <p className="text-[12px] sm:text-[13px] font-semibold text-[#7A7060]">
-                              Played on {new Date(act.createdAt || Date.now()).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                            </p>
-                          </div>
-                        </div>
-                        <span className="text-[13px] sm:text-[15px] font-black text-[#7A9B76] bg-[#EEF4EE] px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border border-[#7A9B7630] self-start min-[480px]:self-auto">
-                          {(act.payload as any)?.score != null ? `Score: ${(act.payload as any).score}` : "Completed ✓"}
-                        </span>
+                {/* SECTION 2: MATCH THE PAIRS */}
+                <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#D6C9B4] flex flex-col gap-5 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#D6C9B430] pb-3.5 gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-[#059669] text-xl flex items-center justify-center font-black flex-shrink-0">
+                        🧩
                       </div>
-                    ))}
+                      <div>
+                        <h4 className="text-lg sm:text-xl font-black text-[#2B2B2B]">Match the Pairs Memory Game</h4>
+                        <p className="text-xs font-semibold text-[#7A7060]">Visual card pairing & memory recognition</p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-black text-[#059669] bg-[#ECFDF5] px-3.5 py-1 rounded-full self-start sm:self-auto border border-[#05966920]">
+                      {matchPairsLogs.length} Sessions Played
+                    </span>
                   </div>
-                )}
+
+                  {/* Top Stats Cards for Match Pairs */}
+                  <div>
+                    <h5 className="text-[11px] font-black uppercase text-[#7A7060] tracking-wider mb-2.5">Overall Match Pairs Performance</h5>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#059669]">{matchPairsLogs.length}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Games played</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#d97706]">{matchPairsBestScore}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Best score</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#7567f8]">{matchPairsAvgScore}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Avg score</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Latest 2 Logs for Match Pairs */}
+                  <div>
+                    <h5 className="text-[11px] font-black uppercase text-[#7A7060] tracking-wider mb-2.5">Latest 2 Session Logs</h5>
+                    {matchPairsLogs.length === 0 ? (
+                      <div className="p-6 text-center bg-[#FAF8F5] rounded-2xl border border-dashed border-[#E5DEC9]">
+                        <p className="text-xs font-semibold text-[#7A7060]">No Match the Pairs game logs recorded yet.</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2.5">
+                        {matchPairsLogs.slice(0, 2).map((act) => (
+                          <div key={act.id} className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF6EF] border border-[#D6C9B430] flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-2.5 shadow-xs">
+                            <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#EBF4F4] text-[#2E6F6E] flex items-center justify-center text-lg font-black flex-shrink-0">
+                                🧩
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-[14px] sm:text-[15px] font-black text-[#2B2B2B] truncate">
+                                  Match_pairs
+                                </p>
+                                <p className="text-[12px] sm:text-[13px] font-semibold text-[#7A7060]">
+                                  Played on {new Date(act.createdAt || Date.now()).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                                </p>
+                              </div>
+                            </div>
+                            <span className="text-[13px] sm:text-[14px] font-black text-[#7A9B76] bg-[#EEF4EE] px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border border-[#7A9B7630] self-start min-[480px]:self-auto">
+                              {(act.payload as any)?.score != null ? `Score: ${(act.payload as any).score}` : "Completed ✓"}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* SECTION 3: SMRITI TAAL RHYTHM & SOUND MEMORY */}
+                <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#D6C9B4] flex flex-col gap-5 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#D6C9B430] pb-3.5 gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#E2EFEB] text-[#2F6B62] text-xl flex items-center justify-center font-black flex-shrink-0">
+                        🥁
+                      </div>
+                      <div>
+                        <h4 className="text-lg sm:text-xl font-black text-[#2B2B2B]">Smriti Taal — Rhythm Arcade</h4>
+                        <p className="text-xs font-semibold text-[#7A7060]">Audio-visual rhythm & instrument sequence recall</p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-black text-[#2F6B62] bg-[#E2EFEB] px-3.5 py-1 rounded-full self-start sm:self-auto border border-[#2F6B6220]">
+                      {smritiTaalLogs.length} Sessions Played
+                    </span>
+                  </div>
+
+                  {/* Top Stats Cards for Smriti Taal */}
+                  <div>
+                    <h5 className="text-[11px] font-black uppercase text-[#7A7060] tracking-wider mb-2.5">Overall Smriti Taal Performance</h5>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#2F6B62]">{smritiTaalLogs.length}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Games played</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#DB7B25]">{smritiTaalBestScore}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Best score</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#3B8B6B]">{smritiTaalAvgAcc}%</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Avg accuracy</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Latest 2 Logs for Smriti Taal */}
+                  <div>
+                    <h5 className="text-[11px] font-black uppercase text-[#7A7060] tracking-wider mb-2.5">Latest 2 Session Logs</h5>
+                    {smritiTaalLogs.length === 0 ? (
+                      <div className="p-6 text-center bg-[#FAF8F5] rounded-2xl border border-dashed border-[#E5DEC9]">
+                        <p className="text-xs font-semibold text-[#7A7060]">No Smriti Taal game logs recorded yet.</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2.5">
+                        {smritiTaalLogs.slice(0, 2).map((act) => (
+                          <div key={act.id} className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF6EF] border border-[#D6C9B430] flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-2.5 shadow-xs">
+                            <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#E2EFEB] text-[#2F6B62] flex items-center justify-center text-lg font-black flex-shrink-0">
+                                🥁
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-[14px] sm:text-[15px] font-black text-[#2B2B2B] truncate">
+                                  Smriti Taal
+                                </p>
+                                <p className="text-[12px] sm:text-[13px] font-semibold text-[#7A7060]">
+                                  Played on {new Date(act.createdAt || Date.now()).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 self-start min-[480px]:self-auto">
+                              {(act.payload as any)?.accuracy != null && (
+                                <span className="text-[12px] sm:text-[13px] font-black text-[#2F6B62] bg-[#E2EFEB] px-3 py-1.5 rounded-xl border border-[#2F6B6220]">
+                                  {(act.payload as any).accuracy}% Acc
+                                </span>
+                              )}
+                              <span className="text-[13px] sm:text-[14px] font-black text-[#7A9B76] bg-[#EEF4EE] px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border border-[#7A9B7630]">
+                                {(act.payload as any)?.score != null ? `Score: ${(act.payload as any).score}` : "Completed ✓"}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* SECTION 4: SANGA MEMORY & RECALL */}
+                <div className="bg-white p-5 sm:p-6 rounded-3xl border border-[#D6C9B4] flex flex-col gap-5 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#D6C9B430] pb-3.5 gap-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#EAEEE1] text-[#2F6B4F] text-xl flex items-center justify-center font-black flex-shrink-0">
+                        🧠
+                      </div>
+                      <div>
+                        <h4 className="text-lg sm:text-xl font-black text-[#2B2B2B]">Sanga Memory & Recall</h4>
+                        <p className="text-xs font-semibold text-[#7A7060]">Adaptive multi-category object & sequence memory</p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-black text-[#2F6B4F] bg-[#EAEEE1] px-3.5 py-1 rounded-full self-start sm:self-auto border border-[#2F6B4F20]">
+                      {sangaLogs.length} Sessions Played
+                    </span>
+                  </div>
+
+                  {/* Top Stats Cards for Sanga Memory */}
+                  <div>
+                    <h5 className="text-[11px] font-black uppercase text-[#7A7060] tracking-wider mb-2.5">Overall Sanga Memory Performance</h5>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#2F6B4F]">{sangaLogs.length}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Games played</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#C98F2A]">{sangaBestScore}</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Best score</span>
+                      </div>
+                      <div className="bg-[#FAF8F5] p-3.5 sm:p-4 rounded-2xl border border-[#E5DEC9] shadow-xs">
+                        <b className="block text-2xl font-black text-[#3B8B6B]">{sangaAvgAcc}%</b>
+                        <span className="text-xs font-bold text-[#7A7060]">Avg accuracy</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Latest 2 Logs for Sanga Memory */}
+                  <div>
+                    <h5 className="text-[11px] font-black uppercase text-[#7A7060] tracking-wider mb-2.5">Latest 2 Session Logs</h5>
+                    {sangaLogs.length === 0 ? (
+                      <div className="p-6 text-center bg-[#FAF8F5] rounded-2xl border border-dashed border-[#E5DEC9]">
+                        <p className="text-xs font-semibold text-[#7A7060]">No Sanga Memory game logs recorded yet.</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2.5">
+                        {sangaLogs.slice(0, 2).map((act) => (
+                          <div key={act.id} className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF6EF] border border-[#D6C9B430] flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-2.5 shadow-xs">
+                            <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#EAEEE1] text-[#2F6B4F] flex items-center justify-center text-lg font-black flex-shrink-0">
+                                🧠
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-[14px] sm:text-[15px] font-black text-[#2B2B2B] truncate">
+                                  Sanga Memory
+                                </p>
+                                <p className="text-[12px] sm:text-[13px] font-semibold text-[#7A7060]">
+                                  Played on {new Date(act.createdAt || Date.now()).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 self-start min-[480px]:self-auto">
+                              {(act.payload as any)?.level != null && (
+                                <span className="text-[12px] sm:text-[13px] font-black text-[#2F6B4F] bg-[#EAEEE1] px-3 py-1.5 rounded-xl border border-[#2F6B4F20]">
+                                  Lvl {(act.payload as any).level}
+                                </span>
+                              )}
+                              {(act.payload as any)?.accuracy != null && (
+                                <span className="text-[12px] sm:text-[13px] font-black text-[#2F6B4F] bg-[#EAEEE1] px-3 py-1.5 rounded-xl border border-[#2F6B4F20]">
+                                  {(act.payload as any).accuracy}% Acc
+                                </span>
+                              )}
+                              <span className="text-[13px] sm:text-[14px] font-black text-[#7A9B76] bg-[#EEF4EE] px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border border-[#7A9B7630]">
+                                {(act.payload as any)?.score != null ? `Score: ${(act.payload as any).score}` : "Completed ✓"}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 
@@ -3686,7 +5413,7 @@ function CaregiverDashboard({ onLogout }: { onLogout: () => void }) {
 
 // ── App Shell ──────────────────────────────────────────────────────────────
 
-type Screen = "auth" | "onboarding" | "home" | "games" | "game" | "mindsnap" | "reminders" | "smriti" | "chitchat" | "profile" | "caregiver-dashboard";
+type Screen = "auth" | "onboarding" | "home" | "games" | "game" | "mindsnap" | "smrititaal" | "sanga" | "reminders" | "smriti" | "chitchat" | "profile" | "caregiver-dashboard";
 
 const PATIENT_NAV: { screen: Screen; label: string; icon: (active: boolean) => React.ReactNode }[] = [
   {
@@ -3826,6 +5553,8 @@ export default function App() {
               {screen === "games" && <GamesScreen onNavigate={setScreen} onBack={() => setScreen("home")} />}
               {screen === "game" && <MemoryGameScreen onBack={() => setScreen("games")} />}
               {screen === "mindsnap" && <MindsnapScreen onBack={() => setScreen("games")} />}
+              {screen === "smrititaal" && <SmritiTaalScreen onBack={() => setScreen("games")} />}
+              {screen === "sanga" && <SangaGameScreen onBack={() => setScreen("games")} />}
               {screen === "reminders" && <RemindersScreen onBack={() => setScreen("home")} />}
               {screen === "smriti" && <SmritiScreen onBack={() => setScreen("home")} />}
               {screen === "chitchat" && <ChitChatScreen onBack={() => setScreen("home")} />}

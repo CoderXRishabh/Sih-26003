@@ -301,6 +301,15 @@ export async function logActivity(
   });
 }
 
+export async function fetchMyActivities(): Promise<ActivityLog[]> {
+  try {
+    const data = await apiJSON<{ activity: ActivityLog[] }>("/activity");
+    return data.activity || [];
+  } catch (e) {
+    return [];
+  }
+}
+
 // ── Caregiver: Link / Patients ────────────────────────────────────────────
 
 export interface LinkedPatient {

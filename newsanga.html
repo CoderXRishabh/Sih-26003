@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+    <title>Memory & Recall Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F3F4EC;
+            --bg-soft: #EAEEE1;
+            --paper: #FFFFFF;
+            --ink: #223326;
+            --ink-soft: #4B5C4E;
+            --forest: #2F6B4F;
+            --forest-dark: #234F3B;
+            --gold: #C98F2A;
+            --gold-soft: #F1DBA9;
+            --terracotta: #B5573A;
+            --sky: #3A6E8C;
+            --line: #D8DECB;
+            --danger: #B5573A;
+            --radius-card: 22px;
+            --radius-btn: 16px;
+            --scale: 1;
+            --shadow: 0 6px 18px rgba(34, 51, 38, 0.08);
+        }
+
+        html.scale-large {
+            --scale: 1.18;
+        }
+
+        html.scale-xl {
+            --scale: 1.4;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Atkinson Hyperlegible', system-ui, sans-serif;
+            font-size: calc(17px * var(--scale));
+            line-height: 1.5;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-weight: 600;
+            color: var(--forest-dark);
+            margin: 0 0 .4em 0;
+            line-height: 1.15;
+        }
+
+        p {
+            margin: 0 0 .8em 0;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        ::selection {
+            background: var(--gold-soft);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--sky);
+            outline-offset: 3px;
+        }
+
+        .app-shell {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 18px 110px 18px;
+        }
+
+        header.topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 18px 12px 18px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(155deg, var(--forest), var(--forest-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: var(--gold-soft);
+            flex-shrink: 0;
+        }
+
+        .brand-name {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--forest-dark);
+            letter-spacing: .2px;
+        }
+
+        .brand-tag {
+            font-size: .78rem;
+            color: var(--ink-soft);
+            margin-top: -2px;
+        }
+
+        nav.bottom-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--paper);
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 4px calc(8px + env(safe-area-inset-bottom)) 4px;
+            box-shadow: 0 -6px 18px rgba(34, 51, 38, 0.06);
+            z-index: 50;
+        }
+
+        nav.bottom-nav button {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            color: var(--ink-soft);
+            font-size: .72rem;
+            font-weight: 700;
+            padding: 6px 4px;
+            border-radius: 12px;
+            min-width: 62px;
+        }
+
+        nav.bottom-nav button .ic {
+            font-size: 1.4rem;
+        }
+
+        nav.bottom-nav button.active {
+            color: var(--forest);
+            background: var(--bg-soft);
+        }
+
+        .card {
+            background: var(--paper);
+            border-radius: var(--radius-card);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--line);
+            margin-bottom: 18px;
+        }
+
+        .card.accent-left {
+            border-left: 6px solid var(--forest);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 22px;
+            border-radius: var(--radius-btn);
+            border: none;
+            font-size: 1.05rem;
+            font-weight: 700;
+            min-height: 58px;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: var(--forest);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(47, 107, 79, 0.28);
+        }
+
+        .btn-primary:hover {
+            background: var(--forest-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-soft);
+            color: var(--forest-dark);
+            border: 2px solid var(--line);
+        }
+
+        .btn-secondary:hover {
+            background: #E1E7D3;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(201, 143, 42, 0.28);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--forest-dark);
+            text-decoration: underline;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-lg {
+            font-size: 1.25rem;
+            padding: 20px 24px;
+            min-height: 68px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin: 16px 0;
+        }
+
+        @media (min-width: 620px) {
+            .grid-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .stat {
+            background: var(--bg-soft);
+            border-radius: 16px;
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        .stat .num {
+            font-family: 'Fraunces', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+        }
+
+        .stat .lbl {
+            font-size: .82rem;
+            color: var(--ink-soft);
+            font-weight: 700;
+        }
+
+
+
+        .object-stage {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 14px;
+            min-height: 200px;
+            background: var(--bg-soft);
+            border-radius: 20px;
+        }
+
+        .object-tile {
+            font-size: calc(5rem * var(--scale));
+            line-height: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            animation: pop .35s ease;
+            background: var(--paper);
+            border-radius: 22px;
+            padding: 16px 22px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border: 1.5px solid rgba(0, 0, 0, 0.07);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        .object-tile:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18), 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .object-tile .lbl {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: .01em;
+        }
+
+        @keyframes pop {
+            from {
+                opacity: 0;
+                transform: scale(.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .grid-pos {
+            display: grid;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .grid-pos .cell {
+            width: calc(76px * var(--scale));
+            height: calc(76px * var(--scale));
+            background: var(--paper);
+            border: 2px solid var(--line);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: calc(2.4rem * var(--scale));
+        }
+
+        .grid-pos .cell.empty {
+            background: var(--bg-soft);
+        }
+
+        .grid-pos button.cell {
+            cursor: pointer;
+        }
+
+        .grid-pos button.cell:active {
+            transform: scale(.95);
+        }
+
+        .seq-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .seq-row .arrow {
+            font-size: 1.4rem;
+            color: var(--ink-soft);
+        }
+
+        .countdown-ring {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+            background: conic-gradient(var(--gold) calc(var(--pct, 100) * 1%), var(--bg-soft) 0);
+            margin: 0 auto 20px auto;
+            transition: background 1s linear;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .countdown-ring .inner {
+            width: 100px;
+            height: 100px;
+            background: var(--paper);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-timer {
+            text-align: center;
+            font-size: 1rem;
+            color: var(--ink-soft);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 420px) {
+            .answers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .answer-btn {
+            background: var(--paper);
+            border: 2px solid var(--line);
+            border-radius: 18px;
+            padding: 18px 14px;
+            font-size: calc(1.25rem * var(--scale));
+            font-weight: 700;
+            color: var(--ink);
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .answer-btn:hover {
+            border-color: var(--forest);
+        }
+
+        .answer-btn.correct {
+            background: #E4F1E6;
+            border-color: var(--forest);
+            color: var(--forest-dark);
+        }
+
+        .answer-btn.incorrect {
+            background: #F7E7E1;
+            border-color: var(--terracotta);
+            color: var(--terracotta);
+        }
+
+        .answer-btn.disabled {
+            opacity: .55;
+            pointer-events: none;
+        }
+
+        .feedback-banner {
+            text-align: center;
+            border-radius: 18px;
+            padding: 18px;
+            margin-top: 16px;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .feedback-banner.good {
+            background: #E4F1E6;
+            color: var(--forest-dark);
+        }
+
+        .feedback-banner.soft {
+            background: #FBF1DD;
+            color: #8A611C;
+        }
+
+        .progressbar-track {
+            background: var(--bg-soft);
+            border-radius: 999px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progressbar-fill {
+            background: var(--forest);
+            height: 100%;
+            border-radius: 999px;
+            transition: width .5s ease;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: var(--bg-soft);
+            color: var(--forest-dark);
+            font-size: .8rem;
+            font-weight: 700;
+            margin: 2px;
+        }
+
+        .chip.gold {
+            background: var(--gold-soft);
+            color: #8A611C;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 130px;
+            padding-top: 10px;
+        }
+
+        .bar-chart .bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .bar-chart .bar {
+            width: 100%;
+            max-width: 34px;
+            background: linear-gradient(180deg, var(--gold), var(--forest));
+            border-radius: 8px 8px 4px 4px;
+            transition: height .5s ease;
+        }
+
+        .bar-chart .bar-lbl {
+            font-size: .68rem;
+            color: var(--ink-soft);
+            font-weight: 700;
+        }
+
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: .92rem;
+        }
+
+        .history-row:last-child {
+            border-bottom: none;
+        }
+
+        .disclaimer {
+            background: #FBF1DD;
+            border: 1px solid var(--gold-soft);
+            color: #7A5714;
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: .9rem;
+            margin-top: 10px;
+        }
+
+        .avatar-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .avatar-opt {
+            font-size: 1.8rem;
+            padding: 10px;
+            border-radius: 14px;
+            border: 2px solid var(--line);
+            background: var(--paper);
+        }
+
+        .avatar-opt.active {
+            border-color: var(--forest);
+            background: var(--bg-soft);
+        }
+
+        input[type=text] {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 2px solid var(--line);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        label.field-label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .fade-in {
+            animation: fadein .4s ease;
+        }
+
+        @keyframes fadein {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .muted {
+            color: var(--ink-soft);
+        }
+
+        .row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .icon-btn {
+            background: var(--bg-soft);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-weight: 700;
+            color: var(--forest-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script>
+        /* =========================================================
+           SANGA — a calm memory & recall game
+           Single-file, dependency-free (no build step needed).
+           ========================================================= */
+
+        /* ---------- 1. STORAGE HELPERS ---------- */
+        const STORE_KEYS = {
+            profile: 'sanga_profile_v1',
+            settings: 'sanga_settings_v1',
+            progress: 'sanga_progress_v1'
+        };
+
+        function loadJSON(key, fallback) {
+            try {
+                const raw = window.localStorage.getItem(key);
+                if (!raw) return fallback;
+                const parsed = JSON.parse(raw);
+                return parsed == null ? fallback : parsed;
+            } catch (e) {
+                console.warn('SANGA: could not read storage for', key, e);
+                return fallback;
+            }
+        }
+        function saveJSON(key, value) {
+            try {
+                window.localStorage.setItem(key, JSON.stringify(value));
+            } catch (e) {
+                console.warn('SANGA: could not write storage for', key, e);
+            }
+        }
+
+        /* ---------- 2. TRANSLATIONS ---------- */
+        const translations = {
+            en: {
+                appName: '',
+                tagline: "Train your memory. Strengthen your recall. Enjoy the journey.",
+                home: 'Home', play: 'Play', continue: 'Continue', levels: 'Levels', progress: 'Progress',
+                chooseLevel: 'Choose a level',
+                viewProgress: 'View Progress',
+                todayScore: "Today's Score",
+                questionsCompleted: 'Questions Done',
+                recentAccuracy: 'Recent Accuracy',
+                currentLevel: 'Current Level',
+                motivational: 'Ready for a little memory challenge?',
+                level: 'Level',
+                easyRecall: 'Easy Recall', moreObjects: 'More Objects', categoryRecall: 'Category Recall',
+                timedMemory: 'Timed Memory', multiTask: 'Mixed Practice', advancedRecall: 'Advanced Recall',
+                begin: 'Start / Play',
+                rememberThese: 'Look carefully at the pictures',
+                getReady: 'Get ready...',
+                repeatQuestion: '🔊 Repeat Question',
+                yourAnswer: 'Your Answer',
+                playAgain: 'Play Again',
+                replay: 'Replay',
+                locked: 'Locked',
+                completed: 'Completed',
+                nextLevel: 'Next Level',
+                backHome: 'Back Home',
+                greatJob: 'Great job!',
+                wellRemembered: 'Well remembered!',
+                niceTry: "Nice try! Let's try another one.",
+                takeYourTime: 'Take your time.',
+                correctFeedback: 'Excellent! You remembered it.',
+                incorrectFeedback: "Not quite. Let's try the next one.",
+                score: 'Score', correct: 'Correct', accuracy: 'Accuracy',
+                of: 'of',
+                quitRound: 'End Round',
+                areYouSure: 'Finish this round now?',
+                yesEnd: 'Yes, finish', keepPlaying: 'Keep playing',
+                gamesPlayed: 'Games Played', totalQuestions: 'Total Questions',
+                overallAccuracy: 'Overall Accuracy', bestScore: 'Best Score',
+                recentGames: 'Recent Games', sampleData: 'Sample data shown until you play your first game.',
+                whichPosition: 'Where was the {label}?',
+                howManyX: 'How many {label} did you see?',
+                whichAnimal: 'Which of these did you see?',
+                whichMissing: 'Which object is missing?',
+                whatCameAfter: 'What came after the {label}?',
+                whatWasFirst: 'What was the very first object?',
+                whichNotShown: 'Which object was NOT shown before?',
+                whichCategory: 'Which of these {category} did you see?',
+                categories_animal: 'animals', categories_fruit: 'fruits', categories_daily: 'daily items',
+                categories_household: 'household items', categories_nature: 'nature items', categories_culture: 'cultural items',
+                seconds: 'sec',
+                step1: '1. Open Home', motivationalNote: 'Every round you play helps build a steady, comfortable habit.',
+                playerLevelPref: 'Preferred Difficulty',
+                autoAdapt: 'Auto (recommended)'
+            },
+            hi: {
+                appName: '',
+                tagline: 'अपनी याददाश्त को बढ़ाइए। धीरे-धीरे अभ्यास कीजिए। आनंद लीजिए।',
+                home: 'होम', play: 'खेलें', continue: 'जारी रखें', levels: 'स्तर', progress: 'प्रगति',
+                chooseLevel: 'एक स्तर चुनें',
+                viewProgress: 'प्रगति देखें',
+                todayScore: 'आज का स्कोर',
+                questionsCompleted: 'पूर्ण प्रश्न',
+                recentAccuracy: 'हाल की सटीकता',
+                currentLevel: 'वर्तमान स्तर',
+                motivational: 'क्या आप एक छोटी मेमोरी चुनौती के लिए तैयार हैं?',
+                level: 'स्तर',
+                easyRecall: 'सरल अभ्यास', moreObjects: 'अधिक वस्तुएँ', categoryRecall: 'श्रेणी स्मरण',
+                timedMemory: 'समयबद्ध स्मृति', multiTask: 'मिश्रित अभ्यास', advancedRecall: 'उन्नत स्मरण',
+                begin: 'खेलें / शुरू करें',
+                rememberThese: 'तस्वीरों को ध्यान से देखिए',
+                getReady: 'तैयार हो जाइए...',
+                repeatQuestion: '🔊 प्रश्न दोहराएँ',
+                yourAnswer: 'आपका उत्तर',
+                playAgain: 'फिर से खेलें',
+                replay: 'फिर से खेलें',
+                locked: 'बंद',
+                completed: 'पूर्ण',
+                nextLevel: 'अगला स्तर',
+                backHome: 'होम पर जाएँ',
+                greatJob: 'बहुत बढ़िया!',
+                wellRemembered: 'अच्छी तरह याद रखा!',
+                niceTry: 'अच्छी कोशिश! एक और प्रयास करते हैं।',
+                takeYourTime: 'अपना समय लीजिए।',
+                correctFeedback: 'शानदार! आपने सही याद रखा।',
+                incorrectFeedback: 'ठीक नहीं। अगला प्रश्न देखते हैं।',
+                score: 'स्कोर', correct: 'सही', accuracy: 'सटीकता',
+                of: 'में से',
+                quitRound: 'राउंड समाप्त करें',
+                areYouSure: 'क्या अभी यह राउंड समाप्त करें?',
+                yesEnd: 'हाँ, समाप्त करें', keepPlaying: 'खेलना जारी रखें',
+                gamesPlayed: 'खेले गए गेम', totalQuestions: 'कुल प्रश्न',
+                overallAccuracy: 'समग्र सटीकता', bestScore: 'सर्वश्रेष्ठ स्कोर',
+                recentGames: 'हाल के खेल', sampleData: 'आपके पहले खेल तक नमूना डेटा दिखाया गया है।',
+                whichPosition: '{label} कहाँ था?',
+                howManyX: 'आपने कितने {label} देखे?',
+                whichAnimal: 'आपने इनमें से कौन सा देखा?',
+                whichMissing: 'कौन सी वस्तु गायब है?',
+                whatCameAfter: '{label} के बाद क्या आया?',
+                whatWasFirst: 'सबसे पहली वस्तु क्या थी?',
+                whichNotShown: 'कौन सी वस्तु पहले नहीं दिखाई गई थी?',
+                whichCategory: 'आपने इनमें से कौन सा {category} देखा?',
+                categories_animal: 'जानवर', categories_fruit: 'फल', categories_daily: 'दैनिक वस्तुएँ',
+                categories_household: 'घरेलू वस्तुएँ', categories_nature: 'प्रकृति वस्तुएँ', categories_culture: 'सांस्कृतिक वस्तुएँ',
+                seconds: 'सेकंड',
+                step1: '1. होम खोलें', motivationalNote: 'हर राउंड एक स्थिर, आरामदायक आदत बनाने में मदद करता है।',
+                playerLevelPref: 'पसंदीदा कठिनाई',
+                autoAdapt: 'स्वचालित (अनुशंसित)'
+            }
+        };
+        function t(key, params) {
+            const lang = state.settings.language || 'en';
+            const dict = translations[lang] || translations.en;
+            let str = dict[key] != null ? dict[key] : (translations.en[key] || key);
+            if (params) {
+                Object.keys(params).forEach(p => { str = str.replace('{' + p + '}', params[p]); });
+            }
+            return str;
+        }
+
+        /* ---------- 3. OBJECT CATALOG ---------- */
+        const CATALOG = {
+            animal: [
+                { id: 'dog', emoji: '🐕', en: 'Dog', hi: 'कुत्ता' },
+                { id: 'cat', emoji: '🐱', en: 'Cat', hi: 'बिल्ली' },
+                { id: 'cow', emoji: '🐄', en: 'Cow', hi: 'गाय' },
+                { id: 'elephant', emoji: '🐘', en: 'Elephant', hi: 'हाथी' },
+                { id: 'monkey', emoji: '🐒', en: 'Monkey', hi: 'बंदर' },
+                { id: 'bird', emoji: '🐦', en: 'Bird', hi: 'पक्षी' },
+                { id: 'fish', emoji: '🐟', en: 'Fish', hi: 'मछली' }
+            ],
+            fruit: [
+                { id: 'apple', emoji: '🍎', en: 'Apple', hi: 'सेब' },
+                { id: 'banana', emoji: '🍌', en: 'Banana', hi: 'केला' },
+                { id: 'mango', emoji: '🥭', en: 'Mango', hi: 'आम' },
+                { id: 'orange', emoji: '🍊', en: 'Orange', hi: 'संतरा' },
+                { id: 'watermelon', emoji: '🍉', en: 'Watermelon', hi: 'तरबूज' }
+            ],
+            daily: [
+                { id: 'cup', emoji: '☕', en: 'Cup', hi: 'कप' },
+                { id: 'spoon', emoji: '🥄', en: 'Spoon', hi: 'चम्मच' },
+                { id: 'key', emoji: '🔑', en: 'Key', hi: 'चाबी' },
+                { id: 'book', emoji: '📖', en: 'Book', hi: 'किताब' },
+                { id: 'glasses', emoji: '👓', en: 'Glasses', hi: 'चश्मा' },
+                { id: 'toothbrush', emoji: '🪥', en: 'Toothbrush', hi: 'टूथब्रश' },
+                { id: 'bag', emoji: '👜', en: 'Bag', hi: 'बैग' },
+                { id: 'clock', emoji: '🕐', en: 'Clock', hi: 'घड़ी' }
+            ],
+            household: [
+                { id: 'chair', emoji: '🪑', en: 'Chair', hi: 'कुर्सी' },
+                { id: 'bed', emoji: '🛏️', en: 'Bed', hi: 'बिस्तर' },
+                { id: 'lamp', emoji: '💡', en: 'Lamp', hi: 'लैंप' },
+                { id: 'tv', emoji: '📺', en: 'Television', hi: 'टेलीविज़न' },
+                { id: 'phone', emoji: '📞', en: 'Phone', hi: 'फ़ोन' }
+            ],
+            nature: [
+                { id: 'flower', emoji: '🌸', en: 'Flower', hi: 'फूल' },
+                { id: 'tree', emoji: '🌳', en: 'Tree', hi: 'पेड़' },
+                { id: 'sun', emoji: '☀️', en: 'Sun', hi: 'सूरज' },
+                { id: 'moon', emoji: '🌙', en: 'Moon', hi: 'चाँद' }
+            ],
+            culture: [
+                { id: 'bamboo', emoji: '🎍', en: 'Bamboo Craft', hi: 'बांस शिल्प' },
+                { id: 'basket', emoji: '🧺', en: 'Traditional Basket', hi: 'पारंपरिक टोकरी' },
+                { id: 'teagarden', emoji: '🍃', en: 'Tea Garden Leaf', hi: 'चाय बागान की पत्ती' },
+                { id: 'localfood', emoji: '🍚', en: 'Local Food', hi: 'स्थानीय भोजन' },
+                { id: 'shawl', emoji: '🧣', en: 'Traditional Shawl', hi: 'पारंपरिक शॉल' },
+                { id: 'hills', emoji: '⛰️', en: 'Green Hills', hi: 'हरी पहाड़ियाँ' },
+                { id: 'river', emoji: '🏞️', en: 'River Landscape', hi: 'नदी का दृश्य' },
+                { id: 'drum', emoji: '🥁', en: 'Traditional Drum', hi: 'पारंपरिक ढोल' }
+            ]
+        };
+        const ALL_CATEGORIES = Object.keys(CATALOG);
+        function labelOf(obj) { return (state.settings.language === 'hi') ? obj.hi : obj.en; }
+        function allObjectsFlat(categories) {
+            const cats = categories && categories.length ? categories : ALL_CATEGORIES;
+            let out = [];
+            cats.forEach(c => CATALOG[c].forEach(o => out.push(Object.assign({ category: c }, o))));
+            return out;
+        }
+
+        /* ---------- 4. UTIL / RANDOMIZATION ---------- */
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+        function sample(arr, n) { return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+        /* ---------- 5. LEVEL DEFINITIONS & ALGORITHMIC PROGRESSION ---------- */
+        function getLevelConfig(levelId) {
+            const lvl = Math.max(1, parseInt(levelId, 10) || 1);
+
+            // Available object categories dynamically expand
+            const allCats = ['animal', 'fruit', 'daily', 'household', 'nature', 'culture'];
+            let catCount = 2;
+            if (lvl >= 2) catCount = 3;
+            if (lvl >= 3) catCount = 4;
+            if (lvl >= 4) catCount = 5;
+            if (lvl >= 5) catCount = 6;
+            const categories = allCats.slice(0, catCount);
+
+            // Object count progression: starts small (2-3) and gradually scales up
+            const minObjects = clamp(2 + Math.floor((lvl - 1) / 2), 2, 8);
+            const maxObjects = clamp(minObjects + 1 + Math.floor((lvl - 1) / 4), minObjects + 1, 9);
+
+            // Viewing countdown time: starts at 9s, gradually decreases with level (minimum 3s)
+            const viewSeconds = clamp(9 - Math.floor((lvl - 1) * 0.5), 3, 10);
+
+            // Modes unlock sequentially, then all remain active for infinite levels
+            let modes = ['count', 'recognize'];
+            if (lvl >= 2) modes.push('missing');
+            if (lvl >= 3) modes.push('category');
+            if (lvl >= 4) modes.push('sequence');
+            if (lvl >= 5) modes.push('position');
+            if (lvl >= 6) modes.push('oddOneOut');
+
+            return {
+                id: lvl,
+                minObjects,
+                maxObjects,
+                categories,
+                viewSeconds,
+                choices: 4,
+                modes
+            };
+        }
+
+        function getLevelName(levelId) {
+            const titles = {
+                1: t('easyRecall'),
+                2: t('moreObjects'),
+                3: t('categoryRecall'),
+                4: t('timedMemory'),
+                5: t('multiTask'),
+                6: t('advancedRecall')
+            };
+            if (titles[levelId]) return titles[levelId];
+
+            const tierThemes = [
+                { name: 'Master Recall', hi: 'मास्टर स्मरण' },
+                { name: 'Sharp Focus', hi: 'तीक्ष्ण एकाग्रता' },
+                { name: 'Rapid Memory', hi: 'द्रुत स्मृति' },
+                { name: 'Deep Recall', hi: 'गहन स्मरण' },
+                { name: 'Infinite Mind', hi: 'अनंत मस्तिष्क' }
+            ];
+            const idx = Math.floor((levelId - 7) / 2) % tierThemes.length;
+            const rank = 1 + Math.floor((levelId - 7) % 2);
+            const theme = tierThemes[idx];
+            const isHi = state.settings && state.settings.language === 'hi';
+            const name = isHi ? theme.hi : theme.name;
+            return `${name} ${rank > 1 ? rank : ''}`.trim();
+        }
+
+        /* ---------- 6. QUESTION GENERATION ---------- */
+        function buildQuestion(levelId, adaptDelta) {
+            const level = getLevelConfig(levelId);
+            const mode = level.modes[randInt(0, level.modes.length - 1)];
+            const objCountBase = randInt(level.minObjects, level.maxObjects);
+            const objCount = clamp(objCountBase + (adaptDelta || 0), 2, 9);
+            const pool = allObjectsFlat(level.categories);
+
+            if (mode === 'count') {
+                const kinds = sample(pool, clamp(Math.min(objCount, 4), 2, 4));
+                const items = kinds.map(k => Object.assign({}, k, { count: randInt(2, 4) }));
+                const target = items[randInt(0, items.length - 1)];
+                const correct = target.count;
+                let optionSet = new Set([correct]);
+                while (optionSet.size < level.choices) { optionSet.add(clamp(correct + randInt(-2, 2), 1, 6)); }
+                const options = shuffle(Array.from(optionSet));
+                const display = [];
+                items.forEach(it => { for (let i = 0; i < it.count; i++) display.push(it); });
+                return {
+                    mode, items: shuffle(display), question: t('howManyX', { label: labelOf(target).toLowerCase() }),
+                    options: options.map(String), correctAnswer: String(correct), viewSeconds: level.viewSeconds
+                };
+            }
+
+            if (mode === 'recognize') {
+                const shown = sample(pool, clamp(Math.min(objCount, 6), 3, 6));
+                const target = shown[randInt(0, shown.length - 1)];
+                const sameCategoryDistractors = pool.filter(o => o.category === target.category && !shown.find(s => s.id === o.id));
+                const otherDistractors = pool.filter(o => !shown.find(s => s.id === o.id) && o.id !== target.id);
+                const distractors = sample(sameCategoryDistractors.length >= (level.choices - 1) ? sameCategoryDistractors : otherDistractors, level.choices - 1);
+                const options = shuffle([target, ...distractors]);
+                return {
+                    mode, items: shown, question: t('whichAnimal'),
+                    options: options.map(o => ({ id: o.id, label: labelOf(o), emoji: o.emoji })),
+                    correctAnswer: target.id, viewSeconds: level.viewSeconds
+                };
+            }
+
+            if (mode === 'missing') {
+                const shown = sample(pool, clamp(Math.min(objCount, 6), 4, 6));
+                const missingIdx = randInt(0, shown.length - 1);
+                const missingObj = shown[missingIdx];
+                const remaining = shown.filter((_, i) => i !== missingIdx);
+                const distractors = sample(pool.filter(o => !shown.find(s => s.id === o.id)), Math.max(0, level.choices - 1 - 0));
+                const optionPool = shuffle([missingObj, ...sample(shown.filter(s => s.id !== missingObj.id), Math.max(0, level.choices - 1 - distractors.length)), ...distractors]).slice(0, level.choices);
+                const finalOptions = optionPool.find(o => o.id === missingObj.id) ? optionPool : shuffle([missingObj, ...optionPool.slice(1)]);
+                return {
+                    mode, items: shown, secondItems: remaining, question: t('whichMissing'),
+                    options: finalOptions.map(o => ({ id: o.id, label: labelOf(o), emoji: o.emoji })),
+                    correctAnswer: missingObj.id, viewSeconds: level.viewSeconds
+                };
+            }
+
+            if (mode === 'sequence') {
+                const seq = sample(pool, clamp(Math.min(objCount, 5), 3, 5));
+                const askAfterIdx = randInt(0, seq.length - 2);
+                const target = seq[askAfterIdx];
+                const correct = seq[askAfterIdx + 1];
+                const distractors = sample(pool.filter(o => !seq.find(s => s.id === o.id)), level.choices - 1);
+                const options = shuffle([correct, ...distractors]);
+                return {
+                    mode, items: seq, question: t('whatCameAfter', { label: labelOf(target).toLowerCase() }),
+                    options: options.map(o => ({ id: o.id, label: labelOf(o), emoji: o.emoji })),
+                    correctAnswer: correct.id, viewSeconds: level.viewSeconds
+                };
+            }
+
+            if (mode === 'position') {
+                const gridSize = 9;
+                const chosen = sample(pool, Math.min(clamp(objCount, 5, 9), gridSize));
+                const positions = shuffle([...Array(gridSize).keys()]).slice(0, chosen.length);
+                const grid = new Array(gridSize).fill(null);
+                chosen.forEach((obj, i) => { grid[positions[i]] = obj; });
+                const targetIdx = randInt(0, chosen.length - 1);
+                const target = chosen[targetIdx];
+                const correctPos = positions[targetIdx];
+                return {
+                    mode, grid, question: t('whichPosition', { label: labelOf(target).toLowerCase() }),
+                    targetEmoji: target.emoji, targetLabel: labelOf(target),
+                    correctAnswer: correctPos, viewSeconds: level.viewSeconds + 1
+                };
+            }
+
+            if (mode === 'oddOneOut') {
+                const shown = sample(pool, clamp(Math.min(objCount, 5), 3, 5));
+                const notShown = sample(pool.filter(o => !shown.find(s => s.id === o.id)), 1)[0];
+                const decoysFromShown = sample(shown, Math.min(level.choices - 1, shown.length));
+                const options = shuffle([notShown, ...decoysFromShown]).slice(0, level.choices);
+                const finalOptions = options.find(o => o.id === notShown.id) ? options : shuffle([notShown, ...options.slice(1)]);
+                return {
+                    mode, items: shown, question: t('whichNotShown'),
+                    options: finalOptions.map(o => ({ id: o.id, label: labelOf(o), emoji: o.emoji })),
+                    correctAnswer: notShown.id, viewSeconds: level.viewSeconds
+                };
+            }
+
+            if (mode === 'category') {
+                const catChoices = level.categories.filter(c => allObjectsFlat([c]).length >= 2);
+                const targetCat = catChoices[randInt(0, catChoices.length - 1)];
+                const otherCats = level.categories.filter(c => c !== targetCat);
+                const shownFromTarget = sample(CATALOG[targetCat], 1).map(o => Object.assign({ category: targetCat }, o));
+                const fillerCount = clamp(objCount - 1, 2, 6);
+                const fillerPool = allObjectsFlat(otherCats.length ? otherCats : ALL_CATEGORIES.filter(c => c !== targetCat));
+                const filler = sample(fillerPool, fillerCount);
+                const shown = shuffle([...shownFromTarget, ...filler]);
+                const correct = shownFromTarget[0];
+                const distractorsSameCat = CATALOG[targetCat].filter(o => o.id !== correct.id).map(o => Object.assign({ category: targetCat }, o));
+                const distractors = sample(distractorsSameCat, level.choices - 1);
+                const options = shuffle([correct, ...distractors]);
+                return {
+                    mode, items: shown, question: t('whichCategory', { category: t('categories_' + targetCat) }),
+                    options: options.map(o => ({ id: o.id, label: labelOf(o), emoji: o.emoji })),
+                    correctAnswer: correct.id, viewSeconds: level.viewSeconds
+                };
+            }
+
+            // fallback safety net (should not normally hit)
+            return buildQuestion(1, 0);
+        }
+
+        /* ---------- 7. SPEECH ---------- */
+        function speak(text) {
+            if (!state.settings.voice) return;
+            try {
+                if (!('speechSynthesis' in window)) return;
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = state.settings.language === 'hi' ? 'hi-IN' : 'en-IN';
+                utter.rate = 0.92;
+                window.speechSynthesis.speak(utter);
+            } catch (e) { console.warn('SANGA: speech unavailable', e); }
+        }
+
+        /* ---------- 8. STATE ---------- */
+        const DEFAULT_SETTINGS = { textSize: 'normal', voice: false, sound: true, viewingTime: 'normal', language: 'en' };
+        const DEFAULT_PROFILE = { name: 'Friend', avatar: '🧓', difficultyPref: 'auto' };
+
+        const state = {
+            page: 'home',
+            settings: loadJSON(STORE_KEYS.settings, DEFAULT_SETTINGS),
+            profile: loadJSON(STORE_KEYS.profile, DEFAULT_PROFILE),
+            progress: loadJSON(STORE_KEYS.progress, null), // null => show sample/demo
+            game: null // active round state
+        };
+
+        function persistSettings() { saveJSON(STORE_KEYS.settings, state.settings); applyTextScale(); }
+        function persistProfile() { saveJSON(STORE_KEYS.profile, state.profile); }
+        function persistProgress() { saveJSON(STORE_KEYS.progress, state.progress); }
+
+        function applyTextScale() {
+            const html = document.documentElement;
+            html.classList.remove('scale-large', 'scale-xl');
+            if (state.settings.textSize === 'large') html.classList.add('scale-large');
+            if (state.settings.textSize === 'extraLarge') html.classList.add('scale-xl');
+        }
+
+        function isNewPatient() {
+            if (!state.progress) return true;
+            if (state.progress.isSample) return true;
+            if (!state.progress.totalGames || state.progress.totalGames === 0) return true;
+            return false;
+        }
+
+        function getUnlockedLevel() {
+            if (isNewPatient()) return 1;
+            const p = state.progress;
+            if (p && p.unlockedLevel) return Math.max(1, p.unlockedLevel);
+            if (p && p.level) return Math.max(1, p.level);
+            if (p && p.lastCompletedLevel) return Math.max(1, p.lastCompletedLevel + 1);
+            return 1;
+        }
+
+        function getContinueLevel() {
+            return getUnlockedLevel();
+        }
+
+        function ensureProgress() {
+            if (state.progress) return state.progress;
+            // Seed friendly sample/demo data so dashboards aren't empty on first run
+            const sampleHistory = [];
+            const today = new Date();
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(today); d.setDate(d.getDate() - i);
+                sampleHistory.push({
+                    date: d.toISOString().slice(0, 10),
+                    score: randInt(40, 95),
+                    correct: randInt(5, 9),
+                    total: 10,
+                    accuracy: 0,
+                    level: 1
+                });
+            }
+            sampleHistory.forEach(h => h.accuracy = Math.round((h.correct / h.total) * 100));
+            return {
+                isSample: true, level: 1, totalGames: 0, totalQuestions: 0,
+                totalCorrect: 0,
+                bestScore: 0,
+                history: sampleHistory, todayScore: 0, todayQuestions: 0, todayCorrect: 0, lastPlayedDate: null,
+                unlockedLevel: 1, lastCompletedLevel: null
+            };
+        }
+
+        function recordRoundResult(levelId, score, correct, total) {
+            const p = state.progress && !state.progress.isSample ? state.progress : {
+                isSample: false, level: 1, totalGames: 0, totalQuestions: 0, totalCorrect: 0, bestScore: 0, history: [],
+                todayScore: 0, todayQuestions: 0, todayCorrect: 0, lastPlayedDate: null, unlockedLevel: 1, lastCompletedLevel: null
+            };
+            const todayStr = new Date().toISOString().slice(0, 10);
+            if (p.lastPlayedDate !== todayStr) { p.todayScore = 0; p.todayQuestions = 0; p.todayCorrect = 0; }
+            p.lastPlayedDate = todayStr;
+            p.todayScore += score; p.todayQuestions += total; p.todayCorrect += correct;
+            p.totalGames += 1; p.totalQuestions += total; p.totalCorrect += correct;
+            p.bestScore = Math.max(p.bestScore, score);
+            p.lastCompletedLevel = Math.max(p.lastCompletedLevel || 0, levelId);
+
+            // Completing Level N unlocks Level N + 1 (Infinite progression)
+            const nextLvl = levelId + 1;
+            p.unlockedLevel = Math.max(p.unlockedLevel || 1, nextLvl);
+            p.level = p.unlockedLevel;
+            p.history.push({ date: todayStr, score, correct, total, accuracy: Math.round((correct / total) * 100), level: levelId });
+            if (p.history.length > 20) p.history = p.history.slice(p.history.length - 20);
+            state.progress = p;
+            persistProgress();
+        }
+
+        /* ---------- 9. GAME ENGINE ---------- */
+        const QUESTIONS_PER_ROUND = 6;
+        const viewMultiplier = () => state.settings.viewingTime === 'longer' ? 1.4 : (state.settings.viewingTime === 'shorter' ? 0.7 : 1.0);
+
+        function startRound(levelId) {
+            const maxUnlocked = getUnlockedLevel();
+            // Guard against starting locked levels
+            if (levelId > maxUnlocked) {
+                levelId = maxUnlocked;
+            }
+            state.game = {
+                levelId, phase: 'READY', qIndex: 0, score: 0, correctCount: 0,
+                recentResults: [], adaptDelta: 0, current: null, timerHandle: null, countdown: 0,
+                startedAt: null, awaitingAnswer: false, lastFeedbackCorrect: null
+            };
+            state.page = 'game';
+            render();
+            setTimeout(() => nextQuestion(), 350);
+        }
+
+        function computeAdaptDelta(g) {
+            const last = g.recentResults.slice(-5);
+            if (last.length < 3) return g.adaptDelta;
+            const acc = last.filter(Boolean).length / last.length;
+            if (acc > 0.8) return clamp(g.adaptDelta + 1, -2, 2);
+            if (acc < 0.5) return clamp(g.adaptDelta - 1, -2, 2);
+            return g.adaptDelta;
+        }
+
+        function nextQuestion() {
+            const g = state.game;
+            if (!g) return;
+            if (g.qIndex >= QUESTIONS_PER_ROUND) {
+                finishRound();
+                return;
+            }
+            g.adaptDelta = computeAdaptDelta(g);
+            const q = buildQuestion(g.levelId, g.adaptDelta);
+            const adjustedView = Math.max(2.5, q.viewSeconds * viewMultiplier());
+            g.current = q;
+            g.phase = 'MEMORIZE';
+            g.countdown = Math.round(adjustedView);
+            g.awaitingAnswer = false;
+            render();
+            speak(t('rememberThese'));
+            clearInterval(g.timerHandle);
+            g.timerHandle = setInterval(() => {
+                g.countdown -= 1;
+                if (g.countdown <= 0) {
+                    clearInterval(g.timerHandle);
+                    showQuestion();
+                    return;
+                }
+                renderGameOnly();
+            }, 1000);
+        }
+
+        function showQuestion() {
+            const g = state.game;
+            if (!g) return;
+            clearInterval(g.timerHandle); // always stop the memorize countdown first
+            g.phase = 'QUESTION';
+            g.awaitingAnswer = true;
+            g.questionCountup = 0;
+            g.answerStartedAt = Date.now();
+            render();
+            speak(g.current.question);
+            // live count-up so the display refreshes every second during answering
+            g.timerHandle = setInterval(() => {
+                if (!g.awaitingAnswer) { clearInterval(g.timerHandle); return; }
+                g.questionCountup = Math.round((Date.now() - g.answerStartedAt) / 1000);
+                renderGameOnly();
+            }, 1000);
+        }
+
+        function submitAnswer(value) {
+            const g = state.game;
+            if (!g || !g.awaitingAnswer) return;
+            clearInterval(g.timerHandle); // stop the question countup timer
+            g.awaitingAnswer = false;
+            const elapsed = (Date.now() - g.answerStartedAt) / 1000;
+            const isCorrect = String(value) === String(g.current.correctAnswer);
+            g.chosenAnswer = value;
+            g.lastFeedbackCorrect = isCorrect;
+            g.recentResults.push(isCorrect);
+            if (isCorrect) {
+                let pts = 10;
+                if (elapsed < g.current.viewSeconds) pts += 3;
+                g.score += pts;
+                g.correctCount += 1;
+            }
+            g.phase = 'FEEDBACK';
+            render();
+            speak(isCorrect ? t('correctFeedback') : t('incorrectFeedback'));
+            setTimeout(() => {
+                g.qIndex += 1;
+                nextQuestion();
+            }, 1700);
+        }
+
+        function finishRound() {
+            const g = state.game;
+            clearInterval(g.timerHandle);
+            recordRoundResult(g.levelId, g.score, g.correctCount, QUESTIONS_PER_ROUND);
+            g.phase = 'ROUND_COMPLETE';
+            render();
+        }
+
+        function repeatCurrentQuestion() {
+            const g = state.game;
+            if (g && g.current && g.phase === 'QUESTION') speak(g.current.question);
+        }
+
+        /* ---------- 10. RENDER: SHELL ---------- */
+        const root = document.getElementById('app');
+
+        function render() {
+            applyTextScale();
+            let body = '';
+            if (state.page === 'home') body = renderHome();
+            else if (state.page === 'levels') body = renderLevelSelect();
+            else if (state.page === 'game') body = renderGame();
+            else if (state.page === 'progress') body = renderProgress();
+            else body = renderHome();
+
+            root.innerHTML = `
+    ${renderTopbar()}
+    <main class="app-shell fade-in">${body}</main>
+    ${renderBottomNav()}
+  `;
+            bindGlobalHandlers();
+        }
+
+        function renderGameOnly() {
+            // lightweight re-render used every second during countdown / countup to avoid full reflow cost
+            const el = document.getElementById('game-panel');
+            // IMPORTANT: use innerHTML (not outerHTML) so the #game-panel id stays in the DOM
+            if (el) el.innerHTML = renderGamePanel();
+        }
+
+        function renderTopbar() {
+            const app = t('appName');
+            return `
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">🧠</div>
+        <div>
+          ${app ? `<div class="brand-name">${escapeHtml(app)}</div>` : ''}
+          <div class="brand-tag">${escapeHtml(t('tagline'))}</div>
+        </div>
+      </div>
+      <div style="font-size:1.6rem;" title="${escapeHtml(state.profile.name)}">${state.profile.avatar}</div>
+    </header>
+  `;
+        }
+
+        function renderBottomNav() {
+            const items = [
+                { id: 'home', icon: '🏠', label: t('home') },
+                { id: 'levels', icon: '🎮', label: t('levels') },
+                { id: 'progress', icon: '📈', label: t('progress') }
+            ];
+            const activePage = state.page === 'game' ? 'levels' : state.page;
+            return `
+    <nav class="bottom-nav">
+      ${items.map(it => `
+        <button data-nav="${it.id}" class="${activePage === it.id ? 'active' : ''}">
+          <span class="ic">${it.icon}</span>
+          <span>${escapeHtml(it.label)}</span>
+        </button>
+      `).join('')}
+    </nav>
+  `;
+        }
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+        }
+
+        /* ---------- 11. RENDER: HOME ---------- */
+        function renderHome() {
+            const p = ensureProgress();
+            const isNew = isNewPatient();
+            const continueLvl = getContinueLevel();
+            const todayScore = p.isSample ? 0 : p.todayScore;
+            const todayQ = p.isSample ? 0 : p.todayQuestions;
+            const recentAcc = (() => {
+                const h = p.history.slice(-5);
+                if (!h.length || p.isSample) return 0;
+                return Math.round(h.reduce((s, x) => s + x.accuracy, 0) / h.length);
+            })();
+
+            const btnText = isNew ? `▶ ${escapeHtml(t('play'))}` : `▶ ${escapeHtml(t('continue'))} · ${escapeHtml(t('level'))} ${continueLvl}`;
+
+            return `
+    <section class="card accent-left center-text">
+      <p class="muted" style="font-size:1.15rem; margin-bottom:18px;">${escapeHtml(t('tagline'))}</p>
+      <button class="btn btn-primary btn-lg btn-block" data-start-level="${continueLvl}">${btnText}</button>
+      <div class="grid-2" style="margin-top:12px;">
+        <button class="btn btn-secondary" data-nav="levels">🎮 ${escapeHtml(t('levels'))}</button>
+        <button class="btn btn-secondary" data-nav="progress">📈 ${escapeHtml(t('viewProgress'))}</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <p style="font-weight:700; color:var(--forest-dark); font-size:1.05rem;">💬 ${escapeHtml(t('motivational'))}</p>
+      <div class="grid-stats">
+        <div class="stat"><div class="num">${isNew ? 1 : continueLvl}</div><div class="lbl">${escapeHtml(t('currentLevel'))}</div></div>
+        <div class="stat"><div class="num">${todayScore}</div><div class="lbl">${escapeHtml(t('todayScore'))}</div></div>
+        <div class="stat"><div class="num">${todayQ}</div><div class="lbl">${escapeHtml(t('questionsCompleted'))}</div></div>
+        <div class="stat"><div class="num">${isNew ? 0 : recentAcc}%</div><div class="lbl">${escapeHtml(t('recentAccuracy'))}</div></div>
+      </div>
+    </section>
+  `;
+        }
+
+        /* ---------- 12. RENDER: LEVEL SELECT ---------- */
+        function renderLevelSelect() {
+            const p = ensureProgress();
+            const unlocked = getUnlockedLevel();
+            // Display all completed levels, the current unlocked level, and upcoming locked levels
+            const displayCount = Math.max(6, unlocked + 3);
+            const levelsList = [];
+            for (let i = 1; i <= displayCount; i++) {
+                levelsList.push(getLevelConfig(i));
+            }
+
+            return `
+    <section class="card">
+      <div class="row-between" style="margin-bottom:8px;">
+        <h2>${escapeHtml(t('chooseLevel'))}</h2>
+        <span class="chip gold">🔓 ${t('level')} ${unlocked}</span>
+      </div>
+      <p class="muted">${escapeHtml(t('motivationalNote'))}</p>
+      
+      <div class="levels-container" style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+        ${levelsList.map(lv => {
+                const isCompleted = lv.id < unlocked;
+                const isCurrent = lv.id === unlocked;
+                const isLocked = lv.id > unlocked;
+                const levelTitle = getLevelName(lv.id);
+
+                let statusBadge = '';
+                if (isCompleted) statusBadge = `<span class="chip" style="background:#E4F1E6; color:var(--forest-dark); font-size:.75rem; padding:3px 10px;">✓ ${escapeHtml(t('completed'))}</span>`;
+                else if (isCurrent) statusBadge = `<span class="chip gold" style="font-size:.75rem; padding:3px 10px;">★ ${escapeHtml(t('currentLevel'))}</span>`;
+                else statusBadge = `<span class="chip" style="opacity:.65; font-size:.75rem; padding:3px 10px;">🔒 ${escapeHtml(t('locked'))}</span>`;
+
+                let actionBtn = '';
+                if (isCompleted) {
+                    actionBtn = `<button class="btn btn-secondary" data-start-level="${lv.id}" style="padding:10px 18px; font-size:.9rem;">🔄 ${escapeHtml(t('replay'))}</button>`;
+                } else if (isCurrent) {
+                    actionBtn = `<button class="btn btn-primary" data-start-level="${lv.id}" style="padding:10px 20px; font-size:.95rem;">▶ ${escapeHtml(t('begin'))}</button>`;
+                } else {
+                    actionBtn = `<button class="btn" disabled style="opacity:.45; cursor:not-allowed; background:var(--bg-soft); color:var(--ink-soft); border:1px solid var(--line); padding:10px 16px; font-size:.88rem;">🔒 ${escapeHtml(t('locked'))}</button>`;
+                }
+
+                return `
+            <div class="level-card-row ${isLocked ? 'is-locked' : ''}" style="display:flex; align-items:center; justify-content:space-between; gap:14px; padding:16px; background:${isCurrent ? 'var(--bg-soft)' : 'var(--paper)'}; border:2px solid ${isCurrent ? 'var(--forest)' : 'var(--line)'}; border-radius:18px; ${isLocked ? 'opacity:.6;' : ''}">
+              <div>
+                <div style="font-weight:700; color:var(--forest-dark); font-size:1.05rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <span>${t('level')} ${lv.id} · ${escapeHtml(levelTitle)}</span>
+                  ${statusBadge}
+                </div>
+                <div class="muted" style="font-size:.85rem; margin-top:4px;">
+                  ${lv.minObjects}-${lv.maxObjects} ${state.settings && state.settings.language === 'hi' ? 'वस्तुएँ' : 'objects'} · ⏱️ ${lv.viewSeconds}${t('seconds')}
+                </div>
+              </div>
+              <div>${actionBtn}</div>
+            </div>
+          `;
+            }).join('')}
+      </div>
+    </section>
+  `;
+        }
+
+        /* ---------- 13. RENDER: GAME ---------- */
+        function renderGame() {
+            return `<div id="game-panel">${renderGamePanel()}</div>`;
+        }
+
+        function renderGamePanel() {
+            const g = state.game;
+            if (!g) return `<p>${escapeHtml(t('takeYourTime'))}</p>`;
+
+            if (g.phase === 'ROUND_COMPLETE') {
+                const accuracy = Math.round((g.correctCount / QUESTIONS_PER_ROUND) * 100);
+                return `
+      <section class="card center-text accent-left">
+        <h2>🎉 ${escapeHtml(t('greatJob'))}</h2>
+        <div class="grid-stats">
+          <div class="stat"><div class="num">${g.score}</div><div class="lbl">${escapeHtml(t('score'))}</div></div>
+          <div class="stat"><div class="num">${g.correctCount}/${QUESTIONS_PER_ROUND}</div><div class="lbl">${escapeHtml(t('correct'))}</div></div>
+          <div class="stat"><div class="num">${accuracy}%</div><div class="lbl">${escapeHtml(t('accuracy'))}</div></div>
+          <div class="stat"><div class="num">${g.levelId}</div><div class="lbl">${escapeHtml(t('level'))}</div></div>
+        </div>
+        <div class="grid-2" style="margin-top:10px;">
+          <button class="btn btn-primary" data-start-level="${g.levelId}">🔄 ${escapeHtml(t('replay'))}</button>
+          <button class="btn btn-gold" data-start-level="${g.levelId + 1}">▶ ${escapeHtml(t('nextLevel'))} · ${t('level')} ${g.levelId + 1}</button>
+        </div>
+        <div class="grid-2" style="margin-top:10px;">
+          <button class="btn btn-secondary" data-nav="progress">${escapeHtml(t('viewProgress'))}</button>
+          <button class="btn btn-secondary" data-nav="home">${escapeHtml(t('backHome'))}</button>
+        </div>
+      </section>
+    `;
+            }
+
+            const q = g.current;
+            const progressPct = Math.round((g.qIndex / QUESTIONS_PER_ROUND) * 100);
+            const header = `
+    <div class="row-between" style="margin-bottom:10px;">
+      <span class="chip">${t('level')} ${g.levelId}</span>
+      <span class="chip gold">${t('score')}: ${g.score}</span>
+      <span class="muted" style="font-size:.85rem;">${g.qIndex + 1} ${t('of')} ${QUESTIONS_PER_ROUND}</span>
+    </div>
+    <div class="progressbar-track" style="margin-bottom:16px;"><div class="progressbar-fill" style="width:${progressPct}%;"></div></div>
+  `;
+
+            if (!q) return `<section class="card">${header}<p class="center-text muted">${escapeHtml(t('getReady'))}</p></section>`;
+
+            if (g.phase === 'MEMORIZE') {
+                const pct = Math.round((g.countdown / Math.max(1, q.viewSeconds)) * 100);
+                return `
+      <section class="card">
+        ${header}
+        <p class="center-text" style="font-weight:700; color:var(--forest-dark); font-size:1.15rem;">${escapeHtml(t('rememberThese'))}</p>
+        <div class="countdown-ring" style="--pct:${pct};"><div class="inner">${g.countdown}</div></div>
+        ${renderStageForQuestion(q, true)}
+      </section>
+    `;
+            }
+
+            if (g.phase === 'QUESTION' || g.phase === 'FEEDBACK') {
+                const feedbackBlock = g.phase === 'FEEDBACK' ? `
+      <div class="feedback-banner ${g.lastFeedbackCorrect ? 'good' : 'soft'}">
+        ${g.lastFeedbackCorrect ? '🌿 ' + escapeHtml(t('correctFeedback')) : '🙂 ' + escapeHtml(t('incorrectFeedback'))}
+      </div>
+    ` : '';
+                const elapsed = g.questionCountup || 0;
+                const timerLine = g.phase === 'QUESTION'
+                    ? `<div class="question-timer">⏱ ${elapsed}s</div>`
+                    : '';
+                return `
+      <section class="card">
+        ${header}
+        <h3 class="center-text">${escapeHtml(q.question)}</h3>
+        <button class="icon-btn" style="display:block; margin: 0 auto 10px auto;" data-repeat-question="1">${escapeHtml(t('repeatQuestion'))}</button>
+        ${timerLine}
+        ${renderAnswerArea(q, g)}
+        ${feedbackBlock}
+      </section>
+    `;
+            }
+
+            return `<section class="card">${header}<p class="center-text muted">${escapeHtml(t('getReady'))}</p></section>`;
+        }
+
+        function renderStageForQuestion(q, isMemorizePhase) {
+            if (q.mode === 'position') {
+                return `
+      <div class="grid-pos" style="grid-template-columns: repeat(3, 1fr);">
+        ${q.grid.map(cell => `<div class="cell ${cell ? '' : 'empty'}">${cell ? cell.emoji : ''}</div>`).join('')}
+      </div>
+    `;
+            }
+            if (q.mode === 'sequence') {
+                return `
+      <div class="seq-row">
+        ${q.items.map((it, i) => `<span class="object-tile"><span>${it.emoji}</span><span class="lbl">${escapeHtml(labelOf(it))}</span></span>${i < q.items.length - 1 ? '<span class="arrow">→</span>' : ''}`).join('')}
+      </div>
+    `;
+            }
+            if (q.mode === 'missing') {
+                const list = isMemorizePhase ? q.items : q.secondItems;
+                return `
+      <div class="object-stage">
+        ${list.map(it => `<div class="object-tile"><span>${it.emoji}</span><span class="lbl">${escapeHtml(labelOf(it))}</span></div>`).join('')}
+      </div>
+    `;
+            }
+            // count, recognize, category, oddOneOut share a simple stage
+            return `
+    <div class="object-stage">
+      ${q.items.map(it => `<div class="object-tile"><span>${it.emoji}</span><span class="lbl">${escapeHtml(labelOf(it))}</span></div>`).join('')}
+    </div>
+  `;
+        }
+
+        function renderAnswerArea(q, g) {
+            const showResultClass = (optId) => {
+                if (g.phase !== 'FEEDBACK') return '';
+                const isThisCorrect = String(optId) === String(q.correctAnswer);
+                const isChosen = String(optId) === String(g.chosenAnswer);
+                if (isThisCorrect) return 'correct';
+                if (isChosen && !isThisCorrect) return 'incorrect';
+                return 'disabled';
+            };
+
+            if (q.mode === 'position') {
+                return `
+      <div class="center-text muted" style="margin-bottom:10px;">${q.targetEmoji} ${escapeHtml(q.targetLabel)}</div>
+      <div class="grid-pos" style="grid-template-columns: repeat(3, 1fr);">
+        ${Array.from({ length: 9 }).map((_, i) => `
+          <button class="cell answer-btn-pos ${showResultClass(i)}" style="font-size:1.4rem;" data-answer="${i}" ${g.phase === 'FEEDBACK' ? 'disabled' : ''}>${i + 1}</button>
+        `).join('')}
+      </div>
+    `;
+            }
+
+            if (q.mode === 'count') {
+                return `
+      <div class="answers-grid">
+        ${q.options.map(opt => `<button class="answer-btn ${showResultClass(opt)}" data-answer="${escapeHtml(opt)}" ${g.phase === 'FEEDBACK' ? 'disabled' : ''}>${escapeHtml(opt)}</button>`).join('')}
+      </div>
+    `;
+            }
+
+            return `
+    <div class="answers-grid">
+      ${q.options.map(opt => `
+        <button class="answer-btn ${showResultClass(opt.id)}" data-answer="${escapeHtml(opt.id)}" ${g.phase === 'FEEDBACK' ? 'disabled' : ''}>
+          <span style="font-size:2.4rem; display:block; margin-bottom:4px;">${opt.emoji}</span>
+          <span style="font-size:1rem;">${escapeHtml(opt.label)}</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+        }
+
+        /* ---------- 14. RENDER: PROGRESS ---------- */
+        function renderProgress() {
+            const p = ensureProgress();
+            const overallAcc = p.totalQuestions ? Math.round((p.totalCorrect / p.totalQuestions) * 100) : 0;
+            const maxAcc = Math.max(1, ...p.history.map(h => h.accuracy));
+            return `
+    <section class="card">
+      <h2>📈 ${escapeHtml(t('progress'))}</h2>
+      ${p.isSample ? `<div class="disclaimer">${escapeHtml(t('sampleData'))}</div>` : ''}
+      <div class="grid-stats">
+        <div class="stat"><div class="num">${p.level}</div><div class="lbl">${escapeHtml(t('currentLevel'))}</div></div>
+        <div class="stat"><div class="num">${p.totalGames}</div><div class="lbl">${escapeHtml(t('gamesPlayed'))}</div></div>
+        <div class="stat"><div class="num">${p.totalQuestions}</div><div class="lbl">${escapeHtml(t('totalQuestions'))}</div></div>
+        <div class="stat"><div class="num">${overallAcc}%</div><div class="lbl">${escapeHtml(t('overallAccuracy'))}</div></div>
+      </div>
+      <div class="stat" style="max-width:220px; margin:10px auto 0 auto;"><div class="num">${p.bestScore}</div><div class="lbl">${escapeHtml(t('bestScore'))}</div></div>
+    </section>
+
+    <section class="card">
+      <h3>${escapeHtml(t('recentAccuracy'))}</h3>
+      <div class="bar-chart">
+        ${p.history.slice(-8).map(h => `
+          <div class="bar-wrap">
+            <div class="bar" style="height:${Math.max(6, (h.accuracy / maxAcc) * 100)}%;" title="${h.accuracy}%"></div>
+            <div class="bar-lbl">${h.date.slice(5)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>${escapeHtml(t('recentGames'))}</h3>
+      ${p.history.slice(-8).reverse().map(h => `
+        <div class="history-row">
+          <span>${h.date}</span>
+          <span class="muted">${t('level')} ${h.level}</span>
+          <span>${h.correct}/${h.total} · ${h.accuracy}%</span>
+          <span style="font-weight:700; color:var(--forest-dark);">${h.score} ${t('score').toLowerCase()}</span>
+        </div>
+      `).join('')}
+    </section>
+  `;
+        }
+
+        /* ---------- 15. EVENT HANDLING ---------- */
+        function bindGlobalHandlers() {
+            root.querySelectorAll('[data-nav]').forEach(el => {
+                el.onclick = () => {
+                    const target = el.getAttribute('data-nav');
+                    if (state.game && state.game.timerHandle) clearInterval(state.game.timerHandle);
+                    if (target !== 'game') state.game = state.page === 'game' && state.game && state.game.phase !== 'ROUND_COMPLETE' ? null : state.game;
+                    state.page = target;
+                    render();
+                };
+            });
+
+            root.querySelectorAll('[data-start-level]').forEach(el => {
+                el.onclick = () => {
+                    const lvl = parseInt(el.getAttribute('data-start-level'), 10);
+                    startRound(lvl);
+                };
+            });
+
+            root.querySelectorAll('[data-answer]').forEach(el => {
+                el.onclick = () => {
+                    const val = el.getAttribute('data-answer');
+                    submitAnswer(val);
+                };
+            });
+
+            const repeatBtn = root.querySelector('[data-repeat-question]');
+            if (repeatBtn) repeatBtn.onclick = repeatCurrentQuestion;
+        }
+
+        /* ---------- 17. BOOT ---------- */
+        applyTextScale();
+        render();
+    </script>
+</body>
+
+</html>

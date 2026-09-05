@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Smriti Taal — SmritiSetu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700&family=Noto+Sans+Devanagari:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#2F6B62; --teal-d:#20514A; --teal-l:#E2EFEB;
+  --cream:#FAF5EC; --card:#fff; --line:#E7DFD0;
+  --ink:#20302C; --soft:#6B7A75;
+  --mint:#E6F2ED; --peach:#FBEBE0; --sky:#E5EFF7; --sage:#E9F1E3;
+  --gam:#B7202E; --brass:#A8813C; --field:#3D5A3C; --ok:#3B8B6B; --warn:#BF5B34;
+  --flame:#DB7B25; --gold:#C99A2E;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--cream);color:var(--ink);
+  font-family:'Nunito','Baloo Da 2','Noto Sans Devanagari',system-ui,sans-serif;
+  font-size:17px;line-height:1.5;min-height:100vh}
+.wrap{max-width:760px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;}
+.weave{height:9px;flex:none;background:repeating-linear-gradient(90deg,var(--gam) 0 20px,#8A1822 20px 24px)}
+ 
+/* ── home header ───────────────────────────────────────── */
+.top{background:var(--teal);color:#fff;padding:20px 20px 30px;position:relative}
+.top::after{content:'';position:absolute;inset:auto 0 -1px;height:24px;background:var(--cream);border-radius:24px 24px 0 0}
+.trow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hi{font-size:24px;font-weight:800;line-height:1.2; display:flex; align-items:center; gap:10px;}
+.hi img { height: 40px; border-radius: 8px; background: #fff; padding: 2px; }
+.iconbtns{display:flex;gap:8px;flex:none}
+.ibtn{background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:12px;width:38px;height:38px;
+  display:grid;place-items:center;cursor:pointer;font-size:16px;flex:none;transition:background 0.2s;}
+.ibtn:active{background:rgba(255,255,255,.3);}
+.ibtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* ── Daily Streak Banner ───────────────────────────────── */
+.daily-streak-banner {
+  background: var(--peach); color: var(--warn); padding: 12px 20px; border-radius: 16px; 
+  display: flex; justify-content: space-between; align-items: center; margin-top: 5px; margin-bottom: 15px;
+  font-weight: 800; font-size: 16px; border: 2px solid #F3D2B8; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+ 
+/* ── subheader (in-game / report / analysis) ─────────────── */
+.sub{background:var(--teal);color:#fff;padding:16px 16px 26px;position:relative;display:flex;align-items:center;gap:10px}
+.sub::after{content:'';position:absolute;inset:auto 0 -1px;height:24px;background:var(--cream);border-radius:24px 24px 0 0}
+.back{background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:10px;width:34px;height:34px;flex:none;
+  display:grid;place-items:center;cursor:pointer;font-size:17px;transition:background 0.2s;}
+.back:active{background:rgba(255,255,255,.3);}
+.subtt{font-weight:800;font-size:16.5px;flex:1; display:flex; align-items:center; gap:8px;}
+.subtt img { height: 32px; border-radius: 6px; background: #fff; padding: 2px; }
+.chip{background:rgba(255,255,255,.18);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:800;
+  display:flex;align-items:center;gap:5px;flex:none}
+ 
+main{flex:1;padding:4px 16px 40px}
+ 
+/* ── Premium UI Cards ───────────────────────────────────────── */
+.lvl-card{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;border-radius:24px;
+  padding:20px;margin:12px 0 16px;position:relative;overflow:hidden;box-shadow: 0 6px 16px rgba(47, 107, 98, 0.25);}
+.lvl-row{display:flex;align-items:center;gap:14px}
+.lvl-num{font-size:38px;font-weight:800;line-height:1}
+.lvl-num span{font-size:14px;font-weight:700;display:block;opacity:.8;margin-bottom:2px}
+.lvl-mid{flex:1}
+.lvl-label{font-weight:700;font-size:15.5px;margin-bottom:5px}
+.stars{display:flex;gap:2px}
+.stars svg{width:15px;height:15px}
+.lvl-next{margin-top:12px}
+.lvl-bar-track{height:7px;background:rgba(255,255,255,.25);border-radius:5px;overflow:hidden}
+.lvl-bar-fill{height:100%;background:var(--gold);border-radius:5px;transition:width .5s}
+.lvl-next p{font-size:12px;opacity:.85;margin-top:5px}
+ 
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+.stat{background:linear-gradient(145deg, #ffffff, #f7fafa); border:1px solid var(--line); border-radius:24px; padding:16px 8px; text-align:center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
+.stat .v{font-size:22px;font-weight:800;color:var(--teal-d);display:flex;align-items:center;justify-content:center;gap:4px}
+.stat .l{font-size:11.5px;color:var(--soft);font-weight:700;margin-top:4px; text-transform:uppercase; letter-spacing:0.02em;}
+.flame{color:var(--flame);font-size:18px}
+ 
+.btn{width:100%;padding:17px;border:0;border-radius:20px;background:var(--teal);color:#fff;font:inherit;
+  font-size:18.5px;font-weight:800;cursor:pointer;margin-bottom:10px;box-shadow: 0 4px 12px rgba(47,107,98,0.2); transition:transform 0.1s;}
+.btn:active{transform:scale(0.98);}
+.btn.ghost{background:transparent;color:var(--teal-d);border:2px solid var(--teal-l); box-shadow:none;}
+.btn.sm{padding:11px;font-size:14.5px;margin:0; border-radius:16px;}
+.btn.warn{color:var(--warn)}
+.btn:focus-visible{outline:3px solid var(--teal-d);outline-offset:2px}
+.btn:disabled{opacity:.5;cursor:default;transform:none;}
+ 
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px;margin-bottom:16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
+.card h2{font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--soft);margin-bottom:14px; text-transform:uppercase;}
+.hint{font-size:13.5px;color:var(--soft);text-align:center;margin:2px 0 16px}
+ 
+/* ── Combo Multiplier & Play Screen ───────────────────── */
+#vPlay { position: relative; }
+.combo-badge { position:absolute; top:-5px; right:10px; background:var(--flame); color:#fff; padding:6px 14px; border-radius:14px; font-weight:900; font-size:17px; box-shadow:0 4px 12px rgba(219,123,37,0.4); transform:scale(0); transition:transform 0.3s cubic-bezier(.2,.9,.3,1.3); z-index:10; }
+.combo-badge.show { transform:scale(1) rotate(-4deg); }
+
+.rounddots{display:flex;gap:5px}
+.rdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}
+.rdot.on{background:#fff}
+.rdot.ok{background:var(--gold)}
+.rdot.no{background:#E9A08A}
+ 
+/* ── say bar ───────────────────────────────────────── */
+.say{display:flex;gap:14px;align-items:center;background:var(--mint);border-radius:24px;padding:18px;margin:14px 0 18px;min-height:80px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);}
+.say .sp{font-size:24px;flex:none}
+.say p{font-size:19px;font-weight:700;line-height:1.35}
+.say.ring .sp{animation:rg .6s}
+@keyframes rg{0%{transform:scale(1)}40%{transform:scale(1.22)}100%{transform:scale(1)}}
+ 
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.opt{background:#fff;border:3px solid var(--line);border-radius:24px;min-height:118px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;cursor:pointer;font:inherit;transition:transform .08s,background .12s,border-color .12s;padding:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);}
+.opt .ic{width:44px;height:44px}
+.opt .n{font-weight:700;font-size:16px;text-align:center}
+.opt.lit{background:var(--teal);border-color:var(--teal-d);transform:scale(1.045); box-shadow: 0 6px 16px rgba(47,107,98,0.25);}
+.opt.lit .n{color:#fff}
+.opt.good{background:var(--sage);border-color:var(--ok)}
+.opt.bad{background:var(--peach);border-color:var(--warn)}
+.opt.tap{transform:scale(.96)}
+.opt:disabled{opacity:.55;cursor:default}
+.opt:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+ 
+/* ── Circular Progress Ring ────────────────────────────── */
+.circ-wrap { width: 130px; height: 130px; margin: 0 auto 20px; position: relative; }
+.circ-bg { fill: none; stroke: var(--line); stroke-width: 10; }
+.circ-fill { fill: none; stroke: var(--teal); stroke-width: 10; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1s ease; }
+.circ-text { font-size: 28px; font-weight: 800; fill: var(--teal-d); text-anchor: middle; dominant-baseline: middle; }
+
+/* ── feedback toast ───────────────────────────────────────── */
+.toastwrap{position:fixed;inset:auto 0 0;display:flex;justify-content:center;pointer-events:none;z-index:40;padding:0 16px 18px}
+.toast{max-width:760px;margin:0 auto;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:12px;
+  transform:translateY(140%);transition:transform .32s cubic-bezier(.2,.9,.3,1.2);box-shadow:0 8px 26px rgba(0,0,0,.18)}
+.toast.show{transform:translateY(0)}
+.toast.good{background:var(--ok);color:#fff}
+.toast.bad{background:var(--warn);color:#fff}
+.toast .te{font-size:26px;flex:none}
+.toast .tt{font-weight:800;font-size:16.5px}
+.toast .ts{font-size:13px;opacity:.9;margin-top:1px}
+ 
+.levelup{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:50;
+  background:rgba(32,48,44,.35);opacity:0;pointer-events:none;transition:opacity .25s}
+.levelup.show{opacity:1;pointer-events:auto}
+.levelup .box{background:#fff;border-radius:24px;padding:30px 26px;text-align:center;max-width:280px;
+  transform:scale(.85);transition:transform .3s cubic-bezier(.2,.9,.3,1.3); box-shadow:0 12px 30px rgba(0,0,0,0.2);}
+.levelup.show .box{transform:scale(1)}
+.levelup .box .lu-e{font-size:44px;margin-bottom:8px}
+.levelup .box h3{font-size:20px;font-weight:800;color:var(--teal-d);margin-bottom:4px}
+.levelup .box p{font-size:14px;color:var(--soft)}
+ 
+/* ── timeline (session report) ───────────────────────────────────────── */
+.timeline{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.tdot{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff;flex:none}
+.tdot.ok{background:var(--ok)}
+.tdot.part{background:var(--brass)}
+.tdot.no{background:var(--warn)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--soft);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dot-sw{width:9px;height:9px;border-radius:3px;display:inline-block}
+ 
+.report-hero{text-align:center;padding:8px 0 12px}
+.report-hero .re{font-size:44px}
+.report-hero h1{font-size:22px;font-weight:800;margin:8px 0 2px;color:var(--teal-d)}
+.report-hero p{font-size:14px;color:var(--soft)}
+ 
+.stat-row4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+ 
+.spark{width:100%;height:120px;display:block;margin-bottom:4px}
+.barc{width:100%;height:90px;display:block}
+ 
+table.tt{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+table.tt th{text-align:left;font-size:11px;color:var(--soft);font-weight:800;padding:5px 4px;border-bottom:1px solid var(--line);text-transform:uppercase;}
+table.tt td{padding:9px 4px;border-top:1px solid var(--line)}
+
+.milestone-list { list-style: none; padding:0; margin:0; }
+.milestone-list li { background: var(--mint); padding: 12px 16px; border-radius: 14px; margin-bottom: 8px; font-weight: 700; color: var(--teal-d); display: flex; align-items: center; gap: 10px; }
+ 
+/* ── customize ───────────────────────────────────────── */
+label{display:block;font-size:12.5px;font-weight:800;color:var(--soft);margin:12px 0 5px; text-transform:uppercase; letter-spacing:0.02em;}
+input,select{width:100%;padding:12px;border:2px solid var(--line);border-radius:16px;font:inherit;font-size:16px;background:#fff;color:var(--ink); transition:border-color 0.2s;}
+input:focus,select:focus{outline:0;border-color:var(--teal)}
+.item-row{display:flex;gap:12px;align-items:center;border:2px solid var(--line);border-radius:20px;padding:12px;margin-bottom:10px;background:#fff; box-shadow: 0 4px 10px rgba(0,0,0,0.02);}
+.item-row .pic{width:56px;height:56px;border-radius:14px;background:var(--mint);display:grid;place-items:center;flex:none;cursor:pointer;border:0}
+.item-row .fields{flex:1;display:flex;flex-direction:column;gap:6px}
+.del{background:0;border:0;color:var(--warn);font-size:22px;cursor:pointer;padding:4px}
+.pickwrap{margin:-2px 0 12px;padding:16px;background:var(--cream);border-radius:16px}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+.pickopt{background:#fff;border:2px solid var(--line);border-radius:12px;min-height:56px;display:grid;place-items:center;cursor:pointer}
+.pickopt.on{border-color:var(--teal);background:var(--teal-l)}
+.seg{display:flex;border:2px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;}
+.seg button{flex:1;background:#fff;border:0;padding:12px 4px;font:inherit;font-size:14px;font-weight:700;color:var(--soft);cursor:pointer;transition:background 0.2s, color 0.2s;}
+.seg button.on{background:var(--teal);color:#fff}
+ 
+.hide{display:none!important}
+.note{font-size:13px;color:var(--soft);margin-top:9px;line-height:1.4;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="weave"></div>
+ 
+<!-- ══════════════ HOME ══════════════ -->
+<div id="hdrHome">
+  <div class="top"><div class="trow">
+    <div class="hi" id="hiGreet">
+      <img src="assets/smriti-setu.png" alt="Logo" onerror="this.style.display='none'"> 
+      SmritiSetu
+    </div>
+    <div class="iconbtns">
+      <button class="ibtn" id="btnLang" title="Language">EN</button>
+      <button class="ibtn" id="btnGear" title="Customize">⚙</button>
+    </div>
+  </div></div>
+</div>
+ 
+<!-- ══════════════ SUBHEADER ══════════════ -->
+<div id="hdrSub" class="hide">
+  <div class="sub">
+    <button class="back" id="btnBack">←</button>
+    <div class="subtt">
+      <img src="assets/smriti-setu.png" alt="Logo" id="subLogo" onerror="this.style.display='none'" class="hide"> 
+      <span id="subTitle">Smriti Taal</span>
+    </div>
+    <div class="chip hide" id="chipLevel"><span>★</span><span id="chipLevelN">1</span></div>
+    <div class="chip hide" id="chipStreak"><span class="flame">🔥</span><span id="chipStreakN">0</span></div>
+    <div class="rounddots hide" id="roundDots"></div>
+  </div>
+</div>
+ 
+<main>
+ 
+<!-- ─────────── VIEW: HOME ─────────── -->
+<section id="vHome">
+  <!-- DAILY STREAK BANNER -->
+  <div class="daily-streak-banner">
+    <span id="lblDailyStreakText">Daily Play Streak</span>
+    <span>🔥 <span id="lblDailyStreakNum">1</span></span>
+  </div>
+
+  <div class="lvl-card">
+    <div class="lvl-row">
+      <div class="lvl-num"><span id="lblLevel">Level</span><span id="homeLevelN">1</span></div>
+      <div class="lvl-mid">
+        <div class="lvl-label" id="homeLevelLabel">Getting started</div>
+        <div class="stars" id="homeStars"></div>
+      </div>
+    </div>
+    <div class="lvl-next">
+      <div class="lvl-bar-track"><div class="lvl-bar-fill" id="homeLevelBar" style="width:0%"></div></div>
+      <p id="homeLevelNote">Keep playing to reach the next level.</p>
+    </div>
+  </div>
+ 
+  <div class="stat-row">
+    <div class="stat"><div class="v"><span class="flame">🔥</span><span id="statBest">0</span></div><div class="l" id="lblBestStreak">Best session streak</div></div>
+    <div class="stat"><div class="v"><span id="statAcc">—</span></div><div class="l" id="lblAcc">Today's accuracy</div></div>
+    <div class="stat"><div class="v"><span id="statSessions">0</span></div><div class="l" id="lblSessions">Sessions today</div></div>
+  </div>
+ 
+  <button class="btn" id="btnStart">Start playing</button>
+  <button class="btn ghost" id="btnReportView">View full patient report</button>
+ 
+  <p class="hint" id="homeHint">Listen to the beat, repeat it back, then say which instrument played first.</p>
+</section>
+
+<!-- ─────────── NEW VIEW: FULL PATIENT REPORT ─────────── -->
+<section id="vReportView" class="hide">
+  <div class="report-hero">
+    <div class="re">📊</div>
+    <h1 id="allTimeTitle">All-Time Progress Report</h1>
+    <p id="allTimeSub">Your journey with SmritiSetu</p>
+  </div>
+  
+  <div class="card" style="text-align:center;">
+    <h2 id="lblAllAccCirc">Overall Accuracy</h2>
+    <div class="circ-wrap">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle class="circ-bg" cx="65" cy="65" r="55"></circle>
+        <circle class="circ-fill" id="allTimeCirc" cx="65" cy="65" r="55" stroke-dasharray="345.5" stroke-dashoffset="345.5"></circle>
+        <text class="circ-text" id="allTimeAccTxt" x="65" y="68">0%</text>
+      </svg>
+    </div>
+    
+    <div class="stat-row" style="margin-bottom:0; grid-template-columns:1fr 1fr;">
+      <div class="stat"><div class="v" id="allTimeGames">0</div><div class="l" id="lblAllGames">Rounds Played</div></div>
+      <div class="stat"><div class="v" id="allTimeMisses" style="color:var(--warn)">0</div><div class="l" id="lblAllMisses">Total Misses</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="hAllTimeTrend">Cognitive Trend (All Time)</h2>
+    <div id="allTimeChart"></div>
+  </div>
+
+  <div class="card">
+    <h2 id="hMilestones">Recent Milestones</h2>
+    <ul class="milestone-list" id="milestoneList">
+      <!-- Injected dynamically -->
+    </ul>
+  </div>
+
+  <button class="btn ghost" id="btnReportBack">Back to Home</button>
+</section>
+ 
+<!-- ─────────── VIEW: PLAY ─────────── -->
+<section id="vPlay" class="hide">
+  <div id="comboBadge" class="combo-badge">3x COMBO!</div>
+  <div class="say" id="say"><span class="sp">🔊</span><p id="prompt">…</p></div>
+  <div id="stage"></div>
+  <button class="btn" id="act">Begin</button>
+  <button class="btn ghost hide" id="rep">Hear it again</button>
+</section>
+ 
+<!-- ─────────── VIEW: SESSION REPORT ─────────── -->
+<section id="vReport" class="hide">
+  <div class="report-hero">
+    <div class="re" id="repEmoji">🎉</div>
+    <h1 id="repTitle">Wonderful session!</h1>
+    <p id="repSub">6 of 6 rounds correct</p>
+  </div>
+  <div class="stat-row4">
+    <div class="stat"><div class="v" id="repRounds">6</div><div class="l" id="lblRoundsPlayed">Rounds played</div></div>
+    <div class="stat"><div class="v" id="repAcc">100%</div><div class="l" id="lblAccuracy">Accuracy</div></div>
+    <div class="stat"><div class="v"><span class="flame">🔥</span><span id="repStreak">6</span></div><div class="l" id="lblSessBest">Best streak</div></div>
+    <div class="stat"><div class="v" id="repLevel">3</div><div class="l" id="lblLevelReached">Level reached</div></div>
+  </div>
+  <div class="card">
+    <h2 id="hRoundByRound">Round by round</h2>
+    <div class="timeline" id="repTimeline"></div>
+    <div class="legend" id="repLegend"></div>
+  </div>
+  <button class="btn" id="btnPlayAgain">Play again</button>
+  <button class="btn ghost" id="btnGoAnalysis">View Caregiver Dashboard</button>
+  <button class="btn ghost" id="btnGoHomeFromReport">Done for now</button>
+</section>
+ 
+<!-- ─────────── VIEW: LOCK (shared by analysis + customize) ─────────── -->
+<section id="vLock" class="hide">
+  <div class="card">
+    <h2 id="lockHead">Caregiver access</h2>
+    <p style="font-size:15px;margin-bottom:10px" id="lockSub">Enter the 4-digit PIN.</p>
+    <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+    <label style="display:flex;align-items:center;gap:8px;margin:12px 0 0;font-weight:400">
+      <input type="checkbox" id="stayIn" style="width:auto;padding:0"><span id="lblStayIn">Keep me signed in on this device</span>
+    </label>
+    <p id="pinErr" class="note hide" style="color:var(--warn)">That code is not right.</p>
+    <button class="btn sm" id="btnUnlock" style="margin-top:12px">Unlock</button>
+  </div>
+</section>
+ 
+<!-- ─────────── VIEW: ANALYSIS ─────────── -->
+<section id="vAnalysis" class="hide">
+  <div class="card">
+    <h2 id="hTrend">Memory trend — attention &amp; recognition</h2>
+    <div id="trendChart"></div>
+  </div>
+  <div class="card">
+    <h2 id="hStreakHist">Best streak by day</h2>
+    <div id="streakChart"></div>
+  </div>
+  <div class="card">
+    <h2 id="hMixups">Common mix-ups in "which played first?"</h2>
+    <div id="mixupsBox"></div>
+  </div>
+  <div class="card">
+    <h2 id="hSessionLog">Session log</h2>
+    <div id="sessionLogBox"></div>
+  </div>
+  <button class="btn ghost" id="btnPrint">Print report</button>
+  <div class="stat-row" style="grid-template-columns:1fr 1fr; margin-bottom:0;">
+    <button class="btn sm ghost" id="btnExport">Export data</button>
+    <button class="btn sm ghost" id="btnImportBtn">Import data</button>
+  </div>
+  <input id="importFile" type="file" accept="application/json" class="hide">
+</section>
+ 
+<!-- ─────────── VIEW: CUSTOMIZE ─────────── -->
+<section id="vCustomize" class="hide">
+  <div class="card">
+    <h2 id="hGeneral">General</h2>
+    <label id="lblPatientName">Patient name</label>
+    <input id="cPatientName">
+    <label id="lblLanguage">Language</label>
+    <div class="seg" id="segLang">
+      <button data-lang="en">EN</button><button data-lang="hi">हि</button><button data-lang="as">অ</button>
+    </div>
+    <label id="lblSessionLen">Rounds per session</label>
+    <div class="seg" id="segLen">
+      <button data-len="4">4</button><button data-len="6">6</button><button data-len="8">8</button><button data-len="10">10</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2 id="hCustomCards">Custom Memory Cards</h2>
+    <p class="note" id="noteCards" style="margin-top:-6px">Upload photos of familiar objects or people to use in the memory sequence game.</p>
+    <div id="instrList"></div>
+    <input type="file" accept="image/*" class="hide" id="fileInput">
+    <button class="btn sm ghost" id="btnAddCard" style="margin-top:4px">Add Card</button>
+  </div>
+  <div class="card" style="margin-bottom:0;">
+    <h2 id="hDanger">Reset</h2>
+    <button class="btn sm ghost warn" id="btnReset">Reset progress</button>
+    <p class="note" id="noteReset">Clears levels, streaks and history. Custom cards are kept.</p>
+  </div>
+</section>
+ 
+</main>
+ 
+<div class="toastwrap"><div class="toast" id="toast"><span class="te" id="toastE">🎉</span>
+  <div><div class="tt" id="toastT">Good!</div><div class="ts" id="toastS"></div></div></div></div>
+ 
+<div class="levelup" id="levelup"><div class="box">
+  <div class="lu-e">⭐</div><h3 id="luTitle">Level up!</h3><p id="luSub">You reached Level 2</p>
+</div></div>
+ 
+</div>
+<script>
+/* ============================================================
+   ICON LIBRARY — Includes Regional Instruments
+=============================================================*/
+const ICONS = {
+dhol:`<defs><linearGradient id="gDhol" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="var(--teal-d)"/><stop offset="1" stop-color="#173D38"/></linearGradient></defs>
+  <ellipse cx="32" cy="42" rx="19" ry="4" fill="#000" opacity=".12"/>
+  <rect x="14" y="22" width="36" height="20" rx="4" fill="url(#gDhol)"/>
+  <rect x="14" y="22" width="36" height="5" rx="2.5" fill="#fff" opacity=".1"/>
+  <ellipse cx="14" cy="32" rx="4.5" ry="10.5" fill="var(--gam)"/>
+  <ellipse cx="13" cy="32" rx="2.2" ry="9" fill="#8A1822"/>
+  <ellipse cx="50" cy="32" rx="4.5" ry="10.5" fill="var(--gam)"/>
+  <ellipse cx="49" cy="32" rx="2.2" ry="9" fill="#8A1822"/>
+  <path d="M20 22 v20 M28 20.5 v23 M36 20.5 v23 M44 22 v20" stroke="#000" stroke-width="1.4" opacity=".25"/>`,
+taal:`<circle cx="24" cy="32" r="14" fill="none" stroke="var(--brass)" stroke-width="3.5"/>
+  <circle cx="24" cy="32" r="5" fill="var(--brass)"/>
+  <circle cx="42" cy="32" r="14" fill="none" stroke="var(--brass)" stroke-width="3.5" opacity=".85"/>
+  <circle cx="42" cy="32" r="5" fill="var(--brass)" opacity=".85"/>`,
+pepa:`<path d="M14 34 Q14 24 26 22 L48 18 Q52 18 52 22 Q52 26 48 26 L28 30 Q18 32 14 34Z" fill="var(--gam)" opacity=".85"/>
+  <circle cx="17" cy="34" r="5" fill="var(--teal-d)"/>
+  <path d="M28 30 L48 26" stroke="#fff" stroke-width="1.5" opacity=".5"/>`,
+gogona:`<path d="M12 32 Q22 14 34 20 Q46 26 52 32 Q46 38 34 44 Q22 50 12 32Z" fill="none" stroke="var(--brass)" stroke-width="3"/>
+  <path d="M16 32 Q28 24 40 32 Q28 40 16 32Z" fill="var(--brass)" opacity=".3"/>`,
+khol:`<ellipse cx="32" cy="46" rx="14" ry="4" fill="#000" opacity=".12"/>
+  <path d="M18 20 Q32 14 46 20 L42 46 Q32 50 22 46 Z" fill="var(--brass)" opacity=".85"/>
+  <ellipse cx="32" cy="20" rx="14" ry="5" fill="var(--teal-d)"/>
+  <path d="M22 46 Q32 50 42 46" stroke="#8A652C" stroke-width="1.5" fill="none" opacity=".6"/>`,
+bahi:`<rect x="12" y="30" width="40" height="4" rx="2" fill="#D2A65A"/>
+  <circle cx="20" cy="32" r="1.5" fill="#3D2912"/>
+  <circle cx="26" cy="32" r="1.5" fill="#3D2912"/>
+  <circle cx="32" cy="32" r="1.5" fill="#3D2912"/>
+  <circle cx="38" cy="32" r="1.5" fill="#3D2912"/>
+  <circle cx="44" cy="32" r="1.5" fill="#3D2912"/>
+  <rect x="16" y="28" width="2" height="8" fill="#8A1822"/>
+  <rect x="48" y="28" width="2" height="8" fill="#8A1822"/>`,
+bhortaal:`<ellipse cx="32" cy="32" rx="22" ry="12" fill="none" stroke="var(--brass)" stroke-width="4"/>
+  <ellipse cx="32" cy="32" rx="12" ry="6" fill="var(--gold)"/>
+  <circle cx="32" cy="32" r="3" fill="#8A652C"/>
+  <path d="M10 32 Q32 10 54 32" fill="none" stroke="var(--brass)" stroke-width="2" opacity="0.6"/>`,
+xinga:`<path d="M14 40 Q20 10 50 20 L48 28 Q26 18 20 42 Z" fill="#4A4A4A"/>
+  <path d="M14 40 L20 42" stroke="var(--brass)" stroke-width="4"/>
+  <path d="M47 18 L53 22 L50 28 L44 24 Z" fill="var(--gold)"/>`,
+dot:`<circle cx="32" cy="32" r="16" fill="var(--teal-l)" stroke="var(--teal)" stroke-width="2"/>`
+};
+function icon(shape,size=40){ return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true">${ICONS[shape]||ICONS.dot}</svg>`; }
+function visual(it,size=44){
+  if(it && it.photo) return `<img src="${it.photo}" width="${size}" height="${size}"
+    style="border-radius:${Math.round(size*.28)}px;object-fit:cover;display:block" alt="">`;
+  return icon(it&&it.shape,size);
+}
+function resizeImage(file, maxDim=200, quality=.82){
+  return new Promise((resolve,reject)=>{
+    const img=new Image(); const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const scale=Math.min(1,maxDim/Math.max(img.width,img.height));
+      const w=Math.round(img.width*scale), h=Math.round(img.height*scale);
+      const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      resolve(cv.toDataURL('image/jpeg',quality));
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('bad image'))};
+    img.src=url;
+  });
+}
+ 
+/* ============================================================
+   CONTENT / TRANSLATIONS
+=============================================================*/
+const T = {
+en:{n:'English',eve:'Hello,',
+  start:'Start playing',fullReport:'Caregiver Dashboard',customize:'Customize',
+  level:'Level',bestStreak:'Best session streak',accToday:"Today's accuracy",sessionsToday:'Sessions today',
+  homeHint:'Listen to the beat, repeat it back, then say which instrument played first.',
+  levelNote:n=>`${n}% of the way to the next level`,
+  diff:['Getting started','Building focus','Steady focus','Sharp memory','Strong recall','Excellent recall','Outstanding','Master level'],
+  rhythmTitle:'Smriti Taal',round:'Round',of:'of',
+  listen:'Listen carefully',turn:'Now your turn',hearAgain:'Hear it again',first:'Which one played first?',
+  fbGood:'Good!',fbVeryGood:'Very good!',fbGreat:'Great job!',fbExcellent:'Excellent! On a roll!',
+  fbTryAgain:'Oh no! Better luck next time.',
+  fbGoodSub:'Sequence remembered correctly.',fbTryAgainSub:'Let\u2019s listen again on the next round.',
+  fbFirstOk:'And the first guess was right too.',fbFirstNo:it=>`It was actually ${it}.`,
+  levelUp:'Level up!',reached:n=>`You reached Level ${n}`,
+  sessionGreat:'Wonderful session!',sessionGood:'Good session!',sessionOk:'Nice try today!',
+  sessionSub:(c,n)=>`${c} of ${n} rounds correct`,
+  roundsPlayed:'Rounds played',accuracy:'Accuracy',sessBest:'Best streak',levelReached:'Level reached',
+  roundByRound:'Round by round',
+  legBoth:'Both correct',legPart:'Sequence right, guess missed',legNone:'Sequence missed',
+  playAgain:'Play again',doneForNow:'Done for now',
+  lockHead:'Caregiver access',lockSub:'Enter the 4-digit PIN.',stayIn:'Keep me signed in on this device',
+  wrongPin:'That code is not right.',unlock:'Unlock',
+  trendTitle:'Memory trend \u2014 attention & recognition',streakHistTitle:'Best streak by day',
+  mixupsTitle:'Common mix-ups in \u201cwhich played first?\u201d',sessionLogTitle:'Session log',
+  printBtn:'Print report',exportBtn:'Export data',importBtn:'Import data',
+  notEnough:'Not enough sessions yet. Keep playing daily.',noMixups:'No mix-ups recorded yet.',
+  colDate:'Date',colRounds:'Rounds',colAcc:'Accuracy',colBest:'Best streak',colLevel:'Level',
+  general:'General',patientName:'Patient name',language:'Language',sessionLen:'Rounds per session',
+  customCards:'Custom Memory Cards',cardNote:'Upload photos of familiar objects or people to use in the memory sequence game.',
+  addCard:'Add Card',changePic:'Change picture',photo:'Photo',removePh:'Remove photo',
+  dangerZone:'Reset',resetBtn:'Reset progress',resetNote:'Clears levels, streaks and history. Custom cards are kept.',
+  resetConfirm:'This clears levels, streaks and history for this game. The custom cards are kept. Continue?',
+  minCards:'Keep at least three memory cards so the game still works.',
+  maxCards:'Twelve is the practical maximum for one screen.',
+  saveNote:'Changes save automatically on this device.',
+  dailyStreakText:'Daily Play Streak'},
+hi:{n:'हिन्दी',eve:'नमस्ते,',
+  start:'खेलना शुरू करें',fullReport:'देखभाल डैशबोर्ड',customize:'बदलें',
+  level:'स्तर',bestStreak:'सबसे लंबी लड़ी',accToday:'आज की सटीकता',sessionsToday:'आज के सत्र',
+  homeHint:'ताल सुनिए, उसे दोहराइए, फिर बताइए कि सबसे पहले कौन सा वाद्ययंत्र बजा था।',
+  levelNote:n=>`अगले स्तर तक ${n}% पूरा`,
+  diff:['शुरुआत','ध्यान बन रहा है','स्थिर ध्यान','तेज़ याददाश्त','मज़बूत याददाश्त','बेहतरीन याददाश्त','उत्कृष्ट','उस्ताद स्तर'],
+  rhythmTitle:'स्मृति ताल',round:'चरण',of:'में से',
+  listen:'ध्यान से सुनिए',turn:'अब आपकी बारी है',hearAgain:'फिर से सुनिए',first:'सबसे पहले कौन सा बजा था?',
+  fbGood:'अच्छा!',fbVeryGood:'बहुत अच्छा!',fbGreat:'शाबाश!',fbExcellent:'बहुत बढ़िया! लगातार सही!',
+  fbTryAgain:'कोई बात नहीं! अगली बार बेहतर करेंगे।',
+  fbGoodSub:'क्रम सही याद रखा।',fbTryAgainSub:'अगले चरण में फिर से सुनते हैं।',
+  fbFirstOk:'और पहला अनुमान भी सही था।',fbFirstNo:it=>`यह असल में ${it} था।`,
+  levelUp:'स्तर ऊपर!',reached:n=>`आप स्तर ${n} पर पहुँचे`,
+  sessionGreat:'शानदार सत्र!',sessionGood:'अच्छा सत्र!',sessionOk:'आज अच्छी कोशिश!',
+  sessionSub:(c,n)=>`${n} में से ${c} चरण सही`,
+  roundsPlayed:'चरण खेले',accuracy:'सटीकता',sessBest:'सबसे लंबी लड़ी',levelReached:'पहुँचा स्तर',
+  roundByRound:'चरण दर चरण',
+  legBoth:'दोनों सही',legPart:'क्रम सही, अनुमान चूका',legNone:'क्रम चूका',
+  playAgain:'फिर से खेलें',doneForNow:'अभी के लिए बस',
+  lockHead:'देखभाल करने वाले की पहुँच',lockSub:'4 अंकों का पिन डालिए।',stayIn:'इस डिवाइस पर साइन इन रखें',
+  wrongPin:'यह कोड सही नहीं है।',unlock:'खोलें',
+  trendTitle:'याददाश्त का रुझान — ध्यान और पहचान',streakHistTitle:'दिन अनुसार सबसे लंबी लड़ी',
+  mixupsTitle:'"सबसे पहले कौन बजा?" में सामान्य भ्रम',sessionLogTitle:'सत्र सूची',
+  printBtn:'रिपोर्ट प्रिंट करें',exportBtn:'डेटा निर्यात करें',importBtn:'डेटा आयात करें',
+  notEnough:'अभी पर्याप्त सत्र नहीं हुए। रोज़ खेलते रहिए।',noMixups:'अभी तक कोई भ्रम दर्ज नहीं हुआ।',
+  colDate:'तारीख़',colRounds:'चरण',colAcc:'सटीकता',colBest:'सबसे लंबी लड़ी',colLevel:'स्तर',
+  general:'सामान्य',patientName:'रोगी का नाम',language:'भाषा',sessionLen:'प्रति सत्र चरण',
+  customCards:'कस्टम मेमोरी कार्ड',cardNote:'मेमोरी गेम में उपयोग करने के लिए परिचित वस्तुओं या लोगों की तस्वीरें अपलोड करें।',
+  addCard:'कार्ड जोड़ें',changePic:'तस्वीर बदलें',photo:'फ़ोटो',removePh:'फ़ोटो हटाएँ',
+  dangerZone:'रीसेट',resetBtn:'प्रगति रीसेट करें',resetNote:'स्तर, लड़ी और इतिहास मिट जाएंगे। कस्टम कार्ड बने रहेंगे।',
+  resetConfirm:'इससे इस खेल के स्तर, लड़ी और इतिहास मिट जाएंगे। कस्टम कार्ड बने रहेंगे। जारी रखें?',
+  minCards:'खेल चलाने के लिए कम से कम तीन कार्ड रखें।',
+  maxCards:'एक स्क्रीन के लिए 12 सबसे व्यावहारिक अधिकतम है।',
+  saveNote:'बदलाव इस डिवाइस पर अपने आप सेव होते हैं।',
+  dailyStreakText:'दैनिक खेल श्रृंखला'},
+as:{n:'অসমীয়া',eve:'নমস্কাৰ,',
+  start:'খেল আৰম্ভ কৰক',fullReport:'যত্নকাৰী ডেশ্ববৰ্ড',customize:'সলনি কৰক',
+  level:'স্তৰ',bestStreak:'আটাইতকৈ দীঘল ধাৰা',accToday:'আজিৰ শুদ্ধতা',sessionsToday:'আজিৰ সেশ্বন',
+  homeHint:'তালটো শুনক, ঘুৰাই কওক, তাৰ পিছত কওক প্ৰথমে কোনটো বাদ্যযন্ত্ৰ বাজিছিল।',
+  levelNote:n=>`পিছৰ স্তৰলৈ ${n}% সম্পূৰ্ণ`,
+  diff:['আৰম্ভণি','মনোযোগ গঢ়ি উঠিছে','স্থিৰ মনোযোগ','চোকা স্মৃতি','মজবুত স্মৃতি','উৎকৃষ্ট স্মৃতি','অসাধাৰণ','সুদক্ষ স্তৰ'],
+  rhythmTitle:'মনৰ তাল',round:'পৰ্যায়',of:'/',
+  listen:'মন দি শুনক',turn:'এতিয়া আপোনাৰ পাল',hearAgain:'আকৌ শুনক',first:'প্ৰথমে কোনটো বাজিছিল?',
+  fbGood:'ভাল!',fbVeryGood:'বহুত ভাল!',fbGreat:'শাবাশ!',fbExcellent:'অসাধাৰণ! একেৰাহে শুদ্ধ!',
+  fbTryAgain:'অসুবিধা নাই! পিছৰবাৰ ভাল হ\u2019ব।',
+  fbGoodSub:'ক্ৰমটো শুদ্ধভাৱে মনত ৰাখিলে।',fbTryAgainSub:'পিছৰ পৰ্যায়ত আকৌ শুনো আহক।',
+  fbFirstOk:'আৰু প্ৰথমটো অনুমানো শুদ্ধ আছিল।',fbFirstNo:it=>`এইটো আচলতে ${it} আছিল।`,
+  levelUp:'স্তৰ ওপৰলৈ!',reached:n=>`আপুনি স্তৰ ${n} ত উপনীত হ\u2019ল`,
+  sessionGreat:'অসাধাৰণ সেশ্বন!',sessionGood:'ভাল সেশ্বন!',sessionOk:'আজি ভাল চেষ্টা!',
+  sessionSub:(c,n)=>`${n} টাৰ ভিতৰত ${c} টা শুদ্ধ`,
+  roundsPlayed:'পৰ্যায় খেলিলে',accuracy:'শুদ্ধতা',sessBest:'আটাইতকৈ দীঘল ধাৰা',levelReached:'উপনীত স্তৰ',
+  roundByRound:'পৰ্যায়ে পৰ্যায়ে',
+  legBoth:'দুয়োটা শুদ্ধ',legPart:'ক্ৰম শুদ্ধ, অনুমান ভুল',legNone:'ক্ৰম ভুল',
+  playAgain:'পুনৰ খেলক',doneForNow:'এতিয়াৰ বাবে যথেষ্ট',
+  lockHead:'যত্নকাৰীৰ প্ৰৱেশ',lockSub:'৪ অংকৰ পিন দিয়ক।',stayIn:'এই ডিভাইচত ছাইন ইন কৰি ৰাখক',
+  wrongPin:'এই কোডটো শুদ্ধ নহয়।',unlock:'খোলক',
+  trendTitle:'স্মৃতিৰ প্ৰৱণতা — মনোযোগ আৰু চিনাক্তকৰণ',streakHistTitle:'দিনে দিনে আটাইতকৈ দীঘল ধাৰা',
+  mixupsTitle:'"প্ৰথমে কোনটো বাজিছিল?"ৰ সাধাৰণ বিভ্ৰান্তি',sessionLogTitle:'সেশ্বন তালিকা',
+  printBtn:'প্ৰতিবেদন প্ৰিণ্ট কৰক',exportBtn:'ডাটা ৰপ্তানি কৰক',importBtn:'ডাটা আমদানি কৰক',
+  notEnough:'এতিয়ালৈ যথেষ্ট সেশ্বন হোৱা নাই। প্ৰতিদিনে খেলি থাকক।',noMixups:'এতিয়ালৈ কোনো বিভ্ৰান্তি লিপিবদ্ধ হোৱা নাই।',
+  colDate:'তাৰিখ',colRounds:'পৰ্যায়',colAcc:'শুদ্ধতা',colBest:'দীঘল ধাৰা',colLevel:'স্তৰ',
+  general:'সাধাৰণ',patientName:'ৰোগীৰ নাম',language:'ভাষা',sessionLen:'প্ৰতি সেশ্বনত পৰ্যায়',
+  customCards:'কষ্টম মেমৰি কাৰ্ড',cardNote:'খেলত ব্যৱহাৰ কৰিবলৈ চিনাকি বস্তু বা মানুহৰ ফট\u2019 আপল\u2019ড কৰক।',
+  addCard:'কাৰ্ড যোগ কৰক',changePic:'ছবি সলনি কৰক',photo:'ফট\u2019',removePh:'ফট\u2019 আঁতৰাওক',
+  dangerZone:'ৰিছেট',resetBtn:'অগ্ৰগতি ৰিছেট কৰক',resetNote:'স্তৰ, ধাৰা আৰু ইতিহাস মচি যাব। কষ্টম কাৰ্ড থাকিব।',
+  resetConfirm:'ইয়াৰ ফলত এই খেলৰ স্তৰ, ধাৰা আৰু ইতিহাস মচি যাব। কষ্টম কাৰ্ড থাকিব। আগবাঢ়িবনে?',
+  minCards:'খেল চলাবলৈ কমেও তিনিটা মেমৰি কাৰ্ড ৰাখক।',
+  maxCards:'এটা স্ক্ৰীনৰ বাবে 12 ব্যৱহাৰিক সৰ্বাধিক।',
+  saveNote:'সলনিবোৰ এই ডিভাইচত নিজে নিজে ছেভ হয়।',
+  dailyStreakText:'দৈনিক খেলৰ ধাৰা'}
+};
+ 
+const DEF = {
+ lang:'as', pin:'1234', patient:'',
+ rhythm:[
+  {shape:'dhol', s:'drum', cat:'instrument', l:{en:'Dhol',hi:'ढोल',as:'ঢোল'}},
+  {shape:'taal', s:'metal', cat:'instrument', l:{en:'Taal',hi:'ताल',as:'ताल'}},
+  {shape:'pepa', s:'reed', cat:'instrument', l:{en:'Pepa',hi:'पेपा',as:'পেঁপা'}},
+  {shape:'gogona', s:'twang', cat:'instrument', l:{en:'Gogona',hi:'गगना',as:'गগনা'}},
+  {shape:'bahi', s:'reed', cat:'instrument', l:{en:'Flute',hi:'बांसुरी',as:'বাঁহী'}},
+  {shape:'bhortaal', s:'metal', cat:'instrument', l:{en:'Bhortaal',hi:'भोरताल',as:'ভোঁৰতাল'}},
+  {shape:'xinga', s:'reed', cat:'instrument', l:{en:'Xinga',hi:'सींग',as:'শিঙা'}}
+ ],
+ ability:{attention:1000,recognition:1000},
+ history:{},
+ rhythmStats:{bestStreak:0,currentStreak:0,sessionsLen:6,mixups:{},log:[]}
+};
+ 
+let mem=null;
+const save=()=>{try{localStorage.setItem('smriti',JSON.stringify(S))}catch(e){mem=S}};
+const load=()=>{try{const r=localStorage.getItem('smriti');return r?JSON.parse(r):null}catch(e){return mem}};
+let S = load() || structuredClone(DEF);
+S.rhythm = (S.rhythm&&S.rhythm.length>=3) ? S.rhythm : structuredClone(DEF.rhythm);
+S.ability = S.ability || {}; S.ability.attention = S.ability.attention || 1000; S.ability.recognition = S.ability.recognition || 1000;
+S.history = S.history || {};
+S.rhythmStats = Object.assign(structuredClone(DEF.rhythmStats), S.rhythmStats||{});
+if(!S.lang) S.lang='as'; if(!S.pin) S.pin='1234'; 
+const t = () => T[S.lang]||T.en;
+const L = o => (o.l&&(o.l[S.lang]||o.l.en))||'?';
+const today = () => new Date().toISOString().slice(0,10);
+
+/* -- DAILY STREAK LOGIC -- */
+function calculateDailyStreak() {
+  const days = Object.keys(S.history).sort((a,b) => new Date(b) - new Date(a)); 
+  if (days.length === 0) return 1;
+
+  let streak = 0;
+  let checkDate = new Date(); 
+  let dStr = checkDate.toISOString().slice(0,10);
+  
+  if (days.includes(dStr)) streak++;
+
+  while(true) {
+    checkDate.setDate(checkDate.getDate() - 1);
+    dStr = checkDate.toISOString().slice(0,10);
+    if (days.includes(dStr)) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+  return Math.max(1, streak); 
+}
+ 
+/* ───────────────────────── audio ───────────────────────── */
+let ac=null; const A=()=>ac||(ac=new (window.AudioContext||webkitAudioContext)());
+function beep(kind,i){
+  const c=A(),n=c.currentTime,g=c.createGain();g.connect(c.destination);
+  const f=[110,1400,392,196][i%4];
+  if(kind==='drum'){const o=c.createOscillator();o.type='sine';
+    o.frequency.setValueAtTime(f*1.7,n);o.frequency.exponentialRampToValueAtTime(f*.5,n+.16);
+    g.gain.setValueAtTime(.9,n);g.gain.exponentialRampToValueAtTime(.001,n+.4);
+    o.connect(g);o.start(n);o.stop(n+.42);}
+  else if(kind==='metal'){[1,2.4,3.9].forEach((m,k)=>{const o=c.createOscillator();o.type='triangle';
+    o.frequency.setValueAtTime(f*m,n);const q=c.createGain();q.gain.setValueAtTime(.2/(k+1),n);
+    q.gain.exponentialRampToValueAtTime(.001,n+.7);o.connect(q);q.connect(c.destination);o.start(n);o.stop(n+.72);});}
+  else if(kind==='reed'){const o=c.createOscillator();o.type='sawtooth';o.frequency.setValueAtTime(f,n);
+    const b=c.createBiquadFilter();b.type='lowpass';b.frequency.setValueAtTime(1600,n);
+    g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(.28,n+.06);g.gain.setValueAtTime(.28,n+.3);
+    g.gain.exponentialRampToValueAtTime(.001,n+.5);o.connect(b);b.connect(g);o.start(n);o.stop(n+.52);}
+  else{const o=c.createOscillator();o.type='square';o.frequency.setValueAtTime(f,n);
+    const b=c.createBiquadFilter();b.type='bandpass';b.frequency.setValueAtTime(700,n);
+    b.frequency.exponentialRampToValueAtTime(320,n+.35);b.Q.value=6;
+    g.gain.setValueAtTime(.3,n);g.gain.exponentialRampToValueAtTime(.001,n+.4);
+    o.connect(b);b.connect(g);o.start(n);o.stop(n+.42);}
+}
+function chime(ok){
+  const c=A(),n=c.currentTime;
+  (ok?[523,659,784]:[392,330]).forEach((hz,i)=>{
+    const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(hz,n+i*.11);
+    g.gain.setValueAtTime(.001,n+i*.11);g.gain.exponentialRampToValueAtTime(.2,n+i*.11+.02);
+    g.gain.exponentialRampToValueAtTime(.001,n+i*.11+.34);
+    o.connect(g);g.connect(c.destination);o.start(n+i*.11);o.stop(n+i*.11+.36);});
+}
+function fanfare(){
+  const c=A(),n=c.currentTime;
+  [523,659,784,1046].forEach((hz,i)=>{
+    const o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.setValueAtTime(hz,n+i*.09);
+    g.gain.setValueAtTime(.001,n+i*.09);g.gain.exponentialRampToValueAtTime(.24,n+i*.09+.02);
+    g.gain.exponentialRampToValueAtTime(.001,n+i*.09+.4);
+    o.connect(g);g.connect(c.destination);o.start(n+i*.09);o.stop(n+i*.09+.42);});
+}
+ 
+const VOICE_LANG = {en:'en-IN',hi:'hi-IN',as:'hi-IN'};
+function speak(text){
+  if(!('speechSynthesis' in window) || !text) return;
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = VOICE_LANG[S.lang]||'en-IN'; u.rate = 0.92; u.pitch = 1.03;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+ 
+/* ─────────────────── adaptive engine ──────────────────── */
+const K=48; // Faster difficulty ramp-up
+let ability = S.ability;
+const P=(th,b)=>1/(1+Math.pow(10,(b-th)/400));
+const seqDiff=n=>650+(n-2)*120; // Ramps up slightly faster
+const MAX_LEN=12; // Increased cap
+function seqLenFor(th){for(let n=MAX_LEN;n>=2;n--)if(P(th,seqDiff(n))>=.72)return n;return 2}
+function seqLen(){return seqLenFor(ability.attention)}
+function optCount(){return P(ability.recognition,900)>=.8?4:2}
+function levelInfo(n){
+  const idx=Math.min(Math.max(n-2,0),T.en.diff.length-1);
+  const label=t().diff[idx];
+  const next=seqDiff(n+1);
+  const pct=Math.round(Math.max(0,Math.min(1,P(ability.attention,next)/.72))*100);
+  return {n, idx, stars:idx+1, label, pct};
+}
+function rec(dom,diff,ok,ms){
+  const p=P(ability[dom],diff);
+  ability[dom]=Math.max(600,Math.min(1700,ability[dom]+K*((ok?1:0)-p)));
+  const d=today();
+  S.history[d]=S.history[d]||{};
+  S.history[d][dom]=Math.round(ability[dom]);
+  S.history[d].count=(S.history[d].count||0)+1;
+  S.ability=ability; save();
+}
+function starRow(n,size=15){
+  let out=''; for(let i=0;i<8;i++){
+    out+=`<svg viewBox="0 0 20 20" width="${size}" height="${size}"><path fill="${i<n?'var(--gold)':'rgba(255,255,255,.3)'}"
+      d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6z"/></svg>`;
+  } return out;
+}
+ 
+/* ───────────────────────── view plumbing ───────────────────────── */
+const $=i=>document.getElementById(i);
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>a.slice().sort(()=>Math.random()-.5);
+ 
+function showView(name){
+  ['Home','Play','Report','Lock','Analysis','Customize','ReportView'].forEach(v=>$('v'+v).classList.toggle('hide',v!==name));
+  $('hdrHome').classList.toggle('hide', name!=='Home');
+  $('hdrSub').classList.toggle('hide', name==='Home');
+  $('chipLevel').classList.toggle('hide', name!=='Play');
+  $('chipStreak').classList.toggle('hide', name!=='Play');
+  $('roundDots').classList.toggle('hide', name!=='Play');
+  
+  // Show logo in specific headers
+  const showLogo = ['Analysis', 'Customize', 'ReportView'].includes(name);
+  $('subLogo').classList.toggle('hide', !showLogo);
+  
+  const titles={Play:t().rhythmTitle,Report:t().roundByRound,Lock:t().lockHead,Analysis:t().fullReport,Customize:t().customize,ReportView:'Patient Report'};
+  if(titles[name]) $('subTitle').textContent = name==='Report'?t().rhythmTitle:titles[name];
+  window.scrollTo(0,0);
+}
+let backTarget='Home';
+$('btnBack').addEventListener('click',()=>{
+  if(game) quitGame();
+  showView(backTarget==='Home'?'Home':backTarget);
+});
+ 
+/* ═══════════════════════ HOME ═══════════════════════ */
+function drawHome(){
+  const x=t();
+  
+  $('btnLang').textContent=S.lang.toUpperCase();
+  $('lblLevel').textContent=x.level; $('lblBestStreak').textContent=x.bestStreak;
+  $('lblAcc').textContent=x.accToday; $('lblSessions').textContent=x.sessionsToday;
+  $('btnStart').textContent=x.start; 
+  $('homeHint').textContent=x.homeHint;
+  $('lblDailyStreakText').textContent=x.dailyStreakText;
+ 
+  const n=seqLen(), li=levelInfo(n);
+  $('homeLevelN').textContent=li.n-1;
+  $('homeLevelLabel').textContent=li.label;
+  $('homeStars').innerHTML=starRow(li.stars);
+  $('homeLevelBar').style.width=li.pct+'%';
+  $('homeLevelNote').textContent=x.levelNote(li.pct);
+ 
+  $('lblDailyStreakNum').textContent = calculateDailyStreak();
+
+  $('statBest').textContent=S.rhythmStats.bestStreak;
+  const log=S.rhythmStats.log||[];
+  const todays=log.filter(r=>r.date===today());
+  $('statSessions').textContent=todays.length;
+  if(todays.length){
+    const tot=todays.reduce((a,r)=>a+r.rounds,0), cor=todays.reduce((a,r)=>a+r.correct,0);
+    $('statAcc').textContent=Math.round(100*cor/tot)+'%';
+  } else $('statAcc').textContent='—';
+}
+$('btnStart').addEventListener('click',startSession);
+$('btnReportView').addEventListener('click',()=>{ backTarget='Home'; drawPatientReport(); showView('ReportView'); });
+$('btnReportBack').addEventListener('click',()=>{ backTarget='Home'; showView('Home'); });
+$('btnGear').addEventListener('click',()=>{ backTarget='Home'; openGate('Customize'); });
+$('btnLang').addEventListener('click',()=>{
+  const k=Object.keys(T); S.lang=k[(k.indexOf(S.lang)+1)%k.length]; save(); drawHome();
+});
+
+/* ═══════════════════════ FULL PATIENT REPORT ═══════════════════════ */
+function drawPatientReport() {
+    const log = S.rhythmStats.log || [];
+    let totalRounds = 0;
+    let totalCorrect = 0;
+    
+    log.forEach(r => {
+        totalRounds += r.rounds;
+        totalCorrect += r.correct;
+    });
+
+    const totalMisses = totalRounds - totalCorrect;
+    const allAcc = totalRounds > 0 ? Math.round(100 * totalCorrect / totalRounds) : 0;
+
+    $('allTimeGames').textContent = totalRounds;
+    $('allTimeAccTxt').textContent = allAcc + '%';
+    $('allTimeMisses').textContent = totalMisses;
+
+    // Calculate SVG Stroke Offset (Circumference ~345.5)
+    const circ = 345.5;
+    const offset = circ - (allAcc / 100) * circ;
+    $('allTimeCirc').style.strokeDashoffset = offset;
+
+    // Draw Chart for All-Time Trend
+    const days=Object.keys(S.history).sort();
+    const attnDays=days.filter(d=>S.history[d].attention!=null);
+    const recDays=days.filter(d=>S.history[d].recognition!=null);
+    const allDays=[...new Set([...attnDays,...recDays])].sort();
+    
+    $('allTimeChart').innerHTML = sparkline([
+        {label:'Attention',color:'var(--teal)',days:attnDays,pts:attnDays.map(d=>S.history[d].attention)},
+        {label:'Recognition',color:'var(--brass)',days:recDays,pts:recDays.map(d=>S.history[d].recognition)}
+    ], allDays);
+
+    // Build Milestones
+    let milestonesHTML = '';
+    const maxStreak = Math.max(0, ...log.map(r=>r.bestStreak));
+    const maxLevel = Math.max(0, ...log.map(r=>r.level));
+    if (maxLevel > 0) milestonesHTML += `<li>🌟 Reached Level ${maxLevel}</li>`;
+    if (maxStreak > 2) milestonesHTML += `<li>🔥 ${maxStreak}-answer combo streak!</li>`;
+    if (totalRounds >= 10) milestonesHTML += `<li>🏆 Completed 10+ rounds</li>`;
+    if (!milestonesHTML) milestonesHTML = '<li>Keep playing to earn milestones!</li>';
+    $('milestoneList').innerHTML = milestonesHTML;
+}
+ 
+/* ═══════════════════════ GATE (shared PIN) ═══════════════════════ */
+let unlocked = !!(S.rhythmStaySignedIn);
+let gateTarget=null;
+function openGate(target){
+  gateTarget=target;
+  if(unlocked){ enterGated(target); return; }
+  showView('Lock');
+  $('lockHead').textContent=t().lockHead; $('lockSub').textContent=t().lockSub;
+  $('lblStayIn').textContent=t().stayIn; $('btnUnlock').textContent=t().unlock;
+  $('pinInput').value=''; $('pinErr').classList.add('hide'); $('pinInput').focus();
+}
+$('btnUnlock').addEventListener('click',()=>{
+  if($('pinInput').value===S.pin){
+    unlocked=true; S.rhythmStaySignedIn=$('stayIn').checked; save();
+    enterGated(gateTarget);
+  } else { $('pinErr').textContent=t().wrongPin; $('pinErr').classList.remove('hide'); }
+});
+function enterGated(target){
+  backTarget='Home';
+  if(target==='Analysis'){ drawAnalysis(); showView('Analysis'); }
+  else { drawCustomize(); showView('Customize'); }
+}
+ 
+/* ═══════════════════════ GAME ═══════════════════════ */
+let game=null, seq=[], inp=[], phase='idle', t0=0;
+let session=null;
+ 
+function startSession(){
+  session = { len: S.rhythmStats.sessionsLen||6, round:0, correct:0, bestStreak:0, results:[] };
+  backTarget='Home';
+  S.rhythmStats.currentStreak = 0; // Reset streak at start of session
+  showView('Play');
+  buildRoundDots();
+  nextRound();
+}
+function buildRoundDots(){
+  $('roundDots').innerHTML = Array.from({length:session.len},()=>`<span class="rdot"></span>`).join('');
+}
+function updateChips(){
+  const li=levelInfo(seqLen());
+  $('chipLevelN').textContent=li.n-1;
+  const streak = S.rhythmStats.currentStreak;
+  $('chipStreakN').textContent=streak;
+  
+  [...$('roundDots').children].forEach((d,i)=>{
+    d.className='rdot'+(i===session.round?' on':i<session.round?(session.results[i].attnOk?' ok':' no'):'');
+  });
+
+  // Update Combo Badge
+  if (game === 'rhythm' && streak >= 3) {
+      $('comboBadge').textContent = streak + 'x COMBO!';
+      $('comboBadge').classList.add('show');
+  } else {
+      $('comboBadge').classList.remove('show');
+  }
+}
+function quitGame(){ game=null; window.speechSynthesis&&window.speechSynthesis.cancel(); }
+$('rep').addEventListener('click',()=>{if(phase==='input')playSeq()});
+ 
+function nextRound(){
+  if(session.round>=session.len) return finishSession();
+  updateChips();
+  game='rhythm';
+  $('act').classList.add('hide'); $('rep').classList.add('hide');
+  const items=S.rhythm, n=seqLen();
+  seq=Array.from({length:n},()=>Math.floor(Math.random()*items.length));
+  say(t().listen);
+  $('stage').innerHTML=`<div class="grid2" id="pads">`+items.map((it,i)=>
+    `<button class="opt" data-i="${i}" disabled><span class="ic">${visual(it,44)}</span><span class="n">${L(it)}</span></button>`).join('')+`</div>`;
+  $('pads').querySelectorAll('.opt').forEach(p=>p.addEventListener('click',()=>tapPad(+p.dataset.i,p)));
+  wait(500).then(playSeq);
+}
+async function playSeq(){
+  phase='demo'; pads(false); $('rep').classList.add('hide'); say(t().listen);
+  await wait(500);
+  for(const i of seq){const p=$('pads').children[i];
+    p.classList.add('lit'); beep(S.rhythm[i].s,i);
+    await wait(540); p.classList.remove('lit'); await wait(260);}
+  phase='input'; inp=[]; t0=performance.now(); pads(true);
+  $('rep').classList.remove('hide'); say(t().turn);
+}
+const pads=on=>$('pads')&&$('pads').querySelectorAll('.opt').forEach(p=>p.disabled=!on);
+function tapPad(i,el){
+  if(phase!=='input')return;
+  el.classList.add('tap');setTimeout(()=>el.classList.remove('tap'),120);
+  beep(S.rhythm[i].s,i); inp.push(i);
+  const k=inp.length-1;
+  if(inp[k]!==seq[k])return endSeq(false);
+  if(inp.length===seq.length)return endSeq(true);
+}
+let roundAttnOk=false, roundAttnMs=0, roundAbilityBefore=1000;
+function endSeq(ok){
+  phase='mid'; pads(false); $('rep').classList.add('hide');
+  roundAttnOk=ok; roundAttnMs=Math.round(performance.now()-t0);
+  roundAbilityBefore=ability.attention; 
+  rec('attention',seqDiff(seq.length),ok,roundAttnMs);
+  setTimeout(recallFirst,650);
+}
+function recallFirst(){
+  phase='rec'; const ans=seq[0];
+  const others=S.rhythm.map((_,i)=>i).filter(i=>i!==ans);
+  const opts=shuffle([ans,...shuffle(others).slice(0,optCount()-1)]);
+  say(t().first); const s=performance.now();
+  $('stage').innerHTML=`<div class="grid2">`+opts.map(i=>
+    `<button class="opt" data-c="${i}"><span class="ic">${visual(S.rhythm[i],44)}</span><span class="n">${L(S.rhythm[i])}</span></button>`).join('')+`</div>`;
+  $('stage').querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+    const i=+b.dataset.c, ok=i===ans;
+    $('stage').querySelectorAll('.opt').forEach(o=>o.disabled=true);
+    b.classList.add(ok?'good':'bad');
+    if(!ok){ const wrongKey=`${L(S.rhythm[ans])}→${L(S.rhythm[i])}`;
+      S.rhythmStats.mixups[wrongKey]=(S.rhythmStats.mixups[wrongKey]||0)+1; save(); }
+    rec('recognition',800,ok,Math.round(performance.now()-s));
+    finishRound(ok, ans);
+  }));
+}
+function finishRound(recOk, ansIdx){
+  const attnOk=roundAttnOk;
+  if(attnOk){ S.rhythmStats.currentStreak++; } else { S.rhythmStats.currentStreak=0; }
+  S.rhythmStats.bestStreak=Math.max(S.rhythmStats.bestStreak, S.rhythmStats.currentStreak);
+  session.bestStreak=Math.max(session.bestStreak, S.rhythmStats.currentStreak);
+  if(attnOk) session.correct++;
+  session.results.push({attnOk, recOk});
+  save();
+ 
+  const levelBefore = levelInfo(seqLenFor(roundAbilityBefore)).n;
+  const levelNow = levelInfo(seqLen()).n;
+ 
+  const streak=S.rhythmStats.currentStreak;
+  let tier, emoji, sub;
+  if(attnOk){
+    if(streak>=5){tier=t().fbExcellent;emoji='🌟';}
+    else if(streak>=3){tier=t().fbGreat;emoji='🎉';}
+    else if(streak>=2){tier=t().fbVeryGood;emoji='👏';}
+    else {tier=t().fbGood;emoji='👍';}
+    sub = recOk ? t().fbFirstOk : t().fbFirstNo(L(S.rhythm[ansIdx]));
+  } else {
+    tier=t().fbTryAgain; emoji='💙'; sub=t().fbTryAgainSub;
+  }
+  chime(attnOk); speak(tier+' '+sub);
+  showToast(attnOk?'good':'bad', emoji, tier, sub);
+  updateChips();
+ 
+  session.round++;
+  const doAdvance=()=>{
+    if(levelNow>levelBefore && attnOk) showLevelUp(levelNow);
+    setTimeout(()=>{ if(session.round>=session.len) finishSession(); else nextRound(); }, levelNow>levelBefore&&attnOk?1500:200);
+  };
+  setTimeout(doAdvance,1450);
+}
+function say(msg){ $('prompt').textContent=msg; const s=$('say'); s.classList.remove('ring'); void s.offsetWidth; s.classList.add('ring'); }
+let toastTimer=null;
+function showToast(kind,emoji,title,sub){
+  const el=$('toast'); el.className='toast '+kind;
+  $('toastE').textContent=emoji; $('toastT').textContent=title; $('toastS').textContent=sub;
+  requestAnimationFrame(()=>el.classList.add('show'));
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),1350);
+}
+function showLevelUp(n){
+  fanfare();
+  $('luTitle').textContent=t().levelUp; $('luSub').textContent=t().reached(n-1);
+  $('levelup').classList.add('show');
+  setTimeout(()=>$('levelup').classList.remove('show'),1300);
+}
+ 
+/* ═══════════════════════ SESSION REPORT ═══════════════════════ */
+function finishSession(){
+  game=null;
+  const d=today();
+  S.rhythmStats.log=S.rhythmStats.log||[];
+  S.rhythmStats.log.push({date:d, rounds:session.len, correct:session.correct, bestStreak:session.bestStreak, level:levelInfo(seqLen()).n-1});
+  if(S.rhythmStats.log.length>200) S.rhythmStats.log=S.rhythmStats.log.slice(-200);
+  save();
+ 
+  const acc=Math.round(100*session.correct/session.len);
+  const x=t();
+  $('repEmoji').textContent = acc>=85?'🎉':acc>=60?'😊':'💙';
+  $('repTitle').textContent = acc>=85?x.sessionGreat:acc>=60?x.sessionGood:x.sessionOk;
+  $('repSub').textContent = x.sessionSub(session.correct,session.len);
+  $('repRounds').textContent=session.len; $('lblRoundsPlayed').textContent=x.roundsPlayed;
+  $('repAcc').textContent=acc+'%'; $('lblAccuracy').textContent=x.accuracy;
+  $('repStreak').textContent=session.bestStreak; $('lblSessBest').textContent=x.sessBest;
+  $('repLevel').textContent=levelInfo(seqLen()).n-1; $('lblLevelReached').textContent=x.levelReached;
+  $('hRoundByRound').textContent=x.roundByRound;
+  $('repTimeline').innerHTML=session.results.map((r,i)=>{
+    const cls=r.attnOk&&r.recOk?'ok':r.attnOk?'part':'no';
+    return `<div class="tdot ${cls}">${i+1}</div>`;
+  }).join('');
+  $('repLegend').innerHTML=`
+    <span><span class="dot-sw" style="background:var(--ok)"></span>${x.legBoth}</span>
+    <span><span class="dot-sw" style="background:var(--brass)"></span>${x.legPart}</span>
+    <span><span class="dot-sw" style="background:var(--warn)"></span>${x.legNone}</span>`;
+  $('btnPlayAgain').textContent=x.playAgain; 
+  $('btnGoHomeFromReport').textContent=x.doneForNow;
+  backTarget='Home';
+  showView('Report');
+  speak(acc>=85?x.sessionGreat:acc>=60?x.sessionGood:x.sessionOk);
+  
+  // Hide combo badge
+  $('comboBadge').classList.remove('show');
+}
+$('btnPlayAgain').addEventListener('click',startSession);
+$('btnGoAnalysis').addEventListener('click',()=>openGate('Analysis'));
+$('btnGoHomeFromReport').addEventListener('click',()=>{ drawHome(); showView('Home'); });
+ 
+/* ═══════════════════════ ANALYSIS (caregiver) ═══════════════════════ */
+function sparkline(seriesDefs, allDays, w=320, h=130){
+  if(allDays.length===0) return `<div style="height:${h}px;display:flex;align-items:center;
+    justify-content:center;color:var(--soft);font-size:13px;background:var(--cream);border-radius:14px">${t().notEnough}</div>`;
+  const pad={l:34,r:10,t:14,b:20}, iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const allVals=seriesDefs.flatMap(s=>s.pts);
+  const min=Math.min(...allVals,600), max=Math.max(...allVals,1000);
+  const drawSingle = allDays.length === 1;
+  const x=i=> drawSingle ? pad.l + iw/2 : pad.l+(i/(allDays.length-1))*iw;
+  const y=v=>pad.t+ih-((v-min)/(max-min||1))*ih;
+  const grid=[0,.5,1].map(f=>{
+    const gy=pad.t+ih*f, val=Math.round(max-(max-min)*f);
+    return `<line x1="${pad.l}" y1="${gy}" x2="${w-pad.r}" y2="${gy}" stroke="var(--line)" stroke-width="1"/>
+      <text x="${pad.l-6}" y="${gy+4}" text-anchor="end" font-size="9.5" fill="var(--soft)">${val}</text>`;
+  }).join('');
+  const xlabels=allDays.map((d,i)=>{
+    if(allDays.length>6 && i%Math.ceil(allDays.length/6)!==0 && !drawSingle) return '';
+    return `<text x="${x(i).toFixed(1)}" y="${h-4}" text-anchor="middle" font-size="9" fill="var(--soft)">${d.slice(5)}</text>`;
+  }).join('');
+  const lines=seriesDefs.map(s=>{
+    const idx=s.days.map(d=>allDays.indexOf(d));
+    if(drawSingle && idx.length===1) {
+       return `<circle cx="${x(idx[0]).toFixed(1)}" cy="${y(s.pts[0]).toFixed(1)}" r="4" fill="${s.color}"/>`;
+    }
+    const d=idx.map((ix,k)=>`${k?'L':'M'}${x(ix).toFixed(1)},${y(s.pts[k]).toFixed(1)}`).join(' ');
+    return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`+
+      idx.map((ix,k)=>`<circle cx="${x(ix).toFixed(1)}" cy="${y(s.pts[k]).toFixed(1)}" r="2.6" fill="${s.color}"/>`).join('');
+  }).join('');
+  const legend=seriesDefs.map(s=>
+    `<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px;font-size:11.5px;color:var(--soft)">
+      <span style="width:9px;height:9px;border-radius:50%;background:${s.color};display:inline-block"></span>${s.label}</span>`).join('');
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="max-width:100%">${grid}${lines}${xlabels}</svg>
+    <div>${legend}</div>`;
+}
+function barChart(days, values, w=320, h=90, color='var(--brass)'){
+  if(!days.length) return `<div style="height:${h}px;display:flex;align-items:center;
+    justify-content:center;color:var(--soft);font-size:13px;background:var(--cream);border-radius:14px">${t().notEnough}</div>`;
+  const pad={l:6,r:6,t:8,b:18}, iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  const bw=Math.min(28,iw/days.length-6);
+  const max=Math.max(...values,1);
+  const bars=days.map((d,i)=>{
+    const bh=(values[i]/max)*ih;
+    const bx=pad.l+i*(iw/days.length)+((iw/days.length)-bw)/2;
+    return `<rect x="${bx.toFixed(1)}" y="${(pad.t+ih-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(2,bh).toFixed(1)}"
+      rx="3" fill="${color}"/>
+      <text x="${(bx+bw/2).toFixed(1)}" y="${h-4}" text-anchor="middle" font-size="8.5" fill="var(--soft)">${d.slice(8)}</text>`;
+  }).join('');
+  return `<svg class="barc" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="max-width:100%">${bars}</svg>`;
+}
+function drawAnalysis(){
+  const x=t();
+  $('subTitle').textContent=x.fullReport;
+  $('hTrend').textContent=x.trendTitle; $('hStreakHist').textContent=x.streakHistTitle;
+  $('hMixups').textContent=x.mixupsTitle; $('hSessionLog').textContent=x.sessionLogTitle;
+  $('btnPrint').textContent=x.printBtn; $('btnExport').textContent=x.exportBtn; $('btnImportBtn').textContent=x.importBtn;
+ 
+  const days=Object.keys(S.history).sort();
+  const attnDays=days.filter(d=>S.history[d].attention!=null);
+  const recDays=days.filter(d=>S.history[d].recognition!=null);
+  const allDays=[...new Set([...attnDays,...recDays])].sort();
+  $('trendChart').innerHTML = sparkline([
+    {label:'Attention',color:'var(--teal)',days:attnDays,pts:attnDays.map(d=>S.history[d].attention)},
+    {label:'Recognition',color:'var(--brass)',days:recDays,pts:recDays.map(d=>S.history[d].recognition)}
+  ], allDays);
+ 
+  const log=(S.rhythmStats.log||[]).slice(-14);
+  const logDays=[...new Set(log.map(r=>r.date))];
+  const bestByDay=logDays.map(d=>Math.max(...log.filter(r=>r.date===d).map(r=>r.bestStreak)));
+  $('streakChart').innerHTML = barChart(logDays, bestByDay, 320, 90, 'var(--flame)');
+ 
+  const mix=Object.entries(S.rhythmStats.mixups||{}).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  $('mixupsBox').innerHTML = mix.length ? `<table class="tt"><tbody>${mix.map(([k,v])=>{
+    const [a,b]=k.split('→'); return `<tr><td>${a} → ${b}</td><td style="text-align:right;font-weight:800;color:var(--teal-d)">${v}×</td></tr>`;
+  }).join('')}</tbody></table>` : `<p class="note" style="margin:0">${x.noMixups}</p>`;
+ 
+  const fullLog=(S.rhythmStats.log||[]).slice(-10).reverse();
+  $('sessionLogBox').innerHTML = fullLog.length ? `<table class="tt"><thead><tr>
+      <th>${x.colDate}</th><th>${x.colRounds}</th><th>${x.colAcc}</th><th>${x.colBest}</th><th>${x.colLevel}</th></tr></thead>
+    <tbody>${fullLog.map(r=>`<tr><td>${r.date}</td><td>${r.rounds}</td>
+      <td>${Math.round(100*r.correct/r.rounds)}%</td><td>${r.bestStreak}</td><td>${r.level}</td></tr>`).join('')}</tbody></table>`
+    : `<p class="note" style="margin:0">${x.notEnough}</p>`;
+}
+$('btnPrint').addEventListener('click',()=>window.print());
+$('btnExport').addEventListener('click',()=>{
+  const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='smriti-rhythm.json';a.click();
+});
+$('btnImportBtn').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+      S=JSON.parse(r.result);
+      S.rhythm=(S.rhythm&&S.rhythm.length>=3)?S.rhythm:structuredClone(DEF.rhythm);
+      S.ability=S.ability||{attention:1000,recognition:1000}; ability=S.ability;
+      S.history=S.history||{}; S.rhythmStats=Object.assign(structuredClone(DEF.rhythmStats),S.rhythmStats||{});
+      save(); drawHome(); drawAnalysis();
+    }catch(x){alert('That file could not be read.')}};
+  r.readAsText(f);
+});
+ 
+/* ═══════════════════════ CUSTOMIZE (caregiver) ═══════════════════════ */
+let openPicker=null;
+function drawCustomize(){
+  const x=t();
+  $('subTitle').textContent=x.customize;
+  $('hGeneral').textContent=x.general; $('lblPatientName').textContent=x.patientName;
+  $('lblLanguage').textContent=x.language; $('lblSessionLen').textContent=x.sessionLen;
+  $('hCustomCards').textContent=x.customCards; $('noteCards').textContent=x.cardNote;
+  $('btnAddCard').textContent=x.addCard; $('hDanger').textContent=x.dangerZone;
+  $('btnReset').textContent=x.resetBtn; $('noteReset').textContent=x.resetNote;
+  $('cPatientName').value=S.patient;
+  $('segLang').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.lang===S.lang));
+  $('segLen').querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.len===(S.rhythmStats.sessionsLen||6)));
+ 
+  $('instrList').innerHTML = S.rhythm.map((o,i)=>{
+    const pk=`r${i}`;
+    return `<div>
+      <div class="item-row">
+        <button class="pic" data-pick="${pk}" aria-label="${x.changePic}">${visual(o,34)}</button>
+        <div class="fields">
+          <input value="${o.l[S.lang]||''}" data-i="${i}" data-f="name" aria-label="Name" placeholder="Name">
+          <div style="display:flex; gap:6px;">
+            <select data-i="${i}" data-f="cat" style="padding:8px;font-size:13px;flex:1;">
+              <option value="instrument"${o.cat==='instrument'?' selected':''}>Instrument</option>
+              <option value="family"${o.cat==='family'?' selected':''}>Family</option>
+              <option value="object"${o.cat==='object'?' selected':''}>Object</option>
+            </select>
+            <select data-i="${i}" data-f="sound" style="padding:8px;font-size:13px;flex:1;">
+              <option value="drum"${o.s==='drum'?' selected':''}>Drum</option>
+              <option value="metal"${o.s==='metal'?' selected':''}>Metal</option>
+              <option value="reed"${o.s==='reed'?' selected':''}>Reed</option>
+              <option value="twang"${o.s==='twang'?' selected':''}>Twang</option>
+            </select>
+          </div>
+        </div>
+        <button class="del" data-rm="${i}" aria-label="Remove">×</button>
+      </div>
+      ${openPicker===pk?`
+      <div class="pickwrap">
+        <div class="grid5">
+          ${Object.keys(ICONS).filter(k=>k!=='dot').map(k=>
+            `<button class="pickopt${o.shape===k?' on':''}" data-setshape="${i}" data-shape="${k}">${icon(k,28)}</button>`).join('')}
+        </div>
+        <button class="btn sm ghost" data-photo="${i}">📷 ${x.photo}</button>
+        ${o.photo?`<button class="btn sm ghost" style="margin-top:8px;color:var(--warn)" data-rmphoto="${i}">${x.removePh}</button>`:''}
+      </div>`:''}
+    </div>`;
+  }).join('');
+  wireCustomize();
+}
+function wireCustomize(){
+  $('cPatientName').oninput=e=>{S.patient=e.target.value;save();};
+  $('segLang').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.lang=b.dataset.lang;save();drawCustomize();drawHome();});
+  $('segLen').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.rhythmStats.sessionsLen=+b.dataset.len;save();drawCustomize();});
+  $('instrList').querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
+    const pk=b.dataset.pick; openPicker=openPicker===pk?null:pk; drawCustomize();
+  });
+  $('instrList').querySelectorAll('[data-setshape]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.setshape; S.rhythm[i].shape=b.dataset.shape; delete S.rhythm[i].photo;
+    save(); openPicker=null; drawCustomize(); drawHome();
+  });
+  $('instrList').querySelectorAll('[data-i]').forEach(el=>{
+    const evt=el.tagName==='SELECT'?'onchange':'oninput';
+    el[evt]=e=>{
+      const i=+e.target.dataset.i, f=e.target.dataset.f;
+      if(f==='name'){ S.rhythm[i].l=S.rhythm[i].l||{}; S.rhythm[i].l[S.lang]=e.target.value; }
+      else if(f==='sound'){ S.rhythm[i].s=e.target.value; }
+      else if(f==='cat'){ S.rhythm[i].cat=e.target.value; }
+      save();
+    };
+  });
+  $('instrList').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{
+    if(S.rhythm.length<=3) return alert(t().minCards);
+    S.rhythm.splice(+b.dataset.rm,1); save(); drawCustomize(); drawHome();
+  });
+  $('instrList').querySelectorAll('[data-photo]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.photo;
+    $('fileInput').onchange=async()=>{
+      const f=$('fileInput').files[0]; if(!f) return;
+      try{ S.rhythm[i].photo=await resizeImage(f); openPicker=null; save(); drawCustomize(); drawHome(); }
+      catch(e){ alert('That image could not be used. Try a different photo.'); }
+      $('fileInput').value='';
+    };
+    $('fileInput').click();
+  });
+  $('instrList').querySelectorAll('[data-rmphoto]').forEach(b=>b.onclick=()=>{
+    delete S.rhythm[+b.dataset.rmphoto].photo; save(); drawCustomize(); drawHome();
+  });
+}
+$('btnAddCard').addEventListener('click',()=>{
+  if(S.rhythm.length>=12) return alert(t().maxCards);
+  S.rhythm.push({shape:'dot',s:'drum',cat:'object',l:{[S.lang]:'New'}});
+  save(); drawCustomize();
+});
+$('btnReset').addEventListener('click',()=>{
+  if(!confirm(t().resetConfirm)) return;
+  S.ability={attention:1000,recognition:1000}; ability=S.ability;
+  S.history={}; S.rhythmStats=structuredClone(DEF.rhythmStats);
+  save(); drawCustomize(); drawHome();
+});
+ 
+/* boot */
+drawHome(); showView('Home');
+</script>
+</body>
+</html>
