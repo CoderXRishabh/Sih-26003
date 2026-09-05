@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Models ──────────────────────────────────────────────
+
+model Patient {
+  id               Int      @id @default(autoincrement())
+  name             String
+  phone            String   @unique
+  email            String?
+  age              Int
+  language         String   @default("en")
+  careCode         String   @unique @map("care_code")
+  emergencyContact String?  @default("") @map("emergency_contact")
+  avatar           String?  @default("avatar-1")
+  passwordHash     String   @map("password_hash")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  caregiverLinks   PatientCaregiverLink[]
+  activityLogs     ActivityLog[]
+  reminders        Reminder[]
+  chitchatSessions ChitChatSession[]
+
+  @@map("patients")
+}
+
+model Caregiver {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  phone        String
+  avatar       String?  @default("avatar-1")
+  passwordHash String   @map("password_hash")
+  role         String
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  patientLinks PatientCaregiverLink[]
+
+  @@map("caregivers")
+}
+
+model PatientCaregiverLink {
+  id              Int      @id @default(autoincrement())
+  patientId       Int      @map("patient_id")
+  caregiverId     Int      @map("caregiver_id")
+  permissionLevel String   @default("full") @map("permission_level")
+  status          String   @default("active")
+  linkedAt        DateTime @default(now()) @map("linked_at")
+
+  patient   Patient   @relation(fields: [patientId], references: [id])
+  caregiver Caregiver @relation(fields: [caregiverId], references: [id])
+
+  @@unique([patientId, caregiverId])
+  @@map("patient_caregiver_links")
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  patientId Int      @map("patient_id")
+  type      String
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  patient Patient @relation(fields: [patientId], references: [id])
+
+  @@map("activity_logs")
+}
+
+model Reminder {
+  id            Int       @id @default(autoincrement())
+  patientId     Int       @map("patient_id")
+  type          String
+  label         String
+  scheduledTime String    @map("scheduled_time")
+  frequency     String    @default("daily")
+  days          String    @default("[]")
+  completedAt   DateTime? @map("completed_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  patient Patient @relation(fields: [patientId], references: [id])
+
+  @@map("reminders")
+}
+
+// ─── Chit-Chat Voice Quiz Models ─────────────────────────
+
+model ChitChatSession {
+  id          Int       @id @default(autoincrement())
+  patientId   Int       @map("patient_id")
+  language    String    // "en" | "as" | "mn"
+  status      String    @default("in_progress") // "in_progress" | "completed" | "partial"
+  questionIds String    @default("[]") @map("question_ids") // JSON array of selected question IDs
+  createdAt   DateTime  @default(now()) @map("created_at")
+  completedAt DateTime? @map("completed_at")
+
+  patient   Patient            @relation(fields: [patientId], references: [id])
+  responses ChitChatResponse[]
+  report    ChitChatReport?
+
+  @@map("chitchat_sessions")
+}
+
+model ChitChatResponse {
+  id           Int      @id @default(autoincrement())
+  sessionId    Int      @map("session_id")
+  questionId   Int      @map("question_id")
+  questionText String   @map("question_text")
+  audioBase64  String?  @map("audio_base64")   // base64-encoded webm audio
+  transcript   String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  session ChitChatSession @relation(fields: [sessionId], references: [id])
+
+  @@map("chitchat_responses")
+}
+
+model ChitChatReport {
+  id             Int      @id @default(autoincrement())
+  sessionId      Int      @unique @map("session_id")
+  summaryBullets String   @map("summary_bullets")  // JSON array of strings
+  moodScore      Int      @map("mood_score")        // 1-10
+  themes         String                              // JSON array of strings
+  alertLevel     String?  @map("alert_level")       // "info" | "watch" | "concern" | null
+  alertMessage   String?  @map("alert_message")
+  responseLength Float?   @map("response_length")   // avg words per answer
+  fullReport     String   @map("full_report")       // full JSON from LLM
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  session ChitChatSession @relation(fields: [sessionId], references: [id])
+
+  @@map("chitchat_reports")
+}
