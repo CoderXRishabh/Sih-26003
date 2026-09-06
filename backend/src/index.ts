@@ -22,7 +22,19 @@ const app = express();
 const httpServer = createServer(app);
 
 // Middleware
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow any vercel frontend, localhost, or configured CORS_ORIGIN
+      if (!origin || origin.includes("vercel.app") || origin.includes("localhost") || origin === env.CORS_ORIGIN) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "50mb" })); // Increased for base64 audio uploads
 
 // ─── Health Check & Root ─────────────────────────────────

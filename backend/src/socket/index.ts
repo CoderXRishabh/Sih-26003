@@ -115,8 +115,9 @@ function socketAuthMiddleware(socket: Socket, next: (err?: Error) => void) {
 export function initSocket(httpServer: HTTPServer): Server {
   io = new Server(httpServer, {
     cors: {
-      origin: env.CORS_ORIGIN || "*",
+      origin: true,
       methods: ["GET", "POST", "PATCH", "DELETE"],
+      credentials: true,
     },
   });
 
