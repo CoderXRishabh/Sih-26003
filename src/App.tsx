@@ -2933,9 +2933,9 @@ function ChitChatScreen({ onBack }: { onBack: () => void }) {
 
   // Audio file imports map — built from the question bank
   const AUDIO_BASE_PATH: Record<string, string> = {
-    en: "/src/Questions in all three language/english/",
-    as: "/src/Questions in all three language/assamese/",
-    mn: "/src/Questions in all three language/manipuri/",
+    en: "/Questions in all three language/english/",
+    as: "/Questions in all three language/assamese/",
+    mn: "/Questions in all three language/manipuri/",
   };
 
   type QuizState = "loading" | "playing" | "waiting_record" | "recording" | "recorded" | "completed" | "processing" | "error";
@@ -2982,28 +2982,48 @@ function ChitChatScreen({ onBack }: { onBack: () => void }) {
     const q = questions[currentIdx];
     if (!q) return;
 
-    const audioPath = AUDIO_BASE_PATH[lang] + encodeURIComponent(q.audioFile);
+    const audioPath = AUDIO_BASE_PATH[lang] + q.audioFile;
     const audio = new Audio(audioPath);
     questionAudioRef.current = audio;
     setAudioPlaying(true);
+
+    const playFallbackTTS = () => {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(q.text);
+        utterance.lang = lang === "as" ? "hi-IN" : lang === "mn" ? "hi-IN" : "en-US";
+        utterance.onend = () => {
+          setAudioPlaying(false);
+          setQuizState("waiting_record");
+        };
+        utterance.onerror = () => {
+          setAudioPlaying(false);
+          setQuizState("waiting_record");
+        };
+        window.speechSynthesis.speak(utterance);
+      } else {
+        setAudioPlaying(false);
+        setQuizState("waiting_record");
+      }
+    };
 
     audio.onended = () => {
       setAudioPlaying(false);
       setQuizState("waiting_record");
     };
     audio.onerror = () => {
-      setAudioPlaying(false);
-      setQuizState("waiting_record");
+      console.warn("[Audio] Question audio file error, playing Speech Synthesis fallback...");
+      playFallbackTTS();
     };
 
     audio.play().catch(() => {
-      setAudioPlaying(false);
-      setQuizState("waiting_record");
+      playFallbackTTS();
     });
 
     return () => {
       audio.pause();
       audio.src = "";
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     };
   }, [quizState, currentIdx, questions.length]);
 
@@ -3019,7 +3039,19 @@ function ChitChatScreen({ onBack }: { onBack: () => void }) {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm;codecs=opus" });
+
+      let options: MediaRecorderOptions = {};
+      if (typeof MediaRecorder !== "undefined") {
+        if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+          options = { mimeType: "audio/webm;codecs=opus" };
+        } else if (MediaRecorder.isTypeSupported("audio/webm")) {
+          options = { mimeType: "audio/webm" };
+        } else if (MediaRecorder.isTypeSupported("audio/mp4")) {
+          options = { mimeType: "audio/mp4" };
+        }
+      }
+
+      const recorder = new MediaRecorder(stream, options);
       mediaRecorderRef.current = recorder;
       chunksRef.current = [];
 
@@ -3028,7 +3060,8 @@ function ChitChatScreen({ onBack }: { onBack: () => void }) {
       };
 
       recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const mimeType = recorder.mimeType || "audio/webm";
+        const blob = new Blob(chunksRef.current, { type: mimeType });
         setRecordedBlob(blob);
         setQuizState("recorded");
         stream.getTracks().forEach((t) => t.stop());
@@ -3044,7 +3077,8 @@ function ChitChatScreen({ onBack }: { onBack: () => void }) {
       recordingTimerRef.current = setInterval(() => {
         setRecordingTime((prev) => prev + 1);
       }, 1000);
-    } catch {
+    } catch (err) {
+      console.error("[Recording error]", err);
       setErrorMsg("Microphone access denied. Please allow microphone access.");
       setQuizState("error");
     }
