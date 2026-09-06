@@ -2,7 +2,7 @@
 // Centralised HTTP client for the Smriti backend.
 // Handles token storage, auto-refresh on 401, and typed API calls.
 
-const API_BASE = "http://localhost:4000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 // ── Token helpers ─────────────────────────────────────────────────────────
 

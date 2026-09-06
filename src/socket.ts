@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { getAccessToken, getStoredRole } from "./api";
 
-const SOCKET_URL = "http://localhost:4000";
+const SOCKET_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export interface SyncPayload {
   entity: string;
