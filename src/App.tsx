@@ -927,6 +927,8 @@ function MemoryGameScreen({ onBack }: { onBack: () => void }) {
         setFlipped([]);
         if (nextMatched.length === deck.length) {
           setWon(true);
+          const score = Math.max(100 - (moves + 1) * 5, 20);
+          api.logActivity("game", { game: "Match Pairs", score, accuracy: 100, moves: moves + 1 }).catch(() => {});
         }
       } else {
         setTimeout(() => setFlipped([]), 1000);
@@ -2982,7 +2984,7 @@ function ChitChatScreen({ onBack }: { onBack: () => void }) {
     const q = questions[currentIdx];
     if (!q) return;
 
-    const audioPath = AUDIO_BASE_PATH[lang] + q.audioFile;
+    const audioPath = AUDIO_BASE_PATH[lang] + encodeURIComponent(q.audioFile);
     const audio = new Audio(audioPath);
     questionAudioRef.current = audio;
     setAudioPlaying(true);
@@ -4428,6 +4430,11 @@ function CaregiverDashboard({ onLogout }: { onLogout: () => void }) {
         }
       } else if (payload.patientId === activePatient.id && payload.entity === "activity" && payload.action === "created") {
         setActivities((prev) => [payload.data, ...prev]);
+      } else if (payload.patientId === activePatient.id && payload.entity === "chitchat") {
+        api.fetchPatientActivity(activePatient.id).then(setActivities).catch(() => {});
+        api.fetchChitChatAnalysis(activePatient.id).then(setAnalysis).catch(() => {});
+        api.fetchChitChatSessions(activePatient.id, 10).then((res) => setSessions(res.sessions)).catch(() => {});
+        api.fetchChitChatAlerts(activePatient.id).then((res) => setAlerts(res.alerts)).catch(() => {});
       } else if (payload.entity === "link") {
         loadPatients();
       }
